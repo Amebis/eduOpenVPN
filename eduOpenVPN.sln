@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eduOpenVPN", "eduOpenVPN\eduOpenVPN.csproj", "{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C0E7B6B-CD2D-4E84-8115-5C21EAD53286}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		LICENSE.spdx = LICENSE.spdx
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x64.ActiveCfg = Debug|x64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x64.Build.0 = Debug|x64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x86.ActiveCfg = Debug|x86
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x86.Build.0 = Debug|x86
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x64.ActiveCfg = Release|x64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x64.Build.0 = Release|x64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x86.ActiveCfg = Release|x86
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

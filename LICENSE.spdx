@@ -1,0 +1,17 @@
+SPDXVersion: SPDX-2.1
+DataLicense: CC0-1.0
+PackageName: eduOpenVPN
+DataFormat: SPDXRef-1
+PackageSupplier: Organization: The Commons Conservancy eduVPN Programme
+PackageHomePage: https://github.com/Amebis/eduOpenVPN
+PackageLicenseDeclared: GPL-3.0+
+PackageCopyrightText: 2017, The Commons Conservancy eduVPN Programme
+PackageSummary: <text>An OpenVPN Client for eduVPN (and beyond)</text>
+PackageComment: <text>The package includes the following libraries; see
+    Relationship information.</text>
+Created: 2017-06-06T09:00:00Z
+PackageDownloadLocation: git://github.com/Amebis/eduOpenVPN
+PackageDownloadLocation: git+https://github.com/Amebis/eduOpenVPN.git
+PackageDownloadLocation: git+ssh://github.com/Amebis/eduOpenVPN.git
+Creator: Person: Simon Rozman (simon.rozman@amebis.si)
+Creator: Organization: Amebis
