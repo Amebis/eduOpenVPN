@@ -51,6 +51,11 @@ namespace eduOpenVPN.InteractiveService
                 // Connect to OpenVPN Interactive Service via named pipe.
                 _stream.Connect(timeout);
                 _stream.ReadMode = PipeTransmissionMode.Message;
+                if (_stream.CanTimeout)
+                {
+                    _stream.ReadTimeout = timeout;
+                    _stream.WriteTimeout = timeout;
+                }
             }
             catch (Exception ex) { throw new AggregateException(Resources.Strings.ErrorInteractiveServiceConnect, ex); }
         }
