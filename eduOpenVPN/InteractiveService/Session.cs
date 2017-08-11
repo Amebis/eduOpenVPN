@@ -18,7 +18,7 @@ namespace eduOpenVPN.InteractiveService
     /// <summary>
     /// OpenVPN Interactive Service connection
     /// </summary>
-    public class Connection : IDisposable
+    public class Session : IDisposable
     {
         #region Properties
 
@@ -35,7 +35,7 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Construct an OpenVPN Interactive Service connection
         /// </summary>
-        public Connection()
+        public Session()
         {
             _stream = new NamedPipeClientStream(".", "openvpn\\service");
         }
