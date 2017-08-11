@@ -26,13 +26,8 @@ namespace eduOpenVPN.InteractiveService
         {
             get
             {
-                string msg;
-                msg = String.Format(Resources.Strings.ErrorInteractiveService, String.Format("0x{0:X}", ErrorNumber), Function);
-
-                if (base.Message != null)
-                    msg = msg != null ? String.Format("{0}\n{1}", msg, base.Message) : base.Message;
-
-                return msg;
+                string msg = String.Format(Resources.Strings.ErrorInteractiveService, String.Format("0x{0:X}", ErrorNumber), Function);
+                return Description != null ? String.Format("{0}\n{1}", msg, Description) : msg;
             }
         }
 
@@ -46,6 +41,11 @@ namespace eduOpenVPN.InteractiveService
         /// </summary>
         public string Function { get; }
 
+        /// <summary>
+        /// Additional error description (optional)
+        /// </summary>
+        public string Description { get; }
+
         #endregion
 
         #region Constructors
@@ -57,10 +57,11 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="function">The function that failed</param>
         /// <param name="error_description">Human-readable text providing additional information</param>
         public InteractiveServiceException(uint error_num, string function, string error_description) :
-            base(error_description)
+            base()
         {
             ErrorNumber = error_num;
             Function = function;
+            Description = error_description;
         }
 
         #endregion

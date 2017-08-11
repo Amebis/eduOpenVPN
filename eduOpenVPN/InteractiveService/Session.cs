@@ -98,7 +98,7 @@ namespace eduOpenVPN.InteractiveService
             if (error == 0)
                 return msg[2] == "Process ID" ? (uint)conv.ConvertFromString(msg[1]) : 0;
             else
-                throw new InteractiveServiceException(error, msg[1], msg[2]);
+                throw new InteractiveServiceException(error, msg[1], msg[2] != "(null)" ? msg[2] : null);
         }
 
         #endregion
