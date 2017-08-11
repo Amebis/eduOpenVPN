@@ -87,7 +87,7 @@ namespace eduOpenVPN.InteractiveService
 
             // Parse the response.
             var data = new byte[1048576]; // Limit to 1MiB
-            var msg = Encoding.Unicode.GetChars(data, 0, _stream.Read(data, 0, data.Length)).ToString().Split('\n');
+            var msg = new string(Encoding.Unicode.GetChars(data, 0, _stream.Read(data, 0, data.Length))).Split('\n');
             var conv = new UInt32Converter();
             var error = (uint)conv.ConvertFromString(msg[0]);
             if (error == 0)
