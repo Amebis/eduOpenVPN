@@ -26,7 +26,7 @@ namespace eduOpenVPN.InteractiveService
         /// Named pipe stream to OpenVPN Interactive Service
         /// </summary>
         public NamedPipeClientStream Stream { get => _stream; }
-        protected NamedPipeClientStream _stream;
+        private NamedPipeClientStream _stream;
 
         #endregion
 
