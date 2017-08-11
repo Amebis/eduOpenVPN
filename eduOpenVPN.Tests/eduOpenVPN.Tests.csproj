@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\eduOpenVPN\eduOpenVPN.csproj">
-      <Project>{44EA054C-0C39-4AAC-9E40-253E919C1E2F}</Project>
+      <Project>{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}</Project>
       <Name>eduOpenVPN</Name>
       <Private>False</Private>
     </ProjectReference>
