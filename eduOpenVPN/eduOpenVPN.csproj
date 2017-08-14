@@ -25,6 +25,7 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="InteractiveService\Session.cs" />
     <Compile Include="InteractiveService\InteractiveServiceException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
