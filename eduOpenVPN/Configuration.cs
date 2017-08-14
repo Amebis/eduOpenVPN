@@ -9,7 +9,11 @@ namespace eduOpenVPN
 {
     public class Configuration
     {
-
+        /// <summary>
+        /// Escapes value string to be used as a parameter in OpenVPN configuration file (.ovpn)
+        /// </summary>
+        /// <param name="value">Parameter value</param>
+        /// <returns>Quoted and escaped <paramref name="value"/> when escaping required; <paramref name="value"/> otherwise</returns>
         public static string EscapeParamValue(string value)
         {
             return value.IndexOfAny(new char[] { '\\', ' ', '"' }) >= 0 ?
