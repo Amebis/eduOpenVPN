@@ -1,8 +1,8 @@
 ﻿/*
-eduOpenVPN - An OpenVPN Client for eduVPN (and beyond)
+    eduOpenVPN - An OpenVPN Client for eduVPN (and beyond)
 
-Copyright: 2017, The Commons Conservancy eduVPN Programme
-SPDX-License-Identifier: GPL-3.0+
+    Copyright: 2017, The Commons Conservancy eduVPN Programme
+    SPDX-License-Identifier: GPL-3.0+
 */
 
 using System;
@@ -73,6 +73,7 @@ namespace eduOpenVPN.InteractiveService
         {
             ErrorNumber = (uint)info.GetValue("ErrorNumber", typeof(uint));
             Function = (string)info.GetValue("Function", typeof(string));
+            Description = (string)info.GetValue("Description", typeof(string));
         }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -81,6 +82,7 @@ namespace eduOpenVPN.InteractiveService
             base.GetObjectData(info, context);
             info.AddValue("ErrorNumber", ErrorNumber);
             info.AddValue("Function", Function);
+            info.AddValue("Description", Description);
         }
 
         #endregion

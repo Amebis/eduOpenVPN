@@ -1,0 +1,27 @@
+﻿/*
+    eduOpenVPN - An OpenVPN Client for eduVPN (and beyond)
+
+    Copyright: 2017, The Commons Conservancy eduVPN Programme
+    SPDX-License-Identifier: GPL-3.0+
+*/
+
+using System;
+
+namespace eduOpenVPN.Management
+{
+    /// <summary>
+    /// OpenVPN Management console error
+    /// </summary>
+    [Serializable]
+    public class CommandException : ApplicationException
+    {
+        #region Constructors
+
+        public CommandException(string message) :
+            base(message)
+        {
+        }
+
+        #endregion
+    }
+}

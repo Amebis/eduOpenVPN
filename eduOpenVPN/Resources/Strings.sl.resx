@@ -119,10 +119,16 @@
   </resheader>
   <data name="ErrorInteractiveService" xml:space="preserve">
     <value>{1} (napaka {0})</value>
-    <comment>{0} = Error number
-{1} = The name of the function</comment>
+    <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
     <value>Povezovanje na servis OpenVPN Interactive Service ni uspelo. Preverite, ali je servis zagnan.</value>
+  </data>
+  <data name="ErrorManagementManagementResponse" xml:space="preserve">
+    <value>{0} Odziv: {1}</value>
+    <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
+  </data>
+  <data name="ErrorUnexpectedReply" xml:space="preserve">
+    <value>Nepričakovan odgovor OpenVPN Management.</value>
   </data>
 </root>

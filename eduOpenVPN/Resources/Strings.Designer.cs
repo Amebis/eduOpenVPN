@@ -77,5 +77,23 @@ namespace eduOpenVPN.Resources {
                 return ResourceManager.GetString("ErrorInteractiveServiceConnect", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Response: {1}.
+        /// </summary>
+        internal static string ErrorManagementManagementResponse {
+            get {
+                return ResourceManager.GetString("ErrorManagementManagementResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The OpenVPN Management reply was not expected..
+        /// </summary>
+        internal static string ErrorUnexpectedReply {
+            get {
+                return ResourceManager.GetString("ErrorUnexpectedReply", resourceCulture);
+            }
+        }
     }
 }

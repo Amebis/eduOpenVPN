@@ -119,10 +119,16 @@
   </resheader>
   <data name="ErrorInteractiveService" xml:space="preserve">
     <value>{1} (Error {0})</value>
-    <comment>{0} = Error number
-{1} = The name of the function</comment>
+    <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
     <value>Connecting to OpenVPN Interactive Service failed. Please, make sure the service is started.</value>
+  </data>
+  <data name="ErrorManagementManagementResponse" xml:space="preserve">
+    <value>{0} Response: {1}</value>
+    <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
+  </data>
+  <data name="ErrorUnexpectedReply" xml:space="preserve">
+    <value>The OpenVPN Management reply was not expected.</value>
   </data>
 </root>
