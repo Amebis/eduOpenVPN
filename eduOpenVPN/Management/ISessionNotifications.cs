@@ -48,6 +48,12 @@ namespace eduOpenVPN.Management
         void OnHold(string message, int wait_hint);
 
         /// <summary>
+        /// Called when OpenVPN reports informative message
+        /// </summary>
+        /// <param name="message">Descriptive string</param>
+        void OnInfo(string message);
+
+        /// <summary>
         /// Called when a log entry is received
         /// </summary>
         /// <param name="timestamp">Timestamp of the log entry</param>

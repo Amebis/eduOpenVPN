@@ -337,7 +337,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "INFO":
-                                        // TODO: Implement.
+                                        event_sink.OnInfo(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
                                         break;
 
                                     case "LOG":
