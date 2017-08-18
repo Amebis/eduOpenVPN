@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -349,7 +350,17 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "NEED-CERTIFICATE":
-                                        // TODO: Implement.
+                                        {
+                                            // Get certificate.
+                                            var certificate = event_sink.OnNeedCertificate(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+
+                                            // Reply with certificate command.
+                                            var sb = new StringBuilder();
+                                            sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
+                                            sb.Append(Convert.ToBase64String(certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                            sb.Append("\n-----END CERTIFICATE-----\nEND");
+                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                        }
                                         break;
 
                                     case "NEED-STR":
@@ -389,7 +400,17 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "RSA_SIGN":
-                                        // TODO: Implement.
+                                        {
+                                            // Get signature.
+                                            var signature = event_sink.OnRSASign(Convert.FromBase64String(Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start))));
+
+                                            // Send reply message.
+                                            var sb = new StringBuilder();
+                                            sb.Append("rsa-sig\n");
+                                            sb.Append(Convert.ToBase64String(signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                            sb.Append("\nEND");
+                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                        }
                                         break;
 
                                     case "STATE":

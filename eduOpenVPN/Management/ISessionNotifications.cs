@@ -7,6 +7,7 @@
 
 using System;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace eduOpenVPN.Management
 {
@@ -62,6 +63,13 @@ namespace eduOpenVPN.Management
         void OnLog(DateTimeOffset timestamp, LogMessageFlags flags, string message);
 
         /// <summary>
+        /// Called when openvpn.exe requires a certificate
+        /// </summary>
+        /// <param name="hint">A hint about which certificate is required</param>
+        /// <returns>Certificate</returns>
+        X509Certificate2 OnNeedCertificate(string hint);
+
+        /// <summary>
         /// Called when password is needed
         /// </summary>
         /// <param name="realm">Realm title</param>
@@ -81,6 +89,13 @@ namespace eduOpenVPN.Management
         /// </summary>
         /// <param name="realm">Realm title</param>
         void OnAuthenticationFailed(string realm);
+
+        /// <summary>
+        /// Called when RSA data signing is required
+        /// </summary>
+        /// <param name="data">Data to be signed</param>
+        /// <returns>PKCS#1 v1.5 signature of <paramref name="data"/></returns>
+        byte[] OnRSASign(byte[] data);
 
         /// <summary>
         /// Called when OpenVPN's initial state is reported
