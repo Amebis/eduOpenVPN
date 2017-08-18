@@ -96,6 +96,7 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Disconnects from OpenVPN Interactive Service
         /// </summary>
+        /// <remarks>Instead of calling this method, ensure that the connection is properly disposed.</remarks>
         public void Disconnect()
         {
             if (_stream != null)
@@ -125,7 +126,12 @@ namespace eduOpenVPN.InteractiveService
             if (!disposedValue)
             {
                 if (disposing)
-                    _stream.Dispose();
+                {
+                    if (_stream != null) {
+                        _stream.Dispose();
+                        _stream = null;
+                    }
+                }
 
                 disposedValue = true;
             }
