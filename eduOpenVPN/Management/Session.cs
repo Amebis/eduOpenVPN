@@ -157,7 +157,7 @@ namespace eduOpenVPN.Management
                         fields.Length >= 4 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
                         fields.Length >= 9 && IPAddress.TryParse(fields[8].Trim(), out var ipv6_address) ? ipv6_address : null,
                         fields.Length >= 6 && IPAddress.TryParse(fields[4].Trim(), out var remote_address) && int.TryParse(fields[5].Trim(), out var remote_port) ? new IPEndPoint(remote_address, remote_port) : null,
-                        fields.Length >= 6 && IPAddress.TryParse(fields[4].Trim(), out var local_address) && int.TryParse(fields[5].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null);
+                        fields.Length >= 8 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null);
                 }
             }
         }
