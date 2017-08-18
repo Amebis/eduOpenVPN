@@ -5,6 +5,7 @@
     SPDX-License-Identifier: GPL-3.0+
 */
 
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
+        [DebuggerStepThrough]
         public static void Write(this Stream stream, byte[] buffer)
         {
             stream.Write(buffer, 0, buffer.Length);
@@ -27,6 +29,7 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
+        [DebuggerStepThrough]
         public static async void WriteAsync(this Stream stream, byte[] buffer)
         {
             await stream.WriteAsync(buffer, 0, buffer.Length);
@@ -38,6 +41,7 @@ namespace System.IO
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <c>None</c>.</param>
+        [DebuggerStepThrough]
         public static async void WriteAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken)
         {
             await stream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
@@ -48,6 +52,7 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
+        [DebuggerStepThrough]
         public static int Read(this Stream stream, byte[] buffer)
         {
             return stream.Read(buffer, 0, buffer.Length);
@@ -58,6 +63,7 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
+        [DebuggerStepThrough]
         public static async Task<int> ReadAsync(this Stream stream, byte[] buffer)
         {
             return await stream.ReadAsync(buffer, 0, buffer.Length);
@@ -69,6 +75,7 @@ namespace System.IO
         /// <param name="stream">Stream</param>
         /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <c>None</c>.</param>
+        [DebuggerStepThrough]
         public static async Task<int> ReadAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken)
         {
             return await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
@@ -79,6 +86,7 @@ namespace System.IO
         /// </summary>
         /// <param name="writer">StreamWriter</param>
         /// <param name="buffer">An array of type <c>char</c> that contains the data to write to the <c>StreamWriter</c></param>
+        [DebuggerStepThrough]
         public static void Write(this StreamWriter writer, char[] buffer)
         {
             writer.Write(buffer, 0, buffer.Length);
@@ -89,6 +97,7 @@ namespace System.IO
         /// </summary>
         /// <param name="writer">StreamWriter</param>
         /// <param name="buffer">An array of type <c>char</c> that contains the data to write to the <c>StreamWriter</c></param>
+        [DebuggerStepThrough]
         public static async void WriteAsync(this StreamWriter writer, char[] buffer)
         {
             await writer.WriteAsync(buffer, 0, buffer.Length);
@@ -99,6 +108,7 @@ namespace System.IO
         /// </summary>
         /// <param name="reader">StreamReader</param>
         /// <param name="buffer">An array of type <c>char</c> that contains the data to read from the <c>StreamReader</c></param>
+        [DebuggerStepThrough]
         public static int Read(this StreamReader reader, char[] buffer)
         {
             return reader.Read(buffer, 0, buffer.Length);
@@ -109,6 +119,7 @@ namespace System.IO
         /// </summary>
         /// <param name="reader">StreamReader</param>
         /// <param name="buffer">An array of type <c>char</c> that contains the data to read from the <c>StreamReader</c></param>
+        [DebuggerStepThrough]
         public static async Task<int> ReadAsync(this StreamReader reader, char[] buffer)
         {
             return await reader.ReadAsync(buffer, 0, buffer.Length);

@@ -6,6 +6,7 @@
 */
 
 using eduOpenVPN;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -20,6 +21,7 @@ namespace System
         /// <param name="data">The Array</param>
         /// <param name="index">Starting index</param>
         /// <returns>Sub-array</returns>
+        [DebuggerStepThrough]
         public static T[] SubArray<T>(this T[] data, long index)
         {
             T[] result = new T[data.LongLength - index];
@@ -35,6 +37,7 @@ namespace System
         /// <param name="index">Starting index</param>
         /// <param name="length">Number of elements to copy</param>
         /// <returns>Sub-array</returns>
+        [DebuggerStepThrough]
         public static T[] SubArray<T>(this T[] data, long index, long length)
         {
             T[] result = new T[length];
@@ -47,6 +50,7 @@ namespace System
         /// </summary>
         /// <param name="value">Enum</param>
         /// <returns>String with attribute value or stringized <paramref name="value"/></returns>
+        [DebuggerStepThrough]
         public static string GetParameterValue(this Enum value)
         {
             if (value == null)
