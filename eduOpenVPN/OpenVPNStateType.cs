@@ -70,5 +70,10 @@ namespace eduOpenVPN
         /// </summary>
         [ParameterValue("EXITING")]
         Exiting,
+
+        /// <summary>
+        /// OpenVPN reported fatal error
+        /// </summary>
+        FatalError,
     }
 }

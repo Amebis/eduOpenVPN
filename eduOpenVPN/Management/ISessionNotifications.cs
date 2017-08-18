@@ -35,6 +35,12 @@ namespace eduOpenVPN.Management
         void OnEcho(DateTimeOffset timestamp, string command);
 
         /// <summary>
+        /// Called when OpenVPN reports fatal error
+        /// </summary>
+        /// <param name="message">Descriptive string</param>
+        void OnFatal(string message);
+
+        /// <summary>
         /// Called when OpenVPN is in a hold state
         /// </summary>
         /// <param name="message">Descriptive string</param>

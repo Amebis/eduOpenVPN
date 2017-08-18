@@ -329,7 +329,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "FATAL":
-                                        // TODO: Implement.
+                                        event_sink.OnFatal(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
                                         break;
 
                                     case "HOLD":
