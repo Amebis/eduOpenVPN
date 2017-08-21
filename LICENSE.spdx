@@ -6,7 +6,7 @@ PackageSupplier: Organization: The Commons Conservancy eduVPN Programme
 PackageHomePage: https://github.com/Amebis/eduOpenVPN
 PackageLicenseDeclared: GPL-3.0+
 PackageCopyrightText: 2017, The Commons Conservancy eduVPN Programme
-PackageSummary: <text>An OpenVPN Client for eduVPN (and beyond)</text>
+PackageSummary: <text>OpenVPN Management Library for eduVPN (and beyond)</text>
 PackageComment: <text>The package includes the following libraries; see
     Relationship information.</text>
 Created: 2017-06-06T09:00:00Z
