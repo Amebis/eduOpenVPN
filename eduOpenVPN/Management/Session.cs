@@ -246,264 +246,275 @@ namespace eduOpenVPN.Management
                     var buffer = new byte[1048576];
                     var queue = new byte[0];
 
-                    while (!ct.IsCancellationRequested)
+                    try
                     {
+                        while (!ct.IsCancellationRequested)
                         {
-                            // Read available data.
-                            var read_task = _stream.ReadAsync(buffer, 0, buffer.Length, ct);
-                            try { read_task.Wait(ct); }
-                            catch (OperationCanceledException) { return; }
-                            catch (AggregateException ex) { throw ex.InnerException; }
-
-                            // Append it to the queue.
-                            var queue_new = new byte[queue.LongLength + read_task.Result];
-                            Array.Copy(queue, queue_new, queue.LongLength);
-                            Array.Copy(buffer, 0, queue_new, queue.LongLength, read_task.Result);
-                            queue = queue_new;
-                        }
-
-                        long offset = 0;
-                        while (offset < queue.LongLength)
-                        {
-                            if (ct.IsCancellationRequested) return;
-
-                            Command cmd;
-                            lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
-
-                            if (queue[offset] == '>')
                             {
-                                // Real-time notification message.
+                                // Read available data.
+                                var read_task = _stream.ReadAsync(buffer, 0, buffer.Length, ct);
+                                try { read_task.Wait(ct); }
+                                catch (AggregateException ex) { throw ex.InnerException; }
 
-                                // Find LF (or CR-LF).
-                                long id_start = offset + 1, id_end = -1, data_start = -1, msg_end = -1, msg_next = -1;
-                                for (long i = id_start; i < queue.LongLength; i++)
-                                {
-                                    long next_char;
-                                    if (id_end < 0 && queue[i] == ':') { data_start = (id_end = i) + 1; }
-                                    else if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
-                                    else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
-                                }
-                                if (msg_end < 0)
-                                {
-                                    // Message is incomplete. We need more data.
+                                if (read_task.Result == 0)
                                     break;
-                                }
-                                if (id_end < 0)
+
+                                // Append it to the queue.
+                                var queue_new = new byte[queue.LongLength + read_task.Result];
+                                Array.Copy(queue, queue_new, queue.LongLength);
+                                Array.Copy(buffer, 0, queue_new, queue.LongLength, read_task.Result);
+                                queue = queue_new;
+                            }
+
+                            long offset = 0;
+                            while (offset < queue.LongLength && !ct.IsCancellationRequested)
+                            {
+                                Command cmd;
+                                lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
+
+                                if (queue[offset] == '>')
                                 {
-                                    // Semicolon separator missing?!
-                                    data_start = id_end = msg_end;
-                                }
+                                    // Real-time notification message.
 
-                                // Parse message.
-                                switch (Encoding.ASCII.GetString(queue.SubArray(id_start, id_end - id_start)).Trim())
-                                {
-                                    case "BYTECOUNT":
-                                        {
-                                            var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 2 + 1);
-                                            event_sink.OnByteCount(
-                                                fields.Length >= 1 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0);
-                                        }
+                                    // Find LF (or CR-LF).
+                                    long id_start = offset + 1, id_end = -1, data_start = -1, msg_end = -1, msg_next = -1;
+                                    for (long i = id_start; i < queue.LongLength; i++)
+                                    {
+                                        long next_char;
+                                        if (id_end < 0 && queue[i] == ':') { data_start = (id_end = i) + 1; }
+                                        else if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
+                                        else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
+                                    }
+                                    if (msg_end < 0)
+                                    {
+                                        // Message is incomplete. We need more data.
                                         break;
+                                    }
+                                    if (id_end < 0)
+                                    {
+                                        // Semicolon separator missing?!
+                                        data_start = id_end = msg_end;
+                                    }
 
-                                    case "BYTECOUNT_CLI":
-                                        {
-                                            var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 3 + 1);
-                                            event_sink.OnByteCountClient(
-                                                fields.Length >= 1 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
-                                                fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length >= 3 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0);
-                                        }
-                                        break;
-
-                                    case "CLIENT":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "CRV1":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "ECHO":
-                                        new EchoCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
-                                        break;
-
-                                    case "FATAL":
-                                        event_sink.OnFatal(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
-                                        break;
-
-                                    case "HOLD":
-                                        new HoldCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
-                                        break;
-
-                                    case "INFO":
-                                        event_sink.OnInfo(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
-                                        break;
-
-                                    case "LOG":
-                                        new LogCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
-                                        break;
-
-                                    case "NEED-OK":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "NEED-CERTIFICATE":
-                                        {
-                                            // Get certificate.
-                                            var certificate = event_sink.OnNeedCertificate(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
-
-                                            // Reply with certificate command.
-                                            var sb = new StringBuilder();
-                                            sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
-                                            sb.Append(Convert.ToBase64String(certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
-                                            sb.Append("\n-----END CERTIFICATE-----\nEND");
-                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
-
-                                    case "NEED-STR":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "PASSWORD":
-                                        {
-                                            var data = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start));
-                                            if (data.StartsWith("Need "))
+                                    // Parse message.
+                                    switch (Encoding.ASCII.GetString(queue.SubArray(id_start, id_end - id_start)).Trim())
+                                    {
+                                        case "BYTECOUNT":
                                             {
-                                                if (data.EndsWith(" password"))
-                                                {
-                                                    var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
-                                                    event_sink.OnNeedAuthentication(realm, out var pwd);
-
-                                                }
-                                                else if (data.EndsWith(" username/password"))
-                                                {
-                                                    var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
-                                                    event_sink.OnNeedAuthentication(realm, out var user, out var pwd);
-                                                }
-
-                                                // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
+                                                var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 2 + 1);
+                                                event_sink.OnByteCount(
+                                                    fields.Length >= 1 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
+                                                    fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0);
                                             }
-                                            else if (data.StartsWith("Verification Failed: "))
-                                                event_sink.OnAuthenticationFailed(data.Substring(21).Trim(new char[] { '\'' }));
-                                        }
-                                        break;
+                                            break;
 
-                                    case "PROXY":
-                                        // TODO: Implement.
-                                        break;
+                                        case "BYTECOUNT_CLI":
+                                            {
+                                                var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 3 + 1);
+                                                event_sink.OnByteCountClient(
+                                                    fields.Length >= 1 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
+                                                    fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
+                                                    fields.Length >= 3 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0);
+                                            }
+                                            break;
 
-                                    case "REMOTE":
-                                        // TODO: Implement.
-                                        break;
+                                        case "CLIENT":
+                                            // TODO: Implement.
+                                            break;
 
-                                    case "RSA_SIGN":
-                                        {
-                                            // Get signature.
-                                            var signature = event_sink.OnRSASign(Convert.FromBase64String(Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start))));
+                                        case "CRV1":
+                                            // TODO: Implement.
+                                            break;
 
-                                            // Send reply message.
-                                            var sb = new StringBuilder();
-                                            sb.Append("rsa-sig\n");
-                                            sb.Append(Convert.ToBase64String(signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
-                                            sb.Append("\nEND");
-                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
+                                        case "ECHO":
+                                            new EchoCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            break;
 
-                                    case "STATE":
-                                        new StateCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
-                                        break;
+                                        case "FATAL":
+                                            event_sink.OnFatal(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                            break;
+
+                                        case "HOLD":
+                                            new HoldCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            break;
+
+                                        case "INFO":
+                                            event_sink.OnInfo(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                            break;
+
+                                        case "LOG":
+                                            new LogCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            break;
+
+                                        case "NEED-OK":
+                                            // TODO: Implement.
+                                            break;
+
+                                        case "NEED-CERTIFICATE":
+                                            {
+                                                // Get certificate.
+                                                var certificate = event_sink.OnNeedCertificate(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+
+                                                // Reply with certificate command.
+                                                var sb = new StringBuilder();
+                                                sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
+                                                sb.Append(Convert.ToBase64String(certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                                sb.Append("\n-----END CERTIFICATE-----\nEND");
+                                                SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                            }
+                                            break;
+
+                                        case "NEED-STR":
+                                            // TODO: Implement.
+                                            break;
+
+                                        case "PASSWORD":
+                                            {
+                                                var data = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start));
+                                                if (data.StartsWith("Need "))
+                                                {
+                                                    if (data.EndsWith(" password"))
+                                                    {
+                                                        var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
+                                                        event_sink.OnNeedAuthentication(realm, out var pwd);
+
+                                                    }
+                                                    else if (data.EndsWith(" username/password"))
+                                                    {
+                                                        var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
+                                                        event_sink.OnNeedAuthentication(realm, out var user, out var pwd);
+                                                    }
+
+                                                    // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
+                                                }
+                                                else if (data.StartsWith("Verification Failed: "))
+                                                    event_sink.OnAuthenticationFailed(data.Substring(21).Trim(new char[] { '\'' }));
+                                            }
+                                            break;
+
+                                        case "PROXY":
+                                            // TODO: Implement.
+                                            break;
+
+                                        case "REMOTE":
+                                            // TODO: Implement.
+                                            break;
+
+                                        case "RSA_SIGN":
+                                            {
+                                                // Get signature.
+                                                var signature = event_sink.OnRSASign(Convert.FromBase64String(Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start))));
+
+                                                // Send reply message.
+                                                var sb = new StringBuilder();
+                                                sb.Append("rsa-sig\n");
+                                                sb.Append(Convert.ToBase64String(signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                                sb.Append("\nEND");
+                                                SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                            }
+                                            break;
+
+                                        case "STATE":
+                                            new StateCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            break;
+                                    }
+
+                                    offset = msg_next;
                                 }
+                                else if (cmd is MultilineCommand cmd_multiline)
+                                {
+                                    // Find LF (or CR-LF).
+                                    long msg_end = -1, msg_next = -1;
+                                    for (long i = offset; i < queue.LongLength; i++)
+                                    {
+                                        long next_char;
+                                        if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
+                                        else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
+                                    }
+                                    if (msg_end < 0)
+                                    {
+                                        // Message is incomplete. We need more data.
+                                        break;
+                                    }
 
-                                offset = msg_next;
+                                    if (msg_end - offset == 3 && Encoding.ASCII.GetString(queue.SubArray(offset, 3)) == "END")
+                                    {
+                                        // Multi-line response end.
+                                        lock (_commands) _commands.Dequeue();
+                                        cmd_multiline.Finished.Set();
+                                    }
+                                    else
+                                    {
+                                        // One line of multi-line response.
+                                        cmd_multiline.ProcessData(queue.SubArray(offset, msg_end - offset), event_sink);
+                                    }
+
+                                    offset = msg_next;
+                                }
+                                else if (cmd is SingleCommand cmd_single)
+                                {
+                                    // Find LF (or CR-LF).
+                                    long id_end = -1, data_start = -1, msg_end = -1, msg_next = -1;
+                                    for (long i = offset; i < queue.LongLength; i++)
+                                    {
+                                        long next_char;
+                                        if (id_end < 0 && queue[i] == ':') { data_start = (id_end = i) + 1; }
+                                        else if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
+                                        else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
+                                    }
+                                    if (msg_end < 0)
+                                    {
+                                        // Message is incomplete. We need more data.
+                                        break;
+                                    }
+
+                                    if (id_end >= 0 && id_end - offset == 7 && Encoding.ASCII.GetString(queue.SubArray(offset, 7)) == "SUCCESS")
+                                    {
+                                        // Success response.
+                                        lock (_commands) _commands.Dequeue();
+                                        cmd_single.Success = true;
+                                        cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
+                                        cmd_single.Finished.Set();
+
+                                        // TODO: Send "password" command.
+                                    }
+                                    else if (id_end >= 0 && id_end - offset == 5 && Encoding.ASCII.GetString(queue.SubArray(offset, 5)) == "ERROR")
+                                    {
+                                        // Error response.
+                                        lock (_commands) _commands.Dequeue();
+                                        cmd_single.Success = false;
+                                        cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
+                                        cmd_single.Finished.Set();
+
+                                        // TODO: Send "username" and "password" commands.
+                                    }
+
+                                    offset = msg_next;
+                                }
+                                else if (offset + 15 <= queue.LongLength && Encoding.ASCII.GetString(queue.SubArray(offset, 15)) == "ENTER PASSWORD:")
+                                {
+                                    // Set authentication requested flag.
+                                    auth_req.Set();
+
+                                    // Consume all queued data past the password prompt.
+                                    offset = queue.LongLength;
+                                }
                             }
-                            else if (cmd is MultilineCommand cmd_multiline)
+
+                            if (offset > 0)
                             {
-                                // Find LF (or CR-LF).
-                                long msg_end = -1, msg_next = -1;
-                                for (long i = offset; i < queue.LongLength; i++)
-                                {
-                                    long next_char;
-                                    if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
-                                    else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
-                                }
-                                if (msg_end < 0)
-                                {
-                                    // Message is incomplete. We need more data.
-                                    break;
-                                }
-
-                                if (msg_end - offset == 3 && Encoding.ASCII.GetString(queue.SubArray(offset, 3)) == "END")
-                                {
-                                    // Multi-line response end.
-                                    lock (_commands) _commands.Dequeue();
-                                    cmd_multiline.Finished.Set();
-                                }
-                                else
-                                {
-                                    // One line of multi-line response.
-                                    cmd_multiline.ProcessData(queue.SubArray(offset, msg_end - offset), event_sink);
-                                }
-
-                                offset = msg_next;
-                            }
-                            else if (cmd is SingleCommand cmd_single)
-                            {
-                                // Find LF (or CR-LF).
-                                long id_end = -1, data_start = -1, msg_end = -1, msg_next = -1;
-                                for (long i = offset; i < queue.LongLength; i++)
-                                {
-                                    long next_char;
-                                    if (id_end < 0 && queue[i] == ':') { data_start = (id_end = i) + 1; }
-                                    else if (queue[i] == '\n') { msg_next = (msg_end = i) + 1; break; }
-                                    else if (queue[i] == '\r' && (next_char = i + 1) < queue.LongLength && queue[next_char] == '\n') { msg_next = (msg_end = i) + 2; break; }
-                                }
-                                if (msg_end < 0)
-                                {
-                                    // Message is incomplete. We need more data.
-                                    break;
-                                }
-
-                                if (id_end >= 0 && id_end - offset == 7 && Encoding.ASCII.GetString(queue.SubArray(offset, 7)) == "SUCCESS")
-                                {
-                                    // Success response.
-                                    lock (_commands) _commands.Dequeue();
-                                    cmd_single.Success = true;
-                                    cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
-                                    cmd_single.Finished.Set();
-
-                                    // TODO: Send "password" command.
-                                }
-                                else if (id_end >= 0 && id_end - offset == 5 && Encoding.ASCII.GetString(queue.SubArray(offset, 5)) == "ERROR")
-                                {
-                                    // Error response.
-                                    lock (_commands) _commands.Dequeue();
-                                    cmd_single.Success = false;
-                                    cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
-                                    cmd_single.Finished.Set();
-
-                                    // TODO: Send "username" and "password" commands.
-                                }
-
-                                offset = msg_next;
-                            }
-                            else if (offset + 15 <= queue.LongLength && Encoding.ASCII.GetString(queue.SubArray(offset, 15)) == "ENTER PASSWORD:")
-                            {
-                                // Set authentication requested flag.
-                                auth_req.Set();
-
-                                // Consume all queued data past the password prompt.
-                                offset = queue.LongLength;
+                                // Remove processed data from the queue.
+                                queue = queue.SubArray(offset);
                             }
                         }
-
-                        if (offset > 0)
-                        {
-                            // Remove processed data from the queue.
-                            queue = queue.SubArray(offset);
-                        }
+                    }
+                    catch (Exception) { }
+                    finally
+                    {
+                        // Dispose pending command finish events.
+                        lock (_commands)
+                            foreach (var c in _commands)
+                                c.Finished.Dispose();
                     }
                 }));
             _monitor.Start();
