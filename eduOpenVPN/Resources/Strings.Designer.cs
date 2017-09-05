@@ -88,6 +88,15 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The OpenVPN Management session remote peer disconnected..
+        /// </summary>
+        internal static string ErrorPeerDisconnected {
+            get {
+                return ResourceManager.GetString("ErrorPeerDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The OpenVPN Management reply was not expected..
         /// </summary>
         internal static string ErrorUnexpectedReply {

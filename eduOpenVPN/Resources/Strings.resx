@@ -128,6 +128,9 @@
     <value>{0} Response: {1}</value>
     <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
   </data>
+  <data name="ErrorPeerDisconnected" xml:space="preserve">
+    <value>The OpenVPN Management session remote peer disconnected.</value>
+  </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>The OpenVPN Management reply was not expected.</value>
   </data>

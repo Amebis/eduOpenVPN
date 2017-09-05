@@ -35,6 +35,7 @@
     <Compile Include="Management\CommandException.cs" />
     <Compile Include="Management\ISessionNotifications.cs" />
     <Compile Include="Management\LogMessageFlags.cs" />
+    <Compile Include="Management\PeerDisconnectedException.cs" />
     <Compile Include="OpenVPNStateType.cs" />
     <Compile Include="Management\ProtocolException.cs" />
     <Compile Include="Management\Session.cs" />

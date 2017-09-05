@@ -216,6 +216,12 @@ namespace eduOpenVPN.Management
         public Thread Monitor { get => _monitor; }
         private Thread _monitor;
 
+        /// <summary>
+        /// Session monitor error
+        /// </summary>
+        public Exception Error { get => _error; }
+        private Exception _error;
+
         #endregion
 
         #region Methods
@@ -248,8 +254,10 @@ namespace eduOpenVPN.Management
 
                     try
                     {
-                        while (!ct.IsCancellationRequested)
+                        for (;;)
                         {
+                            ct.ThrowIfCancellationRequested();
+
                             {
                                 // Read available data.
                                 var read_task = _stream.ReadAsync(buffer, 0, buffer.Length, ct);
@@ -257,7 +265,7 @@ namespace eduOpenVPN.Management
                                 catch (AggregateException ex) { throw ex.InnerException; }
 
                                 if (read_task.Result == 0)
-                                    break;
+                                    throw new PeerDisconnectedException();
 
                                 // Append it to the queue.
                                 var queue_new = new byte[queue.LongLength + read_task.Result];
@@ -267,8 +275,10 @@ namespace eduOpenVPN.Management
                             }
 
                             long offset = 0;
-                            while (offset < queue.LongLength && !ct.IsCancellationRequested)
+                            while (offset < queue.LongLength)
                             {
+                                ct.ThrowIfCancellationRequested();
+
                                 Command cmd;
                                 lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
 
@@ -508,7 +518,7 @@ namespace eduOpenVPN.Management
                             }
                         }
                     }
-                    catch (Exception) { }
+                    catch (Exception ex) { _error = ex; }
                     finally
                     {
                         // Dispose pending command finish events.
@@ -522,6 +532,9 @@ namespace eduOpenVPN.Management
             // Wait until openvpn.exe sends authentication request.
             if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, auth_req }) == 0)
                 throw new OperationCanceledException();
+
+            if (_error != null)
+                throw _error;
 
             // Send the password.
             ExecuteCommand(password, new SingleCommand(), ct);
