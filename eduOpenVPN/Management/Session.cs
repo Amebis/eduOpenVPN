@@ -148,7 +148,7 @@ namespace eduOpenVPN.Management
                 {
                     OpenVPNStateType state;
                     try { state = ParameterValueAttribute.GetEnumByParameterValueAttribute<OpenVPNStateType>(fields[1].Trim()); }
-                    catch (Exception) { state = OpenVPNStateType.Unknown; }
+                    catch { state = OpenVPNStateType.Unknown; }
 
                     event_sink.OnState(
                         int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
