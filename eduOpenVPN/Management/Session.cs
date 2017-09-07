@@ -40,7 +40,10 @@ namespace eduOpenVPN.Management
                 if (!disposedValue)
                 {
                     if (disposing)
-                        Finished.Dispose();
+                    {
+                        if (Finished != null)
+                            Finished.Dispose();
+                    }
 
                     disposedValue = true;
                 }
@@ -930,7 +933,10 @@ namespace eduOpenVPN.Management
             if (!disposedValue)
             {
                 if (disposing)
-                    Stream.Dispose();
+                {
+                    if (_stream != null)
+                        _stream.Dispose();
+                }
 
                 disposedValue = true;
             }

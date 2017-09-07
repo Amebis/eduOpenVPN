@@ -127,10 +127,8 @@ namespace eduOpenVPN.InteractiveService
             {
                 if (disposing)
                 {
-                    if (_stream != null) {
+                    if (_stream != null)
                         _stream.Dispose();
-                        _stream = null;
-                    }
                 }
 
                 disposedValue = true;
