@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    eduOpenVPN - OpenVPN Management Library for eduVPN (and beyond)
+
+    Copyright: 2017, The Commons Conservancy eduVPN Programme
+    SPDX-License-Identifier: GPL-3.0+
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <!--
+            Components
+        -->
+        <DirectoryRef Id="INSTALLDIR">
+            <Component Id="eduOpenVPN.dll" Guid="{809A5107-82D9-4271-BE32-37427C14BCA7}">
+                <File Source="eduOpenVPN.dll"/>
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="RESOURCEDIRSL">
+            <Component Id="eduOpenVPN.resources.dll.sl" Guid="{DC81E7C2-B26E-4C25-9526-062C94D8494E}">
+                <File Id="eduOpenVPN.resources.dll.sl" Source="sl\eduOpenVPN.resources.dll"/>
+            </Component>
+        </DirectoryRef>
+
+
+        <!--
+            Component groups
+        -->
+        <ComponentGroup Id="eduOpenVPN.dll">
+            <ComponentRef Id="eduOpenVPN.dll"/>
+            <ComponentRef Id="eduOpenVPN.resources.dll.sl"/>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
