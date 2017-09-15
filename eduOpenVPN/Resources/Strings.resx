@@ -128,6 +128,10 @@
     <value>{0} Response: {1}</value>
     <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
   </data>
+  <data name="ErrorParameterValueNotFound" xml:space="preserve">
+    <value>{0} parameter value not found in {1} enum.</value>
+    <comment>{0}=Parameter value name, {1}=Enum data type</comment>
+  </data>
   <data name="ErrorPeerDisconnected" xml:space="preserve">
     <value>The OpenVPN Management session remote peer disconnected.</value>
   </data>

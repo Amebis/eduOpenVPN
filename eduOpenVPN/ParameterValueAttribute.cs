@@ -41,17 +41,43 @@ namespace eduOpenVPN
 
         #region Methods
 
-        public static T GetEnumByParameterValueAttribute<T>(string value)
+        /// <summary>
+        /// Looks-up enum by <c>ParameterValueAttribute</c> value
+        /// </summary>
+        /// <typeparam name="T">Enum type</typeparam>
+        /// <param name="value"><c>ParameterValueAttribute</c> value</param>
+        /// <param name="result">Resulting enum</param>
+        /// <returns><c>true</c> if enum found; <c>false</c> otherwise</returns>
+        public static bool TryGetEnumByParameterValueAttribute<T>(string value, out T result)
         {
             Type enumType = typeof(T);
             foreach (T val in Enum.GetValues(enumType))
             {
                 FieldInfo fi = enumType.GetField(val.ToString());
                 if (fi.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() is ParameterValueAttribute attr && attr.Value == value)
-                    return val;
+                {
+                    result = val;
+                    return true;
+                }
             }
 
-            throw new ArgumentException();
+            result = default(T);
+            return false;
+        }
+
+        /// <summary>
+        /// Looks-up enum by <c>ParameterValueAttribute</c> value
+        /// </summary>
+        /// <typeparam name="T">Enum type</typeparam>
+        /// <param name="value"><c>ParameterValueAttribute</c> value</param>
+        /// <returns>Resulting enum</returns>
+        /// <exception cref="ArgumentException">No enum with <paramref name="value"/> as <c>ParameterValueAttribute</c> found</exception>
+        public static T GetEnumByParameterValueAttribute<T>(string value)
+        {
+            if (TryGetEnumByParameterValueAttribute<T>(value, out var result))
+                return result;
+
+            throw new ArgumentException(String.Format(Resources.Strings.ErrorParameterValueNotFound, value, typeof(T).ToString()), "value");
         }
 
         #endregion

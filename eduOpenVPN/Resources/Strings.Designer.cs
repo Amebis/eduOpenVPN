@@ -88,6 +88,15 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} parameter value not found in {1} enum..
+        /// </summary>
+        internal static string ErrorParameterValueNotFound {
+            get {
+                return ResourceManager.GetString("ErrorParameterValueNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The OpenVPN Management session remote peer disconnected..
         /// </summary>
         internal static string ErrorPeerDisconnected {
