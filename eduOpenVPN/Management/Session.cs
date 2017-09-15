@@ -405,12 +405,27 @@ namespace eduOpenVPN.Management
                                             }
                                             break;
 
+                                        case "PKCS11ID-COUNT":
+                                            // TODO: Implement.
+                                            break;
+
                                         case "PROXY":
                                             // TODO: Implement.
                                             break;
 
                                         case "REMOTE":
-                                            // TODO: Implement.
+                                            {
+                                                // Get action.
+                                                var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 3 + 1);
+                                                var action = event_sink.OnRemote(
+                                                    fields.Length >= 1 ? fields[0].Trim() : null,
+                                                    fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
+                                                    fields.Length >= 3 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
+
+                                                // Send reply message.
+                                                SendCommand("remote " + action.ToString(), new SingleCommand(), ct);
+                                            }
+
                                             break;
 
                                         case "RSA_SIGN":

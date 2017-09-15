@@ -91,6 +91,15 @@ namespace eduOpenVPN.Management
         void OnAuthenticationFailed(string realm);
 
         /// <summary>
+        /// Called when remote endpoint is needed
+        /// </summary>
+        /// <param name="host">Hostname or IP address</param>
+        /// <param name="port">IP Port</param>
+        /// <param name="protocol">Protocol</param>
+        /// <returns></returns>
+        RemoteAction OnRemote(string host, int port, ProtoType protocol);
+
+        /// <summary>
         /// Called when RSA data signing is required
         /// </summary>
         /// <param name="data">Data to be signed</param>

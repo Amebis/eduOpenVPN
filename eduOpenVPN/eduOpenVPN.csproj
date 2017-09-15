@@ -25,6 +25,11 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\RemoteModAction.cs" />
+    <Compile Include="Management\RemoteAcceptAction.cs" />
+    <Compile Include="Management\RemoteAction.cs" />
+    <Compile Include="Management\RemoteSkipAction.cs" />
+    <Compile Include="ProtoType.cs" />
     <Compile Include="AuthRetryType.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="InteractiveService\Session.cs" />
