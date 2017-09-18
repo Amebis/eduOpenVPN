@@ -83,8 +83,8 @@ namespace eduOpenVPN.Management
             /// Process one line of data returned from command
             /// </summary>
             /// <param name="data">Message data</param>
-            /// <param name="event_sink">Event sink to notify of real-time messages</param>
-            public virtual void ProcessData(byte[] data, ISessionNotifications event_sink)
+            /// <param name="session">OpenVPN management session</param>
+            public virtual void ProcessData(byte[] data, Session session)
             {
                 throw new NotImplementedException();
             }
@@ -95,12 +95,12 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class EchoCommand : MultilineCommand
         {
-            public override void ProcessData(byte[] data, ISessionNotifications event_sink)
+            public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 1 + 1);
-                event_sink.OnEcho(
+                session.EchoReceived?.Invoke(session, new EchoReceivedEventArgs(
                     int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
-                    fields.Length >= 2 ? fields[1].Trim() : null);
+                    fields.Length >= 2 ? fields[1].Trim() : null));
             }
         }
 
@@ -109,12 +109,12 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class HoldCommand : MultilineCommand
         {
-            public override void ProcessData(byte[] data, ISessionNotifications event_sink)
+            public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ':' }, 2 + 1);
-                event_sink.OnHold(
+                session.HoldReported?.Invoke(session, new HoldReportedEventArgs(
                     fields.Length >= 1 ? fields[0].Trim() : null,
-                    fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0);
+                    fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0));
             }
         }
 
@@ -123,10 +123,10 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class LogCommand : MultilineCommand
         {
-            public override void ProcessData(byte[] data, ISessionNotifications event_sink)
+            public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 2 + 1);
-                event_sink.OnLog(
+                session.LogReported?.Invoke(session, new LogReportedEventArgs(
                     int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
                     fields.Length >= 2 ?
                         (fields[1].IndexOf('I') >= 0 ? LogMessageFlags.Informational : 0) |
@@ -135,7 +135,7 @@ namespace eduOpenVPN.Management
                         (fields[1].IndexOf('W') >= 0 ? LogMessageFlags.Warning : 0) |
                         (fields[1].IndexOf('D') >= 0 ? LogMessageFlags.Debug : 0)
                         : 0,
-                    fields.Length >= 3 ? fields[2].Trim() : null);
+                    fields.Length >= 3 ? fields[2].Trim() : null));
             }
         }
 
@@ -144,7 +144,7 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class StateCommand : MultilineCommand
         {
-            public override void ProcessData(byte[] data, ISessionNotifications event_sink)
+            public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 9 + 1);
                 if (fields.Length >= 2)
@@ -153,14 +153,14 @@ namespace eduOpenVPN.Management
                     try { state = ParameterValueAttribute.GetEnumByParameterValueAttribute<OpenVPNStateType>(fields[1].Trim()); }
                     catch { state = OpenVPNStateType.Unknown; }
 
-                    event_sink.OnState(
+                    session.StateReported?.Invoke(session, new StateReportedEventArgs(
                         int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
                         state,
                         fields.Length >= 3 ? fields[2].Trim() : null,
                         fields.Length >= 4 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
                         fields.Length >= 9 && IPAddress.TryParse(fields[8].Trim(), out var ipv6_address) ? ipv6_address : null,
                         fields.Length >= 6 && IPAddress.TryParse(fields[4].Trim(), out var remote_address) && int.TryParse(fields[5].Trim(), out var remote_port) ? new IPEndPoint(remote_address, remote_port) : null,
-                        fields.Length >= 8 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null);
+                        fields.Length >= 8 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null));
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace eduOpenVPN.Management
             public Dictionary<string, string> Version { get => _version; }
             private Dictionary<string, string> _version = new Dictionary<string, string>();
 
-            public override void ProcessData(byte[] data, ISessionNotifications event_sink)
+            public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ':' }, 1 + 1);
                 if (fields.Length >= 1)
@@ -225,6 +225,79 @@ namespace eduOpenVPN.Management
         public Exception Error { get => _error; }
         private Exception _error;
 
+        /// <summary>
+        /// Raised when BYTECOUNT real-time message is received
+        /// </summary>
+        public event EventHandler<ByteCountReportedEventArgs> ByteCountReported;
+
+        /// <summary>
+        /// Raised when BYTECOUNT_CLI real-time message is received
+        /// </summary>
+        public event EventHandler<ByteCountClientReportedEventArgs> ByteCountClientReported;
+
+        /// <summary>
+        /// Raised when an echo command is received
+        /// </summary>
+        /// <param name="timestamp">Timestamp of the echo command</param>
+        /// <param name="command">Echo command</param>
+        public event EventHandler<EchoReceivedEventArgs> EchoReceived;
+
+        /// <summary>
+        /// Raised when OpenVPN reports fatal error
+        /// </summary>
+        public event EventHandler<MessageReportedEventArgs> FatalErrorReported;
+
+        /// <summary>
+        /// Raised when OpenVPN is in a hold state
+        /// </summary>
+        public event EventHandler<HoldReportedEventArgs> HoldReported;
+
+        /// <summary>
+        /// Raised when OpenVPN reports informative message
+        /// </summary>
+        public event EventHandler<MessageReportedEventArgs> InfoReported;
+
+        /// <summary>
+        /// Raised when a log entry is received
+        /// </summary>
+        public event EventHandler<LogReportedEventArgs> LogReported;
+
+        /// <summary>
+        /// Raised when openvpn.exe requires a certificate
+        /// </summary>
+        public event EventHandler<CertificateRequestedEventArgs> CertificateRequested;
+
+        /// <summary>
+        /// Raised when password is needed
+        /// </summary>
+        public event EventHandler<PasswordAuthenticationRequestedEventArgs> PasswordAuthenticationRequested;
+
+        /// <summary>
+        /// Raised when username and password is needed
+        /// </summary>
+        public event EventHandler<UsernamePasswordAuthenticationRequestedEventArgs> UsernamePasswordAuthenticationRequested;
+
+        /// <summary>
+        /// Raised when authentication failed
+        /// </summary>
+        public event EventHandler<AuthenticationEventArgs> AuthenticationFailed;
+
+        /// <summary>
+        /// Raised when remote endpoint is needed
+        /// </summary>
+        public event EventHandler<RemoteReportedEventArgs> RemoteReported;
+
+        /// <summary>
+        /// Raised when RSA data signing is required
+        /// </summary>
+        public event EventHandler<RSASignRequestedEventArgs> RSASignRequested;
+
+        /// <summary>
+        /// Raised when OpenVPN's initial state is reported
+        /// </summary>
+        /// <remarks></remarks>
+        public event EventHandler<StateReportedEventArgs> StateReported;
+
         #endregion
 
         #region Methods
@@ -234,9 +307,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         /// <param name="stream"><c>NetworkStream</c> of already established connection</param>
         /// <param name="password">OpenVPN Management interface password</param>
-        /// <param name="event_sink">Event sink to notify of real-time messages</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        public void Start(NetworkStream stream, string password, ISessionNotifications event_sink, CancellationToken ct = default(CancellationToken))
+        public void Start(NetworkStream stream, string password, CancellationToken ct = default(CancellationToken))
         {
             _stream = stream;
 #if !DEBUG
@@ -315,19 +387,21 @@ namespace eduOpenVPN.Management
                                         case "BYTECOUNT":
                                             {
                                                 var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 2 + 1);
-                                                event_sink.OnByteCount(
+                                                ByteCountReported?.Invoke(this, new ByteCountReportedEventArgs(
                                                     fields.Length >= 1 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                    fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0);
+                                                    fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0
+                                                ));
                                             }
                                             break;
 
                                         case "BYTECOUNT_CLI":
                                             {
                                                 var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 3 + 1);
-                                                event_sink.OnByteCountClient(
+                                                ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
                                                     fields.Length >= 1 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
                                                     fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                    fields.Length >= 3 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0);
+                                                    fields.Length >= 3 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0
+                                                ));
                                             }
                                             break;
 
@@ -340,23 +414,23 @@ namespace eduOpenVPN.Management
                                             break;
 
                                         case "ECHO":
-                                            new EchoCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            new EchoCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), this);
                                             break;
 
                                         case "FATAL":
-                                            event_sink.OnFatal(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                            FatalErrorReported?.Invoke(this, new MessageReportedEventArgs(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start))));
                                             break;
 
                                         case "HOLD":
-                                            new HoldCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            new HoldCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), this);
                                             break;
 
                                         case "INFO":
-                                            event_sink.OnInfo(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                            InfoReported?.Invoke(this, new MessageReportedEventArgs(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start))));
                                             break;
 
                                         case "LOG":
-                                            new LogCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            new LogCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), this);
                                             break;
 
                                         case "NEED-OK":
@@ -366,12 +440,13 @@ namespace eduOpenVPN.Management
                                         case "NEED-CERTIFICATE":
                                             {
                                                 // Get certificate.
-                                                var certificate = event_sink.OnNeedCertificate(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                                var e = new CertificateRequestedEventArgs(Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)));
+                                                CertificateRequested?.Invoke(this, e);
 
                                                 // Reply with certificate command.
                                                 var sb = new StringBuilder();
                                                 sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
-                                                sb.Append(Convert.ToBase64String(certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                                sb.Append(Convert.ToBase64String(e.Certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
                                                 sb.Append("\n-----END CERTIFICATE-----\nEND");
                                                 SendCommand(sb.ToString(), new SingleCommand(), ct);
                                             }
@@ -388,20 +463,19 @@ namespace eduOpenVPN.Management
                                                 {
                                                     if (data.EndsWith(" password"))
                                                     {
-                                                        var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
-                                                        event_sink.OnNeedAuthentication(realm, out var pwd);
-
+                                                        var e = new PasswordAuthenticationRequestedEventArgs(data.Substring(5, data.Length - 14).Trim(new char[] { '\'' }));
+                                                        PasswordAuthenticationRequested?.Invoke(this, e);
                                                     }
                                                     else if (data.EndsWith(" username/password"))
                                                     {
-                                                        var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
-                                                        event_sink.OnNeedAuthentication(realm, out var user, out var pwd);
+                                                        var e = new UsernamePasswordAuthenticationRequestedEventArgs(data.Substring(5, data.Length - 23).Trim(new char[] { '\'' }));
+                                                        UsernamePasswordAuthenticationRequested?.Invoke(this, e);
                                                     }
 
                                                     // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
                                                 }
                                                 else if (data.StartsWith("Verification Failed: "))
-                                                    event_sink.OnAuthenticationFailed(data.Substring(21).Trim(new char[] { '\'' }));
+                                                    AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(data.Substring(21).Trim(new char[] { '\'' })));
                                             }
                                             break;
 
@@ -417,13 +491,14 @@ namespace eduOpenVPN.Management
                                             {
                                                 // Get action.
                                                 var fields = Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start)).Split(new char[] { ',' }, 3 + 1);
-                                                var action = event_sink.OnRemote(
+                                                var e = new RemoteReportedEventArgs(
                                                     fields.Length >= 1 ? fields[0].Trim() : null,
                                                     fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
                                                     fields.Length >= 3 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
+                                                RemoteReported?.Invoke(this, e);
 
                                                 // Send reply message.
-                                                SendCommand("remote " + action.ToString(), new SingleCommand(), ct);
+                                                SendCommand("remote " + e.Action.ToString(), new SingleCommand(), ct);
                                             }
 
                                             break;
@@ -431,19 +506,20 @@ namespace eduOpenVPN.Management
                                         case "RSA_SIGN":
                                             {
                                                 // Get signature.
-                                                var signature = event_sink.OnRSASign(Convert.FromBase64String(Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start))));
+                                                var e = new RSASignRequestedEventArgs(Convert.FromBase64String(Encoding.ASCII.GetString(queue.SubArray(data_start, msg_end - data_start))));
+                                                RSASignRequested?.Invoke(this, e);
 
                                                 // Send reply message.
                                                 var sb = new StringBuilder();
                                                 sb.Append("rsa-sig\n");
-                                                sb.Append(Convert.ToBase64String(signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                                sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
                                                 sb.Append("\nEND");
                                                 SendCommand(sb.ToString(), new SingleCommand(), ct);
                                             }
                                             break;
 
                                         case "STATE":
-                                            new StateCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), event_sink);
+                                            new StateCommand().ProcessData(queue.SubArray(data_start, msg_end - data_start), this);
                                             break;
                                     }
 
@@ -474,7 +550,7 @@ namespace eduOpenVPN.Management
                                     else
                                     {
                                         // One line of multi-line response.
-                                        cmd_multiline.ProcessData(queue.SubArray(offset, msg_end - offset), event_sink);
+                                        cmd_multiline.ProcessData(queue.SubArray(offset, msg_end - offset), this);
                                     }
 
                                     offset = msg_next;

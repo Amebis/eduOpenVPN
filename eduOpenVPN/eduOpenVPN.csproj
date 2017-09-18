@@ -25,10 +25,24 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\AuthenticationEventArgs.cs" />
+    <Compile Include="Management\ByteCountClientReportedEventArgs.cs" />
+    <Compile Include="Management\ByteCountReportedEventArgs.cs" />
+    <Compile Include="Management\CertificateRequestedEventArgs.cs" />
+    <Compile Include="Management\EchoReceivedEventArgs.cs" />
+    <Compile Include="Management\HoldReportedEventArgs.cs" />
+    <Compile Include="Management\LogReportedEventArgs.cs" />
+    <Compile Include="Management\MessageReportedEventArgs.cs" />
+    <Compile Include="Management\PasswordAuthenticationRequestedEventArgs.cs" />
     <Compile Include="Management\RemoteModAction.cs" />
     <Compile Include="Management\RemoteAcceptAction.cs" />
     <Compile Include="Management\RemoteAction.cs" />
+    <Compile Include="Management\RemoteReportedEventArgs.cs" />
     <Compile Include="Management\RemoteSkipAction.cs" />
+    <Compile Include="Management\RSASignRequestedEventArgs.cs" />
+    <Compile Include="Management\StateReportedEventArgs.cs" />
+    <Compile Include="Management\TimestampedEventArgs.cs" />
+    <Compile Include="Management\UsernamePasswordAuthenticationRequestedEventArgs.cs" />
     <Compile Include="ProtoType.cs" />
     <Compile Include="AuthRetryType.cs" />
     <Compile Include="Configuration.cs" />
@@ -38,7 +52,6 @@
     <Compile Include="InteractiveService\StatusError.cs" />
     <Compile Include="InteractiveService\StatusProcessId.cs" />
     <Compile Include="Management\CommandException.cs" />
-    <Compile Include="Management\ISessionNotifications.cs" />
     <Compile Include="Management\LogMessageFlags.cs" />
     <Compile Include="Management\PeerDisconnectedException.cs" />
     <Compile Include="OpenVPNStateType.cs" />
