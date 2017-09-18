@@ -471,6 +471,8 @@ namespace eduOpenVPN.Management
                                                         var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
                                                         var e = new PasswordAuthenticationRequestedEventArgs(realm);
                                                         PasswordAuthenticationRequested?.Invoke(this, e);
+                                                        if (e.Password == null)
+                                                            throw new OperationCanceledException();
 
                                                         // Send reply message.
                                                         SendCommand("password " + Configuration.EscapeParamValue(realm) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
@@ -480,6 +482,8 @@ namespace eduOpenVPN.Management
                                                         var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
                                                         var e = new UsernamePasswordAuthenticationRequestedEventArgs(realm);
                                                         UsernamePasswordAuthenticationRequested?.Invoke(this, e);
+                                                        if (e.UserName == null || e.Password == null)
+                                                            throw new OperationCanceledException();
 
                                                         // Send reply messages.
                                                         var realm_esc = Configuration.EscapeParamValue(realm);
