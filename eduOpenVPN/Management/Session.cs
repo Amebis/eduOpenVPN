@@ -283,6 +283,11 @@ namespace eduOpenVPN.Management
         public event EventHandler<AuthenticationEventArgs> AuthenticationFailed;
 
         /// <summary>
+        /// Raised when authentication token received
+        /// </summary>
+        public event EventHandler<AuthenticationTokenReportedEventArgs> AuthenticationTokenReported;
+
+        /// <summary>
         /// Raised when remote endpoint is needed
         /// </summary>
         public event EventHandler<RemoteReportedEventArgs> RemoteReported;
@@ -463,19 +468,31 @@ namespace eduOpenVPN.Management
                                                 {
                                                     if (data.EndsWith(" password"))
                                                     {
-                                                        var e = new PasswordAuthenticationRequestedEventArgs(data.Substring(5, data.Length - 14).Trim(new char[] { '\'' }));
+                                                        var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
+                                                        var e = new PasswordAuthenticationRequestedEventArgs(realm);
                                                         PasswordAuthenticationRequested?.Invoke(this, e);
+
+                                                        // Send reply message.
+                                                        SendCommand("password " + Configuration.EscapeParamValue(realm) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
                                                     }
                                                     else if (data.EndsWith(" username/password"))
                                                     {
-                                                        var e = new UsernamePasswordAuthenticationRequestedEventArgs(data.Substring(5, data.Length - 23).Trim(new char[] { '\'' }));
+                                                        var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
+                                                        var e = new UsernamePasswordAuthenticationRequestedEventArgs(realm);
                                                         UsernamePasswordAuthenticationRequested?.Invoke(this, e);
+
+                                                        // Send reply messages.
+                                                        var realm_esc = Configuration.EscapeParamValue(realm);
+                                                        SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.UserName), new SingleCommand(), ct);
+                                                        SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
                                                     }
 
                                                     // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
                                                 }
                                                 else if (data.StartsWith("Verification Failed: "))
                                                     AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(data.Substring(21).Trim(new char[] { '\'' })));
+                                                else if (data.StartsWith("Auth-Token:"))
+                                                    AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(Convert.FromBase64String(data.Substring(11))));
                                             }
                                             break;
 

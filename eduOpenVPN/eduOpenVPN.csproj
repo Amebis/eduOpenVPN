@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Management\AuthenticationEventArgs.cs" />
+    <Compile Include="Management\AuthenticationTokenReportedEventArgs.cs" />
     <Compile Include="Management\ByteCountClientReportedEventArgs.cs" />
     <Compile Include="Management\ByteCountReportedEventArgs.cs" />
     <Compile Include="Management\CertificateRequestedEventArgs.cs" />
