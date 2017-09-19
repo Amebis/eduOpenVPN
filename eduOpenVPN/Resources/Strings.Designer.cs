@@ -61,6 +61,15 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bad backslash (\) usage: remember that backslashes are treated as shell-escapes and if you need to pass backslash characters as part of a Windows filename, you should use double backslashes such as &quot;c:\\openvpn\\static.key&quot;..
+        /// </summary>
+        internal static string ErrorBadBackslash {
+            get {
+                return ResourceManager.GetString("ErrorBadBackslash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {1} (Error {0}).
         /// </summary>
         internal static string ErrorInteractiveService {
@@ -88,6 +97,24 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No closing quotation (&quot;)..
+        /// </summary>
+        internal static string ErrorNoClosingQuotation {
+            get {
+                return ResourceManager.GetString("ErrorNoClosingQuotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No closing single quotation (&apos;)..
+        /// </summary>
+        internal static string ErrorNoClosingSingleQuotation {
+            get {
+                return ResourceManager.GetString("ErrorNoClosingSingleQuotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} parameter value not found in {1} enum..
         /// </summary>
         internal static string ErrorParameterValueNotFound {
@@ -102,6 +129,15 @@ namespace eduOpenVPN.Resources {
         internal static string ErrorPeerDisconnected {
             get {
                 return ResourceManager.GetString("ErrorPeerDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Residual parse state ({0})..
+        /// </summary>
+        internal static string ErrorResidualParseState {
+            get {
+                return ResourceManager.GetString("ErrorResidualParseState", resourceCulture);
             }
         }
         

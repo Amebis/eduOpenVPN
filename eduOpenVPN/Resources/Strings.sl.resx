@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorBadBackslash" xml:space="preserve">
+    <value>Napačna uporaba poševnice nazaj (\): Pomnite, da se poševnice nazaj uporabljajo kot ubežnice lupine in kadar morate ubežnico nazaj podati kot del imena datoteke Windows, uporabite dvojne ubežnice nazaj, kot na primer "c:\\openvpn\\static.key".</value>
+  </data>
   <data name="ErrorInteractiveService" xml:space="preserve">
     <value>{1} (napaka {0})</value>
     <comment>{0} = Error number, {1} = The name of the function</comment>
@@ -128,12 +131,21 @@
     <value>{0} Odziv: {1}</value>
     <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
   </data>
+  <data name="ErrorNoClosingQuotation" xml:space="preserve">
+    <value>Manjka zaključni dvojni narekovaj (").</value>
+  </data>
+  <data name="ErrorNoClosingSingleQuotation" xml:space="preserve">
+    <value>Manjka zaključni enojni narekovaj (').</value>
+  </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
     <value>Vrednost parametra {0} ni najdena v oštevilčenju {1}.</value>
     <comment>{0}=Parameter value name, {1}=Enum data type</comment>
   </data>
   <data name="ErrorPeerDisconnected" xml:space="preserve">
     <value>Vrstnik na drugi strani seje OpenVPN Management se je odklopil.</value>
+  </data>
+  <data name="ErrorResidualParseState" xml:space="preserve">
+    <value>Odvečno stanje razčlenjevalnika ({0}).</value>
   </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>Nepričakovan odgovor OpenVPN Management.</value>

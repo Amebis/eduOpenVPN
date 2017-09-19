@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorBadBackslash" xml:space="preserve">
+    <value>Bad backslash (\) usage: remember that backslashes are treated as shell-escapes and if you need to pass backslash characters as part of a Windows filename, you should use double backslashes such as "c:\\openvpn\\static.key".</value>
+  </data>
   <data name="ErrorInteractiveService" xml:space="preserve">
     <value>{1} (Error {0})</value>
     <comment>{0} = Error number, {1} = The name of the function</comment>
@@ -128,12 +131,21 @@
     <value>{0} Response: {1}</value>
     <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
   </data>
+  <data name="ErrorNoClosingQuotation" xml:space="preserve">
+    <value>No closing quotation (").</value>
+  </data>
+  <data name="ErrorNoClosingSingleQuotation" xml:space="preserve">
+    <value>No closing single quotation (').</value>
+  </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
     <value>{0} parameter value not found in {1} enum.</value>
     <comment>{0}=Parameter value name, {1}=Enum data type</comment>
   </data>
   <data name="ErrorPeerDisconnected" xml:space="preserve">
     <value>The OpenVPN Management session remote peer disconnected.</value>
+  </data>
+  <data name="ErrorResidualParseState" xml:space="preserve">
+    <value>Residual parse state ({0}).</value>
   </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>The OpenVPN Management reply was not expected.</value>

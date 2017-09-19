@@ -464,39 +464,47 @@ namespace eduOpenVPN.Management
                                         case "PASSWORD":
                                             {
                                                 var data = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start));
-                                                if (data.StartsWith("Need "))
-                                                {
-                                                    if (data.EndsWith(" password"))
-                                                    {
-                                                        var realm = data.Substring(5, data.Length - 14).Trim(new char[] { '\'' });
-                                                        var e = new PasswordAuthenticationRequestedEventArgs(realm);
-                                                        PasswordAuthenticationRequested?.Invoke(this, e);
-                                                        if (e.Password == null)
-                                                            throw new OperationCanceledException();
-
-                                                        // Send reply message.
-                                                        SendCommand("password " + Configuration.EscapeParamValue(realm) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
-                                                    }
-                                                    else if (data.EndsWith(" username/password"))
-                                                    {
-                                                        var realm = data.Substring(5, data.Length - 23).Trim(new char[] { '\'' });
-                                                        var e = new UsernamePasswordAuthenticationRequestedEventArgs(realm);
-                                                        UsernamePasswordAuthenticationRequested?.Invoke(this, e);
-                                                        if (e.UserName == null || e.Password == null)
-                                                            throw new OperationCanceledException();
-
-                                                        // Send reply messages.
-                                                        var realm_esc = Configuration.EscapeParamValue(realm);
-                                                        SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.UserName), new SingleCommand(), ct);
-                                                        SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
-                                                    }
-
-                                                    // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
-                                                }
-                                                else if (data.StartsWith("Verification Failed: "))
+                                                if (data.StartsWith("Verification Failed: "))
                                                     AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(data.Substring(21).Trim(new char[] { '\'' })));
                                                 else if (data.StartsWith("Auth-Token:"))
                                                     AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(Convert.FromBase64String(data.Substring(11))));
+                                                else
+                                                {
+                                                    var param = Configuration.ParseParams(data);
+                                                    if (param.Count >= 3 && param[0] == "Need")
+                                                    {
+                                                        switch (param[2])
+                                                        {
+                                                            case "password":
+                                                                {
+                                                                    var e = new PasswordAuthenticationRequestedEventArgs(param[1]);
+                                                                    PasswordAuthenticationRequested?.Invoke(this, e);
+                                                                    if (e.Password == null)
+                                                                        throw new OperationCanceledException();
+
+                                                                    // Send reply message.
+                                                                    SendCommand("password " + Configuration.EscapeParamValue(param[1]) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
+                                                                }
+                                                                break;
+
+                                                            case "username/password":
+                                                                {
+                                                                    // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
+
+                                                                    var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
+                                                                    UsernamePasswordAuthenticationRequested?.Invoke(this, e);
+                                                                    if (e.UserName == null || e.Password == null)
+                                                                        throw new OperationCanceledException();
+
+                                                                    // Send reply messages.
+                                                                    var realm_esc = Configuration.EscapeParamValue(param[1]);
+                                                                    SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.UserName), new SingleCommand(), ct);
+                                                                    SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
+                                                                }
+                                                                break;
+                                                        }
+                                                    }
+                                                }
                                             }
                                             break;
 
