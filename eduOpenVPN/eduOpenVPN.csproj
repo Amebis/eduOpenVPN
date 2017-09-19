@@ -25,6 +25,7 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InteractiveService\StatusProcessID.cs" />
     <Compile Include="Management\AuthenticationEventArgs.cs" />
     <Compile Include="Management\AuthenticationTokenReportedEventArgs.cs" />
     <Compile Include="Management\ByteCountClientReportedEventArgs.cs" />
@@ -51,7 +52,6 @@
     <Compile Include="InteractiveService\InteractiveServiceException.cs" />
     <Compile Include="InteractiveService\Status.cs" />
     <Compile Include="InteractiveService\StatusError.cs" />
-    <Compile Include="InteractiveService\StatusProcessId.cs" />
     <Compile Include="Management\CommandException.cs" />
     <Compile Include="Management\LogMessageFlags.cs" />
     <Compile Include="Management\PeerDisconnectedException.cs" />

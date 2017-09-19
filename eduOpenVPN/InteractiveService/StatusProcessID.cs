@@ -10,7 +10,7 @@ namespace eduOpenVPN.InteractiveService
     /// <summary>
     /// OpenVPN Interactive Service openvpn.exe process ID message
     /// </summary>
-    public class StatusProcessId : Status
+    public class StatusProcessID : Status
     {
         #region Properties
 
@@ -29,7 +29,7 @@ namespace eduOpenVPN.InteractiveService
         /// </summary>
         /// <param name="pid">openvpn.exe process ID</param>
         /// <param name="message">Additional error description (optional)</param>
-        public StatusProcessId(int pid, string message) :
+        public StatusProcessID(int pid, string message) :
             base(0, message)
         {
             _process_id = pid;
