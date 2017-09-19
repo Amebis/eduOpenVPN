@@ -514,6 +514,7 @@ namespace eduOpenVPN.Management
 
                                         case "PROXY":
                                             // TODO: Implement.
+                                            SendCommand("proxy NONE", new SingleCommand(), ct);
                                             break;
 
                                         case "REMOTE":
