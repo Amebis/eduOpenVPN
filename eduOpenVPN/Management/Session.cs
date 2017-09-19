@@ -493,12 +493,12 @@ namespace eduOpenVPN.Management
 
                                                                     var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
                                                                     UsernamePasswordAuthenticationRequested?.Invoke(this, e);
-                                                                    if (e.UserName == null || e.Password == null)
+                                                                    if (e.Username == null || e.Password == null)
                                                                         throw new OperationCanceledException();
 
                                                                     // Send reply messages.
                                                                     var realm_esc = Configuration.EscapeParamValue(param[1]);
-                                                                    SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.UserName), new SingleCommand(), ct);
+                                                                    SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.Username), new SingleCommand(), ct);
                                                                     SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
                                                                 }
                                                                 break;

@@ -12,9 +12,9 @@ namespace eduOpenVPN.Management
         #region Properties
 
         /// <summary>
-        /// User name
+        /// Username
         /// </summary>
-        public string UserName { get; set; }
+        public string Username { get; set; }
 
         #endregion
 
