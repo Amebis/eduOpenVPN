@@ -30,9 +30,11 @@ namespace eduOpenVPN
         /// <returns>Quoted and escaped <paramref name="value"/> when escaping required; <paramref name="value"/> otherwise</returns>
         public static string EscapeParamValue(string value, bool force)
         {
-            return force || value.IndexOfAny(new char[] { '\\', ' ', '"', '\'' }) >= 0 ?
-                "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"" : // Escape backslash and double quotes, and add surrounding quotes
-                value; // No need to escape
+            return value.Length > 0 ?
+                force || value.IndexOfAny(new char[] { '\\', ' ', '"', '\'' }) >= 0 ?
+                    "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"" : // Escape backslash and double quotes, and add surrounding quotes
+                    value : // No need to escape
+                    "\"\""; // Empty string
         }
 
         /// <summary>
