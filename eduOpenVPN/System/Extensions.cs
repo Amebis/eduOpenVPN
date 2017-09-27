@@ -54,7 +54,7 @@ namespace System
         public static string GetParameterValue(this Enum value)
         {
             if (value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
 
             string value_str = value.ToString();
             FieldInfo fieldInfo = value.GetType().GetField(value_str);

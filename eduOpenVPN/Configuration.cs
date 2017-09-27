@@ -111,7 +111,7 @@ namespace eduOpenVPN
                     if (backslash && char_out != default(char))
                     {
                         if (!(char_out == '\\' || char_out == '\"' || IsZeroOrWhiteChar(char_out)))
-                            throw new ArgumentException(Resources.Strings.ErrorBadBackslash, "command_line");
+                            throw new ArgumentException(Resources.Strings.ErrorBadBackslash, nameof(command_line));
                     }
                     backslash = false;
                 }
@@ -125,9 +125,9 @@ namespace eduOpenVPN
             switch (state)
             {
                 case ParseParamsState.Initial: break;
-                case ParseParamsState.ReadingQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingQuotation, "command_line");
-                case ParseParamsState.ReadingSingleQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingSingleQuotation, "command_line");
-                default: throw new ArgumentException(String.Format(Resources.Strings.ErrorResidualParseState, state), "command_line");
+                case ParseParamsState.ReadingQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingQuotation, nameof(command_line));
+                case ParseParamsState.ReadingSingleQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingSingleQuotation, nameof(command_line));
+                default: throw new ArgumentException(String.Format(Resources.Strings.ErrorResidualParseState, state), nameof(command_line));
             }
 
             return ret;

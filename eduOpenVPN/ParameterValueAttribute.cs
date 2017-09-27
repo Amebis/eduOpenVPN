@@ -77,7 +77,7 @@ namespace eduOpenVPN
             if (TryGetEnumByParameterValueAttribute<T>(value, out var result))
                 return result;
 
-            throw new ArgumentException(String.Format(Resources.Strings.ErrorParameterValueNotFound, value, typeof(T).ToString()), "value");
+            throw new ArgumentException(String.Format(Resources.Strings.ErrorParameterValueNotFound, value, typeof(T).ToString()), nameof(value));
         }
 
         #endregion
