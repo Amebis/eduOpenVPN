@@ -39,6 +39,7 @@ namespace eduOpenVPN.InteractiveService
 
         #region Methods
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: 0x{1:X}", Message, _process_id);

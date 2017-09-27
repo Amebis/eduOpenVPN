@@ -47,6 +47,7 @@ namespace eduOpenVPN.InteractiveService
 
         #region Methods
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format(_message != null ? "{0} (0x{1,X})" : "(0x{1,X})", _message, _code);

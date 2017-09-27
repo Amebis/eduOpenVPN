@@ -95,6 +95,7 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class EchoCommand : MultilineCommand
         {
+            /// <inheritdoc/>
             public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 1 + 1);
@@ -109,6 +110,7 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class HoldCommand : MultilineCommand
         {
+            /// <inheritdoc/>
             public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ':' }, 2 + 1);
@@ -123,6 +125,7 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class LogCommand : MultilineCommand
         {
+            /// <inheritdoc/>
             public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 2 + 1);
@@ -144,6 +147,7 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class StateCommand : MultilineCommand
         {
+            /// <inheritdoc/>
             public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ',' }, 9 + 1);
@@ -176,6 +180,7 @@ namespace eduOpenVPN.Management
             public Dictionary<string, string> Version { get => _version; }
             private Dictionary<string, string> _version = new Dictionary<string, string>();
 
+            /// <inheritdoc/>
             public override void ProcessData(byte[] data, Session session)
             {
                 var fields = Encoding.UTF8.GetString(data).Split(new char[] { ':' }, 1 + 1);

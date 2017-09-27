@@ -14,6 +14,7 @@ namespace eduOpenVPN.Management
     {
         #region Methods
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "SKIP";

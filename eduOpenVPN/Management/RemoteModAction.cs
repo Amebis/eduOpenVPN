@@ -43,6 +43,7 @@ namespace eduOpenVPN.Management
 
         #region Methods
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("MOD {0} {1:D}", Configuration.EscapeParamValue(Host), Port);

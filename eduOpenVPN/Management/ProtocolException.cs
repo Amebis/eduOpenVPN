@@ -92,6 +92,7 @@ namespace eduOpenVPN.Management
             Response = (string)info.GetValue("Response", typeof(string));
         }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

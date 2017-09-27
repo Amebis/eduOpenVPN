@@ -40,6 +40,7 @@ namespace eduOpenVPN.InteractiveService
 
         #region Methods
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: {1} (0x{2:X})", _function, Message, Code);
