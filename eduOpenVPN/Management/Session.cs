@@ -472,7 +472,7 @@ namespace eduOpenVPN.Management
                                                 if (data.StartsWith("Verification Failed: "))
                                                     AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(data.Substring(21).Trim(new char[] { '\'' })));
                                                 else if (data.StartsWith("Auth-Token:"))
-                                                    AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(Convert.FromBase64String(data.Substring(11))));
+                                                    AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(new NetworkCredential("", data.Substring(11)).SecurePassword));
                                                 else
                                                 {
                                                     var param = Configuration.ParseParams(data);
