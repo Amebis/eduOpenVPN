@@ -208,6 +208,11 @@ namespace eduOpenVPN.Management
         /// </summary>
         private object _command_lock;
 
+        /// <summary>
+        /// Cached credentials
+        /// </summary>
+        private NetworkCredential _credentials;
+
         #endregion
 
         #region Properties
@@ -307,6 +312,40 @@ namespace eduOpenVPN.Management
         /// </summary>
         /// <remarks></remarks>
         public event EventHandler<StateReportedEventArgs> StateReported;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructs a session
+        /// </summary>
+        public Session()
+        {
+            EchoReceived += (object sender, EchoReceivedEventArgs e) =>
+            {
+                if (e.Command == "forget-passwords")
+                {
+                    // Reset cached credentials.
+                    _credentials = null;
+                }
+            };
+
+            AuthenticationFailed += (object sender, AuthenticationEventArgs e) =>
+            {
+                // Reset cached credentials to force user re-prompting.
+                _credentials = null;
+            };
+
+            AuthenticationTokenReported += (object sender, AuthenticationTokenReportedEventArgs e) =>
+            {
+                if (_credentials != null)
+                {
+                    // Save authentication token. OpenVPN accepts it as the password on reauthentications.
+                    _credentials.SecurePassword = e.Token;
+                }
+            };
+        }
 
         #endregion
 
@@ -494,17 +533,23 @@ namespace eduOpenVPN.Management
 
                                                             case "username/password":
                                                                 {
-                                                                    // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
+                                                                    if (_credentials == null)
+                                                                    {
+                                                                        // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
 
-                                                                    var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
-                                                                    UsernamePasswordAuthenticationRequested?.Invoke(this, e);
-                                                                    if (e.Username == null || e.Password == null)
-                                                                        throw new OperationCanceledException();
+                                                                        var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
+                                                                        UsernamePasswordAuthenticationRequested?.Invoke(this, e);
+                                                                        if (e.Username == null || e.Password == null)
+                                                                            throw new OperationCanceledException();
+
+                                                                        // Prepare new credentials.
+                                                                        _credentials = new NetworkCredential(e.Username, "") { SecurePassword = e.Password };
+                                                                    }
 
                                                                     // Send reply messages.
                                                                     var realm_esc = Configuration.EscapeParamValue(param[1]);
-                                                                    SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(e.Username), new SingleCommand(), ct);
-                                                                    SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
+                                                                    SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(_credentials.UserName), new SingleCommand(), ct);
+                                                                    SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(_credentials.Password), new SingleCommand(), ct);
                                                                 }
                                                                 break;
                                                         }
@@ -614,8 +659,6 @@ namespace eduOpenVPN.Management
                                         cmd_single.Success = true;
                                         cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
                                         cmd_single.Finished.Set();
-
-                                        // TODO: Send "password" command.
                                     }
                                     else if (id_end >= 0 && id_end - offset == 5 && Encoding.ASCII.GetString(queue.SubArray(offset, 5)) == "ERROR")
                                     {
@@ -624,8 +667,6 @@ namespace eduOpenVPN.Management
                                         cmd_single.Success = false;
                                         cmd_single.Response = Encoding.UTF8.GetString(queue.SubArray(data_start, msg_end - data_start)).Trim();
                                         cmd_single.Finished.Set();
-
-                                        // TODO: Send "username" and "password" commands.
                                     }
 
                                     offset = msg_next;
