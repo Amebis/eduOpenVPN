@@ -1,0 +1,18 @@
+version: 1.0.5.{build}
+image: Visual Studio 2017
+before_build:
+  - nuget restore
+configuration:
+  - Debug
+  - Release
+platform:
+  - x86
+  - x64
+build:
+  project: eduOpenVPN.sln
+  parallel: true
+  verbosity: minimal
+artifacts:
+  - path: bin\$(configuration)\$(platform)\eduOpenVPN.dll
+  - path: bin\$(configuration)\$(platform)\eduOpenVPN.pdb
+  - path: bin\$(configuration)\$(platform)\sl\eduOpenVPN.resources.dll
