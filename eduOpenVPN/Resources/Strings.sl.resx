@@ -125,11 +125,12 @@
     <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
-    <value>Povezovanje na servis OpenVPN Interactive Service ni uspelo. Preverite, ali je servis zagnan.</value>
+    <value>Povezovanje na interaktivno storitev {0} ni uspelo. Preverite, ali je storitev zagnana.</value>
+    <comment>{0} = Name of the pipe to connect to</comment>
   </data>
   <data name="ErrorManagementManagementResponse" xml:space="preserve">
     <value>{0} Odziv: {1}</value>
-    <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
+    <comment>{0} = A sentence explaining an error, {1} = Response source code</comment>
   </data>
   <data name="ErrorNoClosingQuotation" xml:space="preserve">
     <value>Manjka zaključni dvojni narekovaj (").</value>
@@ -139,7 +140,7 @@
   </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
     <value>Vrednost parametra {0} ni najdena v oštevilčenju {1}.</value>
-    <comment>{0}=Parameter value name, {1}=Enum data type</comment>
+    <comment>{0} = Parameter value name, {1} = Enum data type</comment>
   </data>
   <data name="ErrorPeerDisconnected" xml:space="preserve">
     <value>Vrstnik na drugi strani seje OpenVPN Management se je odklopil.</value>

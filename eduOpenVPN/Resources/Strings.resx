@@ -125,11 +125,12 @@
     <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
-    <value>Connecting to OpenVPN Interactive Service failed. Please, make sure the service is started.</value>
+    <value>Connecting to the {0} interactive service failed. Please, make sure the service is started.</value>
+    <comment>{0} = Name of the pipe to connect to</comment>
   </data>
   <data name="ErrorManagementManagementResponse" xml:space="preserve">
     <value>{0} Response: {1}</value>
-    <comment>{0}=A sentence explaining an error, {1}=Response source code</comment>
+    <comment>{0} = A sentence explaining an error, {1} = Response source code</comment>
   </data>
   <data name="ErrorNoClosingQuotation" xml:space="preserve">
     <value>No closing quotation (").</value>
@@ -139,7 +140,7 @@
   </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
     <value>{0} parameter value not found in {1} enum.</value>
-    <comment>{0}=Parameter value name, {1}=Enum data type</comment>
+    <comment>{0} = Parameter value name, {1} = Enum data type</comment>
   </data>
   <data name="ErrorPeerDisconnected" xml:space="preserve">
     <value>The OpenVPN Management session remote peer disconnected.</value>

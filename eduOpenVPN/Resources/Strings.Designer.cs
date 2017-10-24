@@ -79,7 +79,7 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to OpenVPN Interactive Service failed. Please, make sure the service is started..
+        ///   Looks up a localized string similar to Connecting to the {0} interactive service failed. Please, make sure the service is started..
         /// </summary>
         internal static string ErrorInteractiveServiceConnect {
             get {

@@ -42,6 +42,7 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Connects to OpenVPN Interactive Service and sends a command to start openvpn.exe
         /// </summary>
+        /// <param name="pipe_name">Pipe name to connect to (e.g. "openvpn\\service")</param>
         /// <param name="working_folder">openvpn.exe process working folder to start in</param>
         /// <param name="arguments">openvpn.exe command line parameters</param>
         /// <param name="stdin">Text to send to openvpn.exe on start via stdin</param>
@@ -49,16 +50,16 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>openvpn.exe process ID</returns>
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream tolerates multiple disposes.")]
-        public void Connect(string working_folder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default(CancellationToken))
+        public void Connect(string pipe_name, string working_folder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default(CancellationToken))
         {
             try
             {
                 // Connect to OpenVPN Interactive Service via named pipe.
-                _stream = new NamedPipeClientStream(".", "openvpn\\service");
+                _stream = new NamedPipeClientStream(".", pipe_name);
                 _stream.Connect(timeout);
                 _stream.ReadMode = PipeTransmissionMode.Message;
             }
-            catch (Exception ex) { throw new AggregateException(Resources.Strings.ErrorInteractiveServiceConnect, ex); }
+            catch (Exception ex) { throw new AggregateException(String.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipe_name), ex); }
 
             // Ask OpenVPN Interactive Service to start openvpn.exe for us.
             var encoding_utf16 = new UnicodeEncoding(false, false);
