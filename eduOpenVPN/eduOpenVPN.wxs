@@ -29,24 +29,5 @@
             <ComponentRef Id="eduOpenVPN.dll"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.sl"/>
         </ComponentGroup>
-
-
-        <!--
-            OpenVPN
-            TODO: Once OpenVPN installation as a prerequisite (WiX bundles) is supported, remove the check.
-        -->
-        <Property Id="OPENVPNEXECUTABLE">
-            <RegistrySearch
-                Id="OpenVPNExecutable"
-                Root="HKLM"
-                Key="SOFTWARE\OpenVPN"
-                Name="exe_path"
-                Type="file">
-                <FileSearch
-                    Name="openvpn.exe"
-                    MinVersion="2.3.9999.9999"/>
-            </RegistrySearch>
-        </Property>
-        <Condition Message="!(loc.OpenVPNMissing)"><![CDATA[Installed OR OPENVPNEXECUTABLE]]></Condition>
     </Fragment>
 </Wix>
