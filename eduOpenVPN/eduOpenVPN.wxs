@@ -10,12 +10,12 @@
         <!--
             Components
         -->
-        <DirectoryRef Id="INSTALLDIR">
+        <DirectoryRef Id="BINDIR">
             <Component Id="eduOpenVPN.dll" Guid="{809A5107-82D9-4271-BE32-37427C14BCA7}">
                 <File Source="eduOpenVPN.dll"/>
             </Component>
         </DirectoryRef>
-        <DirectoryRef Id="RESOURCEDIRSL">
+        <DirectoryRef Id="RESDIRSL">
             <Component Id="eduOpenVPN.resources.dll.sl" Guid="{DC81E7C2-B26E-4C25-9526-062C94D8494E}">
                 <File Id="eduOpenVPN.resources.dll.sl" Source="sl\eduOpenVPN.resources.dll"/>
             </Component>
