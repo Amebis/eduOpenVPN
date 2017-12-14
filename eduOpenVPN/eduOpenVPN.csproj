@@ -75,6 +75,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings.nl.resx" />
     <EmbeddedResource Include="Resources\Strings.sl.resx" />
   </ItemGroup>
   <ItemGroup>
