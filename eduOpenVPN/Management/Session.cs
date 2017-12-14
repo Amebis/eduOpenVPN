@@ -247,79 +247,91 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Raised when BYTECOUNT real-time message is received
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<ByteCountReportedEventArgs> ByteCountReported;
 
         /// <summary>
         /// Raised when BYTECOUNT_CLI real-time message is received
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<ByteCountClientReportedEventArgs> ByteCountClientReported;
 
         /// <summary>
         /// Raised when an echo command is received
         /// </summary>
-        /// <param name="timestamp">Timestamp of the echo command</param>
-        /// <param name="command">Echo command</param>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<EchoReceivedEventArgs> EchoReceived;
 
         /// <summary>
         /// Raised when OpenVPN reports fatal error
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<MessageReportedEventArgs> FatalErrorReported;
 
         /// <summary>
         /// Raised when OpenVPN is in a hold state
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<HoldReportedEventArgs> HoldReported;
 
         /// <summary>
         /// Raised when OpenVPN reports informative message
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<MessageReportedEventArgs> InfoReported;
 
         /// <summary>
         /// Raised when a log entry is received
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<LogReportedEventArgs> LogReported;
 
         /// <summary>
         /// Raised when openvpn.exe requires a certificate
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<CertificateRequestedEventArgs> CertificateRequested;
 
         /// <summary>
         /// Raised when password is needed
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<PasswordAuthenticationRequestedEventArgs> PasswordAuthenticationRequested;
 
         /// <summary>
         /// Raised when username and password is needed
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<UsernamePasswordAuthenticationRequestedEventArgs> UsernamePasswordAuthenticationRequested;
 
         /// <summary>
         /// Raised when authentication failed
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<AuthenticationEventArgs> AuthenticationFailed;
 
         /// <summary>
         /// Raised when authentication token received
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<AuthenticationTokenReportedEventArgs> AuthenticationTokenReported;
 
         /// <summary>
         /// Raised when remote endpoint is needed
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<RemoteReportedEventArgs> RemoteReported;
 
         /// <summary>
         /// Raised when RSA data signing is required
         /// </summary>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<RSASignRequestedEventArgs> RSASignRequested;
 
         /// <summary>
         /// Raised when OpenVPN's initial state is reported
         /// </summary>
-        /// <remarks></remarks>
+        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
         public event EventHandler<StateReportedEventArgs> StateReported;
 
         #endregion
