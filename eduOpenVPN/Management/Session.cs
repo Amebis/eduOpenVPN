@@ -712,10 +712,13 @@ namespace eduOpenVPN.Management
                     catch (Exception ex) { _error = ex; }
                     finally
                     {
-                        // Dispose pending command finish events.
+                        // Trigger/Release authentication requested flag.
+                        auth_req.Set();
+
+                        // Trigger/Release pending commands.
                         lock (_commands)
                             foreach (var c in _commands)
-                                c.Finished.Dispose();
+                                c.Finished.Set();
                     }
                 }));
             _monitor.Start();
@@ -723,7 +726,6 @@ namespace eduOpenVPN.Management
             // Wait until openvpn.exe sends authentication request.
             if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, auth_req }) == 0)
                 throw new OperationCanceledException();
-
             if (_error != null)
                 throw _error;
 
@@ -1280,8 +1282,10 @@ namespace eduOpenVPN.Management
         private string WaitForResult(SingleCommand cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the command to finish.
-            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.Finished  }) == 0)
+            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.Finished }) == 0)
                 throw new OperationCanceledException();
+            if (_error != null)
+                throw _error;
 
             if (cmd_result.Success)
                 return cmd_result.Response.ToString();
@@ -1299,6 +1303,8 @@ namespace eduOpenVPN.Management
             // Await for the command to finish.
             if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.Finished }) == 0)
                 throw new OperationCanceledException();
+            if (_error != null)
+                throw _error;
         }
 
         /// <summary>
@@ -1313,6 +1319,8 @@ namespace eduOpenVPN.Management
             // Await for the second command to finish.
             if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.second.Finished }) == 0)
                 throw new OperationCanceledException();
+            if (_error != null)
+                throw _error;
 
             if (cmd_result.first.Success)
                 return cmd_result.first.Response.ToString();
@@ -1326,8 +1334,12 @@ namespace eduOpenVPN.Management
         /// <param name="cmd">Command to send</param>
         /// <param name="cmd_result">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
+        /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, Command cmd_result, CancellationToken ct = default(CancellationToken))
         {
+            if (_error != null)
+                throw new SessionStateException(Resources.Strings.ErrorSessionState);
+
             lock (_command_lock)
             {
                 lock (_commands)
@@ -1347,8 +1359,12 @@ namespace eduOpenVPN.Management
         /// <param name="cmd">Command to send</param>
         /// <param name="cmd_result">Pending command results</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
+        /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, CombinedCommands cmd_result, CancellationToken ct = default(CancellationToken))
         {
+            if (_error != null)
+                throw new SessionStateException(Resources.Strings.ErrorSessionState);
+
             lock (_command_lock)
             {
                 lock (_commands)

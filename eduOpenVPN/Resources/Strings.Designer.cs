@@ -19,7 +19,7 @@ namespace eduOpenVPN.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -138,6 +138,15 @@ namespace eduOpenVPN.Resources {
         internal static string ErrorResidualParseState {
             get {
                 return ResourceManager.GetString("ErrorResidualParseState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The OpenVPN session is in a state of error..
+        /// </summary>
+        internal static string ErrorSessionState {
+            get {
+                return ResourceManager.GetString("ErrorSessionState", resourceCulture);
             }
         }
         

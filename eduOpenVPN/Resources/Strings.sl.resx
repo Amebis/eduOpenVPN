@@ -148,6 +148,9 @@
   <data name="ErrorResidualParseState" xml:space="preserve">
     <value>Odvečno stanje razčlenjevalnika ({0}).</value>
   </data>
+  <data name="ErrorSessionState" xml:space="preserve">
+    <value>Seja OpenVPN je v stanju napake.</value>
+  </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>Nepričakovan odgovor OpenVPN Management.</value>
   </data>

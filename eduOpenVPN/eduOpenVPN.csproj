@@ -42,6 +42,7 @@
     <Compile Include="Management\RemoteReportedEventArgs.cs" />
     <Compile Include="Management\RemoteSkipAction.cs" />
     <Compile Include="Management\RSASignRequestedEventArgs.cs" />
+    <Compile Include="Management\SessionStateException.cs" />
     <Compile Include="Management\StateReportedEventArgs.cs" />
     <Compile Include="Management\TimestampedEventArgs.cs" />
     <Compile Include="Management\UsernamePasswordAuthenticationRequestedEventArgs.cs" />

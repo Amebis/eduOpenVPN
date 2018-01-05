@@ -148,6 +148,9 @@
   <data name="ErrorResidualParseState" xml:space="preserve">
     <value>Residual parse state ({0}).</value>
   </data>
+  <data name="ErrorSessionState" xml:space="preserve">
+    <value>The OpenVPN session is in a state of error.</value>
+  </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>The OpenVPN Management reply was not expected.</value>
   </data>
