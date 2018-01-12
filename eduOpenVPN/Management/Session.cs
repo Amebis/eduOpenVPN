@@ -667,8 +667,6 @@ namespace eduOpenVPN.Management
                 var cmd_result = new SingleCommand();
                 SendCommand(password, cmd_result, ct);
                 WaitForResult(cmd_result, ct);
-                if (!cmd_result.Success)
-                    throw new CommandException(cmd_result.Response);
             }
         }
 
