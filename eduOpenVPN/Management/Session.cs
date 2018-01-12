@@ -1283,9 +1283,9 @@ namespace eduOpenVPN.Management
             }
 
             if (cmd_result.Success)
-                return cmd_result.Response.ToString();
+                return cmd_result.Response;
             else
-                throw new CommandException(cmd_result.Response.ToString());
+                throw new CommandException(cmd_result.Response);
         }
 
         /// <summary>
@@ -1320,9 +1320,9 @@ namespace eduOpenVPN.Management
             }
 
             if (cmd_result.first.Success)
-                return cmd_result.first.Response.ToString();
+                return cmd_result.first.Response;
             else
-                throw new CommandException(cmd_result.first.Response.ToString());
+                throw new CommandException(cmd_result.first.Response);
         }
 
         /// <summary>
