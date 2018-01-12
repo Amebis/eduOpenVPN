@@ -15,7 +15,7 @@ namespace eduOpenVPN.Management
     /// OpenVPN Management protocol error.
     /// </summary>
     [Serializable]
-    public class ProtocolException : ApplicationException, ISerializable
+    public class ProtocolException : Exception
     {
         #region Properties
 

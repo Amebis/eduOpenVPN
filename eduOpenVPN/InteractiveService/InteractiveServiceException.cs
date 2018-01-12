@@ -15,7 +15,7 @@ namespace eduOpenVPN.InteractiveService
     /// OpenVPN Interactive Service returned an error.
     /// </summary>
     [Serializable]
-    public class InteractiveServiceException : ApplicationException, ISerializable
+    public class InteractiveServiceException : Exception
     {
         #region Properties
 

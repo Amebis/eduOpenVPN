@@ -13,7 +13,7 @@ namespace eduOpenVPN.Management
     /// OpenVPN session state error
     /// </summary>
     [Serializable]
-    public class SessionStateException : ApplicationException
+    public class SessionStateException : Exception
     {
         #region Constructors
 

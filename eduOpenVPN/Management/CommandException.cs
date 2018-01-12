@@ -13,7 +13,7 @@ namespace eduOpenVPN.Management
     /// OpenVPN Management console error
     /// </summary>
     [Serializable]
-    public class CommandException : ApplicationException
+    public class CommandException : Exception
     {
         #region Constructors
 

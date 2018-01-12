@@ -14,7 +14,7 @@ namespace eduOpenVPN.Management
     /// The OpenVPN Management reply was not expected.
     /// </summary>
     [Serializable]
-    public class UnexpectedReplyException : ProtocolException, ISerializable
+    public class UnexpectedReplyException : ProtocolException
     {
         #region Constructors
 
@@ -33,6 +33,15 @@ namespace eduOpenVPN.Management
         /// <param name="start">Starting offset in <paramref name="response"/></param>
         public UnexpectedReplyException(string message, string response, int start = 0) :
             base(message, response, start)
+        {
+        }
+
+        #endregion
+
+        #region ISerializable Support
+
+        protected UnexpectedReplyException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 
