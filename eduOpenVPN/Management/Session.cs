@@ -214,6 +214,11 @@ namespace eduOpenVPN.Management
         private object _command_lock = new object();
 
         /// <summary>
+        /// Waitable event to signal the monitor finished
+        /// </summary>
+        private EventWaitHandle _monitor_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
+
+        /// <summary>
         /// Cached credentials
         /// </summary>
         private NetworkCredential _credentials;
@@ -705,22 +710,18 @@ namespace eduOpenVPN.Management
                     catch (Exception ex) { _error = ex; }
                     finally
                     {
-                        // Trigger/Release authentication requested flag.
-                        auth_req.Set();
-
-                        // Trigger/Release pending commands.
-                        lock (_commands)
-                            foreach (var c in _commands)
-                                c.Finished.Set();
+                        // Signal the monitor finished.
+                        _monitor_finished.Set();
                     }
                 }));
             _monitor.Start();
 
             // Wait until openvpn.exe sends authentication request.
-            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, auth_req }) == 0)
-                throw new OperationCanceledException();
-            if (_error != null)
-                throw _error;
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, auth_req }))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
 
             // Send the password.
             var cmd_result = new SingleCommand();
@@ -1275,10 +1276,11 @@ namespace eduOpenVPN.Management
         private string WaitForResult(SingleCommand cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the command to finish.
-            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.Finished }) == 0)
-                throw new OperationCanceledException();
-            if (_error != null)
-                throw _error;
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.Finished }))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
 
             if (cmd_result.Success)
                 return cmd_result.Response.ToString();
@@ -1294,10 +1296,11 @@ namespace eduOpenVPN.Management
         private void WaitForResult(MultilineCommand cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the command to finish.
-            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.Finished }) == 0)
-                throw new OperationCanceledException();
-            if (_error != null)
-                throw _error;
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.Finished }))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
         }
 
         /// <summary>
@@ -1310,10 +1313,11 @@ namespace eduOpenVPN.Management
         private string WaitForResult(CombinedCommands cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the second command to finish.
-            if (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, cmd_result.second.Finished }) == 0)
-                throw new OperationCanceledException();
-            if (_error != null)
-                throw _error;
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.second.Finished }))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
 
             if (cmd_result.first.Success)
                 return cmd_result.first.Response.ToString();
@@ -1385,6 +1389,9 @@ namespace eduOpenVPN.Management
             {
                 if (disposing)
                 {
+                    if (_monitor_finished != null)
+                        _monitor_finished.Dispose();
+
                     if (_stream != null)
                         _stream.Dispose();
                 }
