@@ -399,11 +399,6 @@ namespace eduOpenVPN.Management
         public void Start(NetworkStream stream, string password, CancellationToken ct = default(CancellationToken))
         {
             _stream = stream;
-#if !DEBUG
-            _stream.WriteTimeout = 3000;
-            _stream.ReadTimeout = 3000;
-#endif
-
             var reader = new StreamReader(_stream, Encoding.UTF8, false);
 
             if (password != null)
