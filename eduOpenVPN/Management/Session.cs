@@ -210,12 +210,8 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Queue of pending commands
         /// </summary>
-        private Queue<Command> _commands;
-
-        /// <summary>
-        /// Lock to serialize command submission
-        /// </summary>
-        private object _command_lock;
+        private Queue<Command> _commands = new Queue<Command>();
+        private object _command_lock = new object();
 
         /// <summary>
         /// Cached credentials
@@ -385,9 +381,6 @@ namespace eduOpenVPN.Management
             _stream.WriteTimeout = 3000;
             _stream.ReadTimeout = 3000;
 #endif
-
-            _commands = new Queue<Command>();
-            _command_lock = new object();
 
             // Spawn the monitor.
             var auth_req = new EventWaitHandle(false, EventResetMode.ManualReset);
