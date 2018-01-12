@@ -423,8 +423,6 @@ namespace eduOpenVPN.Management
                 {
                     try
                     {
-                        var buffer = new byte[1048576];
-
                         for (;;)
                         {
                             ct.ThrowIfCancellationRequested();
