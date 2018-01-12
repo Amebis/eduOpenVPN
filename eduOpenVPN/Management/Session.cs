@@ -221,8 +221,12 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Queue of pending commands
         /// </summary>
-        private Queue<Command> _commands = new Queue<Command>();
-        private object _command_lock = new object();
+        private Queue<Command> _commands;
+
+        /// <summary>
+        /// Lock to serialize command submission
+        /// </summary>
+        private object _command_lock;
 
         /// <summary>
         /// Waitable event to signal the monitor finished
@@ -414,6 +418,9 @@ namespace eduOpenVPN.Management
                         throw new UnexpectedReplyException(new String(buffer));
                 }
             }
+
+            _commands = new Queue<Command>();
+            _command_lock = new object();
 
             // Spawn the monitor.
             _monitor = new Thread(new ThreadStart(
