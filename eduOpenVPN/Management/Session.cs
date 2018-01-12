@@ -437,9 +437,6 @@ namespace eduOpenVPN.Management
 
                             ct.ThrowIfCancellationRequested();
 
-                            Command cmd;
-                            lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
-
                             if (line.Length > 0 && line[0] == '>')
                             {
                                 // Real-time notification message.
@@ -614,40 +611,45 @@ namespace eduOpenVPN.Management
                                         break;
                                 }
                             }
-                            else if (cmd is MultilineCommand cmd_multiline)
+                            else
                             {
-                                if (line == "END")
+                                Command cmd;
+                                lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
+                                if (cmd is MultilineCommand cmd_multiline)
                                 {
-                                    // Multi-line response end.
-                                    lock (_commands) _commands.Dequeue();
-                                    cmd_multiline.Finished.Set();
-                                }
-                                else
-                                {
-                                    // One line of multi-line response.
-                                    cmd_multiline.ProcessData(line, this);
-                                }
-                            }
-                            else if (cmd is SingleCommand cmd_single)
-                            {
-                                var msg = line.Split(_msg_separators, 2);
-                                switch (msg[0].Trim())
-                                {
-                                    case "SUCCESS":
-                                        // Success response.
+                                    if (line == "END")
+                                    {
+                                        // Multi-line response end.
                                         lock (_commands) _commands.Dequeue();
-                                        cmd_single.Success = true;
-                                        cmd_single.Response = msg[1].Trim();
-                                        cmd_single.Finished.Set();
-                                        break;
+                                        cmd_multiline.Finished.Set();
+                                    }
+                                    else
+                                    {
+                                        // One line of multi-line response.
+                                        cmd_multiline.ProcessData(line, this);
+                                    }
+                                }
+                                else if (cmd is SingleCommand cmd_single)
+                                {
+                                    var msg = line.Split(_msg_separators, 2);
+                                    switch (msg[0].Trim())
+                                    {
+                                        case "SUCCESS":
+                                            // Success response.
+                                            lock (_commands) _commands.Dequeue();
+                                            cmd_single.Success = true;
+                                            cmd_single.Response = msg[1].Trim();
+                                            cmd_single.Finished.Set();
+                                            break;
 
-                                    case "ERROR":
-                                        // Error response.
-                                        lock (_commands) _commands.Dequeue();
-                                        cmd_single.Success = false;
-                                        cmd_single.Response = msg[1].Trim();
-                                        cmd_single.Finished.Set();
-                                        break;
+                                        case "ERROR":
+                                            // Error response.
+                                            lock (_commands) _commands.Dequeue();
+                                            cmd_single.Success = false;
+                                            cmd_single.Response = msg[1].Trim();
+                                            cmd_single.Finished.Set();
+                                            break;
+                                    }
                                 }
                             }
                         }
