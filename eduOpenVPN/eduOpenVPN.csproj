@@ -35,6 +35,7 @@
     <Compile Include="Management\HoldReportedEventArgs.cs" />
     <Compile Include="Management\LogReportedEventArgs.cs" />
     <Compile Include="Management\MessageReportedEventArgs.cs" />
+    <Compile Include="Management\MonitorTerminatedException.cs" />
     <Compile Include="Management\PasswordAuthenticationRequestedEventArgs.cs" />
     <Compile Include="Management\RemoteModAction.cs" />
     <Compile Include="Management\RemoteAcceptAction.cs" />
@@ -55,7 +56,6 @@
     <Compile Include="InteractiveService\StatusError.cs" />
     <Compile Include="Management\CommandException.cs" />
     <Compile Include="Management\LogMessageFlags.cs" />
-    <Compile Include="Management\PeerDisconnectedException.cs" />
     <Compile Include="OpenVPNStateType.cs" />
     <Compile Include="Management\ProtocolException.cs" />
     <Compile Include="Management\Session.cs" />

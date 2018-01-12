@@ -97,6 +97,15 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The OpenVPN Management monitor is not running..
+        /// </summary>
+        internal static string ErrorMonitorTerminated {
+            get {
+                return ResourceManager.GetString("ErrorMonitorTerminated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No closing quotation (&quot;)..
         /// </summary>
         internal static string ErrorNoClosingQuotation {
@@ -120,15 +129,6 @@ namespace eduOpenVPN.Resources {
         internal static string ErrorParameterValueNotFound {
             get {
                 return ResourceManager.GetString("ErrorParameterValueNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The OpenVPN Management session remote peer disconnected..
-        /// </summary>
-        internal static string ErrorPeerDisconnected {
-            get {
-                return ResourceManager.GetString("ErrorPeerDisconnected", resourceCulture);
             }
         }
         
