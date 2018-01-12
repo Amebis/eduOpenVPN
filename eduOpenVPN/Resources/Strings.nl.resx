@@ -151,5 +151,4 @@
   <data name="ErrorUnexpectedReply" xml:space="preserve">
     <value>The OpenVPN Management reply was not expected.</value>
   </data>
-
 </root>
