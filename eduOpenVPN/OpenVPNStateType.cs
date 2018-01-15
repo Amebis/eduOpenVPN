@@ -13,67 +13,75 @@ namespace eduOpenVPN
     public enum OpenVPNStateType
     {
         /// <summary>
-        /// Unknown state (default)
+        /// Initial, undefined state (default)
         /// </summary>
-        Unknown = 0,
+        [ParameterValue("INITIAL")]
+        Initial = 0,
 
         /// <summary>
-        /// OpenVPN's initial state
+        /// Management interface has been initialized
         /// </summary>
         [ParameterValue("CONNECTING")]
-        Connecting,
-
-        /// <summary>
-        /// Waiting for initial response from server (Client only)
-        /// </summary>
-        [ParameterValue("WAIT")]
-        Waiting,
-
-        /// <summary>
-        /// Authenticating with server (Client only)
-        /// </summary>
-        [ParameterValue("AUTH")]
-        Authenticating,
-
-        /// <summary>
-        /// Downloading configuration options from server (Client only)
-        /// </summary>
-        [ParameterValue("GET_CONFIG")]
-        GettingConfiguration,
+        Connecting = 1,
 
         /// <summary>
         /// Assigning IP address to virtual network interface
         /// </summary>
         [ParameterValue("ASSIGN_IP")]
-        AssigningIP,
+        AssigningIP = 2,
 
         /// <summary>
         /// Adding routes to system
         /// </summary>
         [ParameterValue("ADD_ROUTES")]
-        AddingRoutes,
+        AddingRoutes = 3,
 
         /// <summary>
         /// Initialization Sequence Completed
         /// </summary>
         [ParameterValue("CONNECTED")]
-        Connected,
+        Connected = 4,
 
         /// <summary>
         /// A restart has occurred
         /// </summary>
         [ParameterValue("RECONNECTING")]
-        Reconnecting,
+        Reconnecting = 5,
 
         /// <summary>
         /// A graceful exit is in progress
         /// </summary>
         [ParameterValue("EXITING")]
-        Exiting,
+        Exiting = 6,
 
         /// <summary>
-        /// OpenVPN reported fatal error
+        /// Waiting for initial response from server (Client only)
         /// </summary>
-        FatalError,
+        [ParameterValue("WAIT")]
+        Waiting = 7,
+
+        /// <summary>
+        /// Authenticating with server (Client only)
+        /// </summary>
+        [ParameterValue("AUTH")]
+        Authenticating = 8,
+
+        /// <summary>
+        /// Downloading configuration options from server (Client only)
+        /// </summary>
+        [ParameterValue("GET_CONFIG")]
+        GettingConfiguration = 9,
+
+        /// <summary>
+        /// DNS lookup (Client only)
+        /// </summary>
+        [ParameterValue("RESOLVE")]
+        Resolving = 10,
+
+        /// <summary>
+        /// Connecting to TCP server (Client only)
+        /// </summary>
+        [ParameterValue("TCP_CONNECT")]
+        TcpConnecting = 11,
     }
 }
