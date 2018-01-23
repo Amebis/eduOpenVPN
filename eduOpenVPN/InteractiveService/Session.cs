@@ -79,12 +79,14 @@ namespace eduOpenVPN.InteractiveService
                 writer.Write((char)0);
 
                 try { _stream.WriteAsync(msg_stream.GetBuffer(), 0, (int)msg_stream.Length).Wait(ct); }
+                catch (OperationCanceledException) { throw; }
                 catch (AggregateException ex) { throw ex.InnerException; }
             }
 
             // Read and analyse status.
             var status_task = ReadStatusAsync();
             try { status_task.Wait(ct); }
+            catch (OperationCanceledException) { throw; }
             catch (AggregateException ex) { throw ex.InnerException; }
             if (status_task.Result is StatusError status_err && status_err.Code != 0)
                 throw new InteractiveServiceException(status_err.Code, status_err.Function, status_err.Message);
