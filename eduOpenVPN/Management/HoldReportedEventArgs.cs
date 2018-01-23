@@ -7,6 +7,9 @@
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>HoldReported</c> event arguments
+    /// </summary>
     public class HoldReportedEventArgs : MessageReportedEventArgs
     {
         #region Properties

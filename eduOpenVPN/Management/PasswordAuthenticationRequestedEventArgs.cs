@@ -9,6 +9,9 @@ using System.Security;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// Authentication events base class
+    /// </summary>
     public class PasswordAuthenticationRequestedEventArgs : AuthenticationEventArgs
     {
         #region Properties

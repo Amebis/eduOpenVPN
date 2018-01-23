@@ -9,6 +9,9 @@ using System;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>LogReported</c> event arguments
+    /// </summary>
     public class LogReportedEventArgs : TimestampedEventArgs
     {
         #region Properties

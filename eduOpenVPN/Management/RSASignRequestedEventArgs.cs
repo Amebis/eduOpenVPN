@@ -9,6 +9,9 @@ using System;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>RSASignRequested</c> event arguments
+    /// </summary>
     public class RSASignRequestedEventArgs : EventArgs
     {
         #region Properties
@@ -19,7 +22,7 @@ namespace eduOpenVPN.Management
         public byte[] Data { get; }
 
         /// <summary>
-        /// PKCS#1 v1.5 signature of <paramref name="Data"/>
+        /// PKCS#1 v1.5 signature of <c>Data</c> property
         /// </summary>
         public byte[] Signature { get; set; }
 

@@ -10,6 +10,9 @@ using System.Net;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>StateReported</c> event arguments
+    /// </summary>
     public class StateReportedEventArgs : TimestampedEventArgs
     {
         #region Properties

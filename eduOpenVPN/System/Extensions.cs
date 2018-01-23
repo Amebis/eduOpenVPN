@@ -12,6 +12,9 @@ using System.Reflection;
 
 namespace System
 {
+    /// <summary>
+    /// <c>System</c> namespace extension methods
+    /// </summary>
     public static class Extensions
     {
         /// <summary>

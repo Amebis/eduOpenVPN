@@ -9,6 +9,9 @@ using System;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// Message event arguments base class
+    /// </summary>
     public class MessageReportedEventArgs : EventArgs
     {
         #region Properties

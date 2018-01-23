@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace System.IO
 {
+    /// <summary>
+    /// <c>System.IO</c> namespace extension methods
+    /// </summary>
     public static class Extensions
     {
         /// <summary>

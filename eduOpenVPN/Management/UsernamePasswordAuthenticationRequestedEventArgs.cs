@@ -7,6 +7,9 @@
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// Username and password authentication request event arguments
+    /// </summary>
     public class UsernamePasswordAuthenticationRequestedEventArgs : PasswordAuthenticationRequestedEventArgs
     {
         #region Properties

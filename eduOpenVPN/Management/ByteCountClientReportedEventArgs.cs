@@ -7,6 +7,9 @@
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>ByteCountClientReported</c> event arguments
+    /// </summary>
     public class ByteCountClientReportedEventArgs : ByteCountReportedEventArgs
     {
         #region Properties

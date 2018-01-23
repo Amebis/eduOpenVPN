@@ -9,6 +9,9 @@ using System;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>ByteCountReported</c> event arguments
+    /// </summary>
     public class ByteCountReportedEventArgs : EventArgs
     {
         #region Properties

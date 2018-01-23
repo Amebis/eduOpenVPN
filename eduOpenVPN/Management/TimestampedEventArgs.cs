@@ -9,6 +9,9 @@ using System;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// Timestamped event arguments base class
+    /// </summary>
     public class TimestampedEventArgs : EventArgs
     {
         #region Properties

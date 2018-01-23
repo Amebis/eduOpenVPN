@@ -7,6 +7,9 @@
 
 namespace eduOpenVPN
 {
+    /// <summary>
+    /// OpenVPN authentication retry policy
+    /// </summary>
     public enum AuthRetryType
     {
         /// <summary>

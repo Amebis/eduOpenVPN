@@ -10,7 +10,10 @@ using System.Collections.Generic;
 
 namespace eduOpenVPN
 {
-    public class Configuration
+    /// <summary>
+    /// OpenVPN configuration management helper class
+    /// </summary>
+    public static class Configuration
     {
         /// <summary>
         /// Escapes value string to be used as a parameter in OpenVPN configuration file (.ovpn)

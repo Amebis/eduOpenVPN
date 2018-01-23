@@ -96,7 +96,14 @@ namespace eduOpenVPN.Management
         /// </summary>
         public class CombinedCommands
         {
+            /// <summary>
+            /// First command
+            /// </summary>
             public SingleCommand first;
+
+            /// <summary>
+            /// Second command
+            /// </summary>
             public MultilineCommand second;
         }
 

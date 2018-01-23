@@ -7,6 +7,9 @@
 
 namespace eduOpenVPN
 {
+    /// <summary>
+    /// OpenVPN protocol
+    /// </summary>
     public enum ProtoType
     {
         /// <summary>

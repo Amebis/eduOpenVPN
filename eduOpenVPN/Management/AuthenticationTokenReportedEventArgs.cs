@@ -10,6 +10,9 @@ using System.Security;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>AuthenticationTokenReported</c> event arguments
+    /// </summary>
     public class AuthenticationTokenReportedEventArgs : EventArgs, IDisposable
     {
         #region Properties

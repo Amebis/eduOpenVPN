@@ -10,6 +10,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace eduOpenVPN.Management
 {
+    /// <summary>
+    /// <c>CertificateRequested</c> event arguments
+    /// </summary>
     public class CertificateRequestedEventArgs : EventArgs
     {
         #region Properties
