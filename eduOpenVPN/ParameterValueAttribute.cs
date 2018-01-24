@@ -42,10 +42,10 @@ namespace eduOpenVPN
         #region Methods
 
         /// <summary>
-        /// Looks-up enum by <c>ParameterValueAttribute</c> value
+        /// Looks-up enum by <see cref="ParameterValueAttribute"/> value
         /// </summary>
         /// <typeparam name="T">Enum type</typeparam>
-        /// <param name="value"><c>ParameterValueAttribute</c> value</param>
+        /// <param name="value"><see cref="ParameterValueAttribute"/> value</param>
         /// <param name="result">Resulting enum</param>
         /// <returns><c>true</c> if enum found; <c>false</c> otherwise</returns>
         public static bool TryGetEnumByParameterValueAttribute<T>(string value, out T result)
@@ -66,12 +66,12 @@ namespace eduOpenVPN
         }
 
         /// <summary>
-        /// Looks-up enum by <c>ParameterValueAttribute</c> value
+        /// Looks-up enum by <see cref="ParameterValueAttribute"/> value
         /// </summary>
         /// <typeparam name="T">Enum type</typeparam>
-        /// <param name="value"><c>ParameterValueAttribute</c> value</param>
+        /// <param name="value"><see cref="ParameterValueAttribute"/> value</param>
         /// <returns>Resulting enum</returns>
-        /// <exception cref="ArgumentException">No enum with <paramref name="value"/> as <c>ParameterValueAttribute</c> found</exception>
+        /// <exception cref="ArgumentException">No enum with <paramref name="value"/> as <see cref="ParameterValueAttribute"/> found</exception>
         public static T GetEnumByParameterValueAttribute<T>(string value)
         {
             if (TryGetEnumByParameterValueAttribute<T>(value, out var result))

@@ -10,7 +10,7 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>EchoReceived</c> event arguments
+    /// <see cref="Session.EchoReceived"/> event arguments
     /// </summary>
     public class EchoReceivedEventArgs : TimestampedEventArgs
     {

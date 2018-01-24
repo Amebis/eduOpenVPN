@@ -13,7 +13,7 @@ using System.Reflection;
 namespace System
 {
     /// <summary>
-    /// <c>System</c> namespace extension methods
+    /// <see cref="System"/> namespace extension methods
     /// </summary>
     public static class Extensions
     {
@@ -49,7 +49,7 @@ namespace System
         }
 
         /// <summary>
-        /// Returns <c>ParameterValueAttribute</c> attribute value
+        /// Returns <see cref="ParameterValueAttribute"/> attribute value
         /// </summary>
         /// <param name="value">Enum</param>
         /// <returns>String with attribute value or stringized <paramref name="value"/></returns>

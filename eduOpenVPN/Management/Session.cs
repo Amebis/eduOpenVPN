@@ -34,8 +34,20 @@ namespace eduOpenVPN.Management
             public EventWaitHandle Finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             #region IDisposable Support
-            private bool disposedValue = false; // To detect redundant calls
+            /// <summary>
+            /// Flag to detect redundant <see cref="Dispose(bool)"/> calls.
+            /// </summary>
+            private bool disposedValue = false;
 
+            /// <summary>
+            /// Called to dispose the object.
+            /// </summary>
+            /// <param name="disposing">Dispose managed objects</param>
+            /// <remarks>
+            /// To release resources for inherited classes, override this method.
+            /// Call <c>base.Dispose(disposing)</c> within it to release parent class resources, and release child class resources if <paramref name="disposing"/> parameter is <c>true</c>.
+            /// This method can get called multiple times for the same object instance. When the child specific resources should be released only once, introduce a flag to detect redundant calls.
+            /// </remarks>
             protected virtual void Dispose(bool disposing)
             {
                 if (!disposedValue)
@@ -50,7 +62,13 @@ namespace eduOpenVPN.Management
                 }
             }
 
-            // This code added to correctly implement the disposable pattern.
+            /// <summary>
+            /// Performs application-defined tasks associated with freeing, releasing, or resetting resources.
+            /// </summary>
+            /// <remarks>
+            /// This method calls <see cref="Dispose(bool)"/> with <c>disposing</c> parameter set to <c>true</c>.
+            /// To implement resource releasing override the <see cref="Dispose(bool)"/> method.
+            /// </remarks>
             public void Dispose()
             {
                 // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -211,7 +229,7 @@ namespace eduOpenVPN.Management
         #region Fields
 
         /// <summary>
-        /// Used to convert Unix timestamps into <c>DateTimeOffset</c>
+        /// Used to convert Unix timestamps into <see cref="DateTimeOffset"/>
         /// </summary>
         private static readonly DateTimeOffset _epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
 
@@ -270,91 +288,91 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Raised when BYTECOUNT real-time message is received
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<ByteCountReportedEventArgs> ByteCountReported;
 
         /// <summary>
         /// Raised when BYTECOUNT_CLI real-time message is received
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<ByteCountClientReportedEventArgs> ByteCountClientReported;
 
         /// <summary>
         /// Raised when an echo command is received
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<EchoReceivedEventArgs> EchoReceived;
 
         /// <summary>
         /// Raised when OpenVPN reports fatal error
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<MessageReportedEventArgs> FatalErrorReported;
 
         /// <summary>
         /// Raised when OpenVPN is in a hold state
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<HoldReportedEventArgs> HoldReported;
 
         /// <summary>
         /// Raised when OpenVPN reports informative message
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<MessageReportedEventArgs> InfoReported;
 
         /// <summary>
         /// Raised when a log entry is received
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<LogReportedEventArgs> LogReported;
 
         /// <summary>
         /// Raised when openvpn.exe requires a certificate
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<CertificateRequestedEventArgs> CertificateRequested;
 
         /// <summary>
         /// Raised when password is needed
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<PasswordAuthenticationRequestedEventArgs> PasswordAuthenticationRequested;
 
         /// <summary>
         /// Raised when username and password is needed
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<UsernamePasswordAuthenticationRequestedEventArgs> UsernamePasswordAuthenticationRequested;
 
         /// <summary>
         /// Raised when authentication failed
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<AuthenticationEventArgs> AuthenticationFailed;
 
         /// <summary>
         /// Raised when authentication token received
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<AuthenticationTokenReportedEventArgs> AuthenticationTokenReported;
 
         /// <summary>
         /// Raised when remote endpoint is needed
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<RemoteReportedEventArgs> RemoteReported;
 
         /// <summary>
         /// Raised when RSA data signing is required
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<RSASignRequestedEventArgs> RSASignRequested;
 
         /// <summary>
         /// Raised when OpenVPN's initial state is reported
         /// </summary>
-        /// <remarks>Sender is the OpenVPN management session <c>eduOpenVPN.Management.Session</c>.</remarks>
+        /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
         public event EventHandler<StateReportedEventArgs> StateReported;
 
         #endregion
@@ -398,7 +416,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Starts an OpenVPN Management console session
         /// </summary>
-        /// <param name="stream"><c>NetworkStream</c> of already established connection</param>
+        /// <param name="stream"><see cref="NetworkStream"/> of already established connection</param>
         /// <param name="password">OpenVPN Management interface password</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <exception cref="UnexpectedReplyException">OpenVPN Management did not start conversation with <c>&quot;ENTER PASSWORD:&quot;</c>.</exception>
@@ -1329,8 +1347,20 @@ namespace eduOpenVPN.Management
         #endregion
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        /// <summary>
+        /// Flag to detect redundant <see cref="Dispose(bool)"/> calls.
+        /// </summary>
+        private bool disposedValue = false;
 
+        /// <summary>
+        /// Called to dispose the object.
+        /// </summary>
+        /// <param name="disposing">Dispose managed objects</param>
+        /// <remarks>
+        /// To release resources for inherited classes, override this method.
+        /// Call <c>base.Dispose(disposing)</c> within it to release parent class resources, and release child class resources if <paramref name="disposing"/> parameter is <c>true</c>.
+        /// This method can get called multiple times for the same object instance. When the child specific resources should be released only once, introduce a flag to detect redundant calls.
+        /// </remarks>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -1348,7 +1378,13 @@ namespace eduOpenVPN.Management
             }
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting resources.
+        /// </summary>
+        /// <remarks>
+        /// This method calls <see cref="Dispose(bool)"/> with <c>disposing</c> parameter set to <c>true</c>.
+        /// To implement resource releasing override the <see cref="Dispose(bool)"/> method.
+        /// </remarks>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

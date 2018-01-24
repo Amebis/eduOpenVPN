@@ -10,7 +10,7 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>RSASignRequested</c> event arguments
+    /// <see cref="Session.RSASignRequested"/> event arguments
     /// </summary>
     public class RSASignRequestedEventArgs : EventArgs
     {
@@ -22,7 +22,7 @@ namespace eduOpenVPN.Management
         public byte[] Data { get; }
 
         /// <summary>
-        /// PKCS#1 v1.5 signature of <c>Data</c> property
+        /// PKCS#1 v1.5 signature of <see cref="Data"/> property
         /// </summary>
         public byte[] Signature { get; set; }
 

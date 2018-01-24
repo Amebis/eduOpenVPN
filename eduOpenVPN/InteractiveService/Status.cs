@@ -57,7 +57,7 @@ namespace eduOpenVPN.InteractiveService
         /// Parses OpenVPN Interactive Service response
         /// </summary>
         /// <param name="response">OpenVPN Interactive Service response</param>
-        /// <returns><c>Status</c> or one of its derived class representing status</returns>
+        /// <returns><see cref="Status"/> or one of its derived class representing status</returns>
         public static Status FromResponse(string response)
         {
             var msg = response.Replace("\r\n", "\n").Split('\n');

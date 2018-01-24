@@ -8,7 +8,7 @@
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>HoldReported</c> event arguments
+    /// <see cref="Session.HoldReported"/> event arguments
     /// </summary>
     public class HoldReportedEventArgs : MessageReportedEventArgs
     {

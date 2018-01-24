@@ -23,7 +23,7 @@ namespace eduOpenVPN
         SIGTERM = 15,
 
         /// <summary>
-        /// <para>Like <c>SIGHUP</c>, except don't re-read configuration file, and possibly don't close and reopen TUN/TAP device,
+        /// <para>Like <see cref="SIGHUP"/>, except don't re-read configuration file, and possibly don't close and reopen TUN/TAP device,
         /// re-read key files, preserve local IP address/port, or preserve most recently authenticated remote IP address/port
         /// based on <c>--persist-tun</c>, <c>--persist-key</c>, <c>--persist-local-ip</c>, and <c>--persist-remote-ip</c> options
         /// respectively (see above).</para>

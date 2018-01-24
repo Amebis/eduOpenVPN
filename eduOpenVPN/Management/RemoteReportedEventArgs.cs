@@ -10,7 +10,7 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>RemoteReported</c> event arguments
+    /// <see cref="Session.RemoteReported"/> event arguments
     /// </summary>
     public class RemoteReportedEventArgs : EventArgs
     {

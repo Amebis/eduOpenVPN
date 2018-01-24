@@ -137,7 +137,7 @@ namespace eduOpenVPN
         }
 
         /// <summary>
-        /// <c>ParseParams</c> internal state
+        /// <see cref="ParseParams"/> internal state
         /// </summary>
         private enum ParseParamsState
         {

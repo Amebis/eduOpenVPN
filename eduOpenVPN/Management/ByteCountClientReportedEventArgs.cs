@@ -8,7 +8,7 @@
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>ByteCountClientReported</c> event arguments
+    /// <see cref="Session.ByteCountClientReported"/> event arguments
     /// </summary>
     public class ByteCountClientReportedEventArgs : ByteCountReportedEventArgs
     {

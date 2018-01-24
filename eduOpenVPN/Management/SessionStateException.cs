@@ -17,6 +17,10 @@ namespace eduOpenVPN.Management
     {
         #region Constructors
 
+        /// <summary>
+        /// Constructs an exception
+        /// </summary>
+        /// <param name="message">Exception message</param>
         public SessionStateException(string message) :
             base(message)
         {

@@ -11,7 +11,7 @@ using System.Net;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>StateReported</c> event arguments
+    /// <see cref="Session.StateReported"/> event arguments
     /// </summary>
     public class StateReportedEventArgs : TimestampedEventArgs
     {

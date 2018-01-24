@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 namespace System.IO
 {
     /// <summary>
-    /// <c>System.IO</c> namespace extension methods
+    /// <see cref="IO"/> namespace extension methods
     /// </summary>
     public static class Extensions
     {
         /// <summary>
-        /// Writes array of bytes to the <c>Stream</c>
+        /// Writes array of bytes to the <see cref="Stream"/>
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to write to the <paramref name="stream"/></param>
         [DebuggerStepThrough]
         public static void Write(this Stream stream, byte[] buffer)
         {
@@ -28,10 +28,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Writes array of bytes to the <c>Stream</c> asynchronously
+        /// Writes array of bytes to the <see cref="Stream"/> asynchronously
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to write to the <paramref name="stream"/></param>
         [DebuggerStepThrough]
         public static Task WriteAsync(this Stream stream, byte[] buffer)
         {
@@ -39,11 +39,11 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Writes array of bytes to the <c>Stream</c> asynchronously
+        /// Writes array of bytes to the <see cref="Stream"/> asynchronously
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to write to the <c>Stream</c></param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <c>None</c>.</param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to write to the <paramref name="stream"/></param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/></param>
         [DebuggerStepThrough]
         public static Task WriteAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken)
         {
@@ -51,10 +51,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Reads array of bytes from the <c>Stream</c>
+        /// Reads array of bytes from the <see cref="Stream"/>
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to read from the <see cref="Stream"/></param>
         [DebuggerStepThrough]
         public static int Read(this Stream stream, byte[] buffer)
         {
@@ -62,10 +62,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Reads array of bytes from the <c>Stream</c> asynchronously
+        /// Reads array of bytes from the <see cref="Stream"/> asynchronously
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to read from the <see cref="Stream"/></param>
         [DebuggerStepThrough]
         public static Task<int> ReadAsync(this Stream stream, byte[] buffer)
         {
@@ -73,11 +73,11 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Reads array of bytes from the <c>Stream</c> asynchronously
+        /// Reads array of bytes from the <see cref="Stream"/> asynchronously
         /// </summary>
         /// <param name="stream">Stream</param>
-        /// <param name="buffer">An array of type <c>Byte</c> that contains the data to read from the <c>Stream</c></param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <c>None</c>.</param>
+        /// <param name="buffer">An array of type <see cref="Byte"/> that contains the data to read from the <see cref="Stream"/></param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
         [DebuggerStepThrough]
         public static Task<int> ReadAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken)
         {
@@ -85,10 +85,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Writes array of bytes to the <c>StreamWriter</c>
+        /// Writes array of bytes to the <see cref="StreamWriter"/>
         /// </summary>
         /// <param name="writer">StreamWriter</param>
-        /// <param name="buffer">An array of type <c>char</c> that contains the data to write to the <c>StreamWriter</c></param>
+        /// <param name="buffer">An array of type <see cref="char"/> that contains the data to write to the <see cref="StreamWriter"/></param>
         [DebuggerStepThrough]
         public static void Write(this StreamWriter writer, char[] buffer)
         {
@@ -96,10 +96,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Writes array of bytes to the <c>StreamWriter</c> asynchronously
+        /// Writes array of bytes to the <see cref="StreamWriter"/> asynchronously
         /// </summary>
         /// <param name="writer">StreamWriter</param>
-        /// <param name="buffer">An array of type <c>char</c> that contains the data to write to the <c>StreamWriter</c></param>
+        /// <param name="buffer">An array of type <see cref="char"/> that contains the data to write to the <see cref="StreamWriter"/></param>
         [DebuggerStepThrough]
         public static Task WriteAsync(this StreamWriter writer, char[] buffer)
         {
@@ -107,10 +107,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Reads array of bytes from the <c>StreamReader</c>
+        /// Reads array of bytes from the <see cref="StreamReader"/>
         /// </summary>
         /// <param name="reader">StreamReader</param>
-        /// <param name="buffer">An array of type <c>char</c> that contains the data to read from the <c>StreamReader</c></param>
+        /// <param name="buffer">An array of type <see cref="char"/> that contains the data to read from the <see cref="StreamReader"/></param>
         [DebuggerStepThrough]
         public static int Read(this StreamReader reader, char[] buffer)
         {
@@ -118,10 +118,10 @@ namespace System.IO
         }
 
         /// <summary>
-        /// Reads array of bytes from the <c>StreamReader</c> asynchronously
+        /// Reads array of bytes from the <see cref="StreamReader"/> asynchronously
         /// </summary>
         /// <param name="reader">StreamReader</param>
-        /// <param name="buffer">An array of type <c>char</c> that contains the data to read from the <c>StreamReader</c></param>
+        /// <param name="buffer">An array of type <see cref="char"/> that contains the data to read from the <see cref="StreamReader"/></param>
         [DebuggerStepThrough]
         public static Task<int> ReadAsync(this StreamReader reader, char[] buffer)
         {

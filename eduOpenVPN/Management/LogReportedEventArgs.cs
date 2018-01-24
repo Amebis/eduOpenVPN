@@ -10,7 +10,7 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>LogReported</c> event arguments
+    /// <see cref="Session.LogReported"/> event arguments
     /// </summary>
     public class LogReportedEventArgs : TimestampedEventArgs
     {

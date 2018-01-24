@@ -10,7 +10,7 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>ByteCountReported</c> event arguments
+    /// <see cref="Session.ByteCountReported"/> event arguments
     /// </summary>
     public class ByteCountReportedEventArgs : EventArgs
     {

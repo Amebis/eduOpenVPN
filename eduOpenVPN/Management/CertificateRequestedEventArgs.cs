@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <c>CertificateRequested</c> event arguments
+    /// <see cref="Session.CertificateRequested"/> event arguments
     /// </summary>
     public class CertificateRequestedEventArgs : EventArgs
     {
