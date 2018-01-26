@@ -5,6 +5,8 @@
     SPDX-License-Identifier: GPL-3.0+
 */
 
+using System;
+
 namespace eduOpenVPN.Management
 {
     /// <summary>
@@ -46,7 +48,7 @@ namespace eduOpenVPN.Management
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Format("MOD {0} {1:D}", Configuration.EscapeParamValue(Host), Port);
+            return String.Format("MOD {0} {1:D}", Configuration.EscapeParamValue(Host), Port);
         }
 
         #endregion
