@@ -460,6 +460,14 @@ namespace eduOpenVPN.Management
 
                             ct.ThrowIfCancellationRequested();
 
+                            if (line == null)
+                            {
+                                // The OpenVPN Management Interface closed the connection after reporting ">FATAL".
+                                // Keep the thread for client to display error and to allow user to examine OpenVPN log.
+                                ct.WaitHandle.WaitOne();
+                                throw new OperationCanceledException();
+                            }
+
                             if (line.Length > 0 && line[0] == '>')
                             {
                                 // Real-time notification message.
