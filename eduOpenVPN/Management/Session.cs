@@ -425,18 +425,17 @@ namespace eduOpenVPN.Management
         {
             _stream = stream;
             var reader = new StreamReader(_stream, Encoding.UTF8, false);
+            var service_ready = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             if (password != null)
             {
-                {
-                    // Read the password prompt.
-                    var buffer = new char[15];
-                    var read_task = reader.ReadBlockAsync(buffer, 0, buffer.Length);
-                    try { read_task.Wait(ct); }
-                    catch (AggregateException ex) { throw ex.InnerException; }
-                    if (buffer.Length < 15 || new String(buffer) != "ENTER PASSWORD:")
-                        throw new UnexpectedReplyException(new String(buffer));
-                }
+                // Read the password prompt.
+                var buffer = new char[15];
+                var read_task = reader.ReadBlockAsync(buffer, 0, buffer.Length);
+                try { read_task.Wait(ct); }
+                catch (AggregateException ex) { throw ex.InnerException; }
+                if (buffer.Length < 15 || new String(buffer) != "ENTER PASSWORD:")
+                    throw new UnexpectedReplyException(new String(buffer));
             }
 
             _commands = new Queue<Command>();
@@ -516,6 +515,8 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "INFO":
+                                        // Interactive service is ready only after it reports ">INFO".
+                                        service_ready.Set();
                                         InfoReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
                                         break;
 
@@ -699,8 +700,14 @@ namespace eduOpenVPN.Management
                 // Send the password.
                 var cmd_result = new SingleCommand();
                 SendCommand(password, cmd_result, ct);
-                WaitForResult(cmd_result, ct);
+                WaitFor(cmd_result, ct);
             }
+
+            // Wait for the interactive service to become ready.
+            WaitFor(service_ready, ct);
+
+            // Wait for additional 100ms. Like OpenVPN GUI does.
+            WaitFor(100, ct);
         }
 
         /// <summary>
@@ -711,7 +718,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string SetByteCount(int n, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueSetByteCount(n, ct), ct);
+            return WaitFor(QueueSetByteCount(n, ct), ct);
         }
 
         /// <summary>
@@ -735,7 +742,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string EnableEcho(bool enable, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueEnableEcho(enable, ct), ct);
+            return WaitFor(QueueEnableEcho(enable, ct), ct);
         }
 
         /// <summary>
@@ -757,7 +764,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayEcho(CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayEcho(ct), ct);
+            WaitFor(QueueReplayEcho(ct), ct);
         }
 
         /// <summary>
@@ -779,7 +786,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string ReplayAndEnableEcho(CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueReplayAndEnableEcho(ct), ct);
+            return WaitFor(QueueReplayAndEnableEcho(ct), ct);
         }
 
         /// <summary>
@@ -804,7 +811,7 @@ namespace eduOpenVPN.Management
         {
             var cmd_result = new SingleCommand();
             SendCommand("hold", cmd_result, ct);
-            var result = WaitForResult(cmd_result, ct);
+            var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("hold="))
                 return (uint)new UInt32Converter().ConvertFromString(result.Substring(5)) != 0;
             else
@@ -819,7 +826,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string EnableHold(bool enable, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueEnableHold(enable, ct), ct);
+            return WaitFor(QueueEnableHold(enable, ct), ct);
         }
 
         /// <summary>
@@ -842,7 +849,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string ReleaseHold(CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueReleaseHold(ct), ct);
+            return WaitFor(QueueReleaseHold(ct), ct);
         }
 
         /// <summary>
@@ -865,7 +872,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string EnableLog(bool enable, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueEnableLog(enable, ct), ct);
+            return WaitFor(QueueEnableLog(enable, ct), ct);
         }
 
         /// <summary>
@@ -888,7 +895,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayLog(int n, CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayLog(n, ct), ct);
+            WaitFor(QueueReplayLog(n, ct), ct);
         }
 
         /// <summary>
@@ -910,7 +917,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayLog(CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayLog(ct), ct);
+            WaitFor(QueueReplayLog(ct), ct);
         }
 
         /// <summary>
@@ -932,7 +939,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string ReplayAndEnableLog(CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueReplayAndEnableLog(ct), ct);
+            return WaitFor(QueueReplayAndEnableLog(ct), ct);
         }
 
         /// <summary>
@@ -957,7 +964,7 @@ namespace eduOpenVPN.Management
         {
             var cmd_result = new SingleCommand();
             SendCommand("mute", cmd_result, ct);
-            var result = WaitForResult(cmd_result, ct);
+            var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("mute="))
                 return (int)new Int32Converter().ConvertFromString(result.Substring(5));
             else
@@ -972,7 +979,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string SetMute(int n, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueSetMute(n, ct), ct);
+            return WaitFor(QueueSetMute(n, ct), ct);
         }
 
         /// <summary>
@@ -998,7 +1005,7 @@ namespace eduOpenVPN.Management
         {
             var cmd_result = new SingleCommand();
             SendCommand("pid", cmd_result, ct);
-            var result = WaitForResult(cmd_result, ct);
+            var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("pid="))
                 return (int)new Int32Converter().ConvertFromString(result.Substring(4));
             else
@@ -1012,7 +1019,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string ForgetPasswords(CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueForgetPasswords(ct), ct);
+            return WaitFor(QueueForgetPasswords(ct), ct);
         }
 
         /// <summary>
@@ -1035,7 +1042,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string SendSignal(SignalType signal, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueSendSignal(signal, ct), ct);
+            return WaitFor(QueueSendSignal(signal, ct), ct);
         }
 
         /// <summary>
@@ -1057,7 +1064,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayCurrentState(CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayCurrentState(ct), ct);
+            WaitFor(QueueReplayCurrentState(ct), ct);
         }
 
         /// <summary>
@@ -1080,7 +1087,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string EnableState(bool enable, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueEnableState(enable, ct), ct);
+            return WaitFor(QueueEnableState(enable, ct), ct);
         }
 
         /// <summary>
@@ -1102,7 +1109,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayState(CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayState(ct), ct);
+            WaitFor(QueueReplayState(ct), ct);
         }
 
         /// <summary>
@@ -1124,7 +1131,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void ReplayState(int n, CancellationToken ct = default(CancellationToken))
         {
-            WaitForResult(QueueReplayState(n, ct), ct);
+            WaitFor(QueueReplayState(n, ct), ct);
         }
 
         /// <summary>
@@ -1147,7 +1154,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string ReplayAndEnableState(CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueReplayAndEnableState(ct), ct);
+            return WaitFor(QueueReplayAndEnableState(ct), ct);
         }
 
         /// <summary>
@@ -1172,7 +1179,7 @@ namespace eduOpenVPN.Management
         {
             var cmd_result = new SingleCommand();
             SendCommand("verb", cmd_result, ct);
-            var result = WaitForResult(cmd_result, ct);
+            var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("verb="))
                 return (int)new Int32Converter().ConvertFromString(result.Substring(5));
             else
@@ -1187,7 +1194,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string SetVerbosity(int n, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueSetVerbosity(n, ct), ct);
+            return WaitFor(QueueSetVerbosity(n, ct), ct);
         }
 
         /// <summary>
@@ -1212,7 +1219,7 @@ namespace eduOpenVPN.Management
         {
             var cmd = new VersionCommand();
             SendCommand("version", cmd, ct);
-            WaitForResult(cmd, ct);
+            WaitFor(cmd, ct);
             return cmd.Version;
         }
 
@@ -1224,7 +1231,7 @@ namespace eduOpenVPN.Management
         /// <returns>Command response</returns>
         public string SetAuthenticationRetry(AuthRetryType auth_retry, CancellationToken ct = default(CancellationToken))
         {
-            return WaitForResult(QueueSetAuthenticationRetry(auth_retry, ct), ct);
+            return WaitFor(QueueSetAuthenticationRetry(auth_retry, ct), ct);
         }
 
         /// <summary>
@@ -1241,20 +1248,48 @@ namespace eduOpenVPN.Management
         }
 
         /// <summary>
+        /// Waits for the event
+        /// </summary>
+        /// <param name="wait_handle">Event to wait for</param>
+        /// <param name="ct">The token to monitor for cancellation requests</param>
+        /// <exception cref="OperationCanceledException">The <paramref name="ct"/> was set.</exception>
+        /// <exception cref="MonitorTerminatedException">Monitor terminated prematurely.</exception>
+        private void WaitFor(WaitHandle wait_handle, CancellationToken ct = default(CancellationToken))
+        {
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, wait_handle }))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
+        }
+
+        /// <summary>
+        /// Waits for the amount of time
+        /// </summary>
+        /// <param name="timeout">Timeout to wait for in milliseconds (-1 for indefinite)</param>
+        /// <param name="ct">The token to monitor for cancellation requests</param>
+        /// <exception cref="OperationCanceledException">The <paramref name="ct"/> was set.</exception>
+        /// <exception cref="MonitorTerminatedException">Monitor terminated prematurely.</exception>
+        private void WaitFor(int timeout, CancellationToken ct = default(CancellationToken))
+        {
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished }, timeout))
+            {
+                case 0: throw new OperationCanceledException();
+                case 1: throw new MonitorTerminatedException(_error);
+            }
+        }
+
+        /// <summary>
         /// Waits for the command to finish and return its result
         /// </summary>
         /// <param name="cmd_result">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Command response</returns>
         /// <exception cref="CommandException">Command failed</exception>
-        private string WaitForResult(SingleCommand cmd_result, CancellationToken ct = default(CancellationToken))
+        private string WaitFor(SingleCommand cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the command to finish.
-            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.Finished }))
-            {
-                case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_error);
-            }
+            WaitFor(cmd_result.Finished);
 
             if (cmd_result.Success)
                 return cmd_result.Response;
@@ -1267,14 +1302,10 @@ namespace eduOpenVPN.Management
         /// </summary>
         /// <param name="cmd_result">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        private void WaitForResult(MultilineCommand cmd_result, CancellationToken ct = default(CancellationToken))
+        private void WaitFor(MultilineCommand cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the command to finish.
-            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.Finished }))
-            {
-                case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_error);
-            }
+            WaitFor(cmd_result.Finished);
         }
 
         /// <summary>
@@ -1284,14 +1315,10 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Command response</returns>
         /// <exception cref="CommandException">Command failed</exception>
-        private string WaitForResult(CombinedCommands cmd_result, CancellationToken ct = default(CancellationToken))
+        private string WaitFor(CombinedCommands cmd_result, CancellationToken ct = default(CancellationToken))
         {
             // Await for the second command to finish.
-            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, cmd_result.second.Finished }))
-            {
-                case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_error);
-            }
+            WaitFor(cmd_result.second.Finished);
 
             if (cmd_result.first.Success)
                 return cmd_result.first.Response;
