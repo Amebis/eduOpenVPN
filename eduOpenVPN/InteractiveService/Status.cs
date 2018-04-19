@@ -7,6 +7,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace eduOpenVPN.InteractiveService
 {
@@ -21,12 +22,16 @@ namespace eduOpenVPN.InteractiveService
         /// OpenVPN Interactive Service status code
         /// </summary>
         public uint Code { get => _code; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private uint _code;
 
         /// <summary>
         /// OpenVPN Interactive Service message (optional)
         /// </summary>
         public string Message { get => _message; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string _message;
 
         #endregion

@@ -28,12 +28,16 @@ namespace eduOpenVPN.InteractiveService
         /// Named pipe stream to OpenVPN Interactive Service
         /// </summary>
         public NamedPipeClientStream Stream { get => _stream; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private NamedPipeClientStream _stream;
 
         /// <summary>
         /// openvpn.exe process ID
         /// </summary>
         public int ProcessID { get => _process_id; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int _process_id;
 
         #endregion

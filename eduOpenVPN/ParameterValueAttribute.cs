@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -22,6 +23,8 @@ namespace eduOpenVPN
         /// Attribute value
         /// </summary>
         public string Value { get => _value; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string _value;
 
         #endregion

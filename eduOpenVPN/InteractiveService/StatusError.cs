@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Diagnostics;
 
 namespace eduOpenVPN.InteractiveService
 {
@@ -20,6 +21,8 @@ namespace eduOpenVPN.InteractiveService
         /// OpenVPN Interactive Service function
         /// </summary>
         public string Function { get => _function; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string _function;
 
         #endregion

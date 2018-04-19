@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Diagnostics;
 
 namespace eduOpenVPN.InteractiveService
 {
@@ -20,6 +21,8 @@ namespace eduOpenVPN.InteractiveService
         /// openvpn.exe process ID
         /// </summary>
         public int ProcessID { get => _process_id; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int _process_id;
 
         #endregion

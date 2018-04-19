@@ -22,6 +22,8 @@ namespace eduOpenVPN.Management
         /// Authentication token
         /// </summary>
         public SecureString Token { get => _token; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private SecureString _token;
 
         #endregion

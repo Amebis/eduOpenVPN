@@ -214,15 +214,14 @@ namespace eduOpenVPN.Management
             /// <summary>
             /// OpenVPN version
             /// </summary>
-            public Dictionary<string, string> Version { get => _version; }
-            private Dictionary<string, string> _version = new Dictionary<string, string>();
+            public Dictionary<string, string> Version { get; } = new Dictionary<string, string>();
 
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
                 var fields = data.Split(_msg_separators, 1 + 1);
                 if (fields.Length >= 1)
-                    _version[fields[0]] = fields.Length >= 2 ? fields[1].Trim() : null;
+                    Version[fields[0]] = fields.Length >= 2 ? fields[1].Trim() : null;
             }
         }
 
@@ -277,18 +276,24 @@ namespace eduOpenVPN.Management
         /// Network stream to OpenVPN Management console
         /// </summary>
         public NetworkStream Stream { get => _stream; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private NetworkStream _stream;
 
         /// <summary>
         /// Session monitor
         /// </summary>
         public Thread Monitor { get => _monitor; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Thread _monitor;
 
         /// <summary>
         /// Session monitor error
         /// </summary>
         public Exception Error { get => _error; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Exception _error;
 
         /// <summary>
