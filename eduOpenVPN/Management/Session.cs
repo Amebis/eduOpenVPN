@@ -256,6 +256,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Lock to serialize command submission
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private object _command_lock;
 
         /// <summary>
