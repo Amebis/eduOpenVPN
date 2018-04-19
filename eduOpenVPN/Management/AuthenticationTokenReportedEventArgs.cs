@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.Security;
 
 namespace eduOpenVPN.Management
@@ -42,6 +43,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Flag to detect redundant <see cref="Dispose(bool)"/> calls.
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool disposedValue = false;
 
         /// <summary>

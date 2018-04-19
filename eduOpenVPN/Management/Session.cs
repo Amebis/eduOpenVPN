@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -37,6 +38,7 @@ namespace eduOpenVPN.Management
             /// <summary>
             /// Flag to detect redundant <see cref="Dispose(bool)"/> calls.
             /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private bool disposedValue = false;
 
             /// <summary>
@@ -1385,6 +1387,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Flag to detect redundant <see cref="Dispose(bool)"/> calls.
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool disposedValue = false;
 
         /// <summary>
