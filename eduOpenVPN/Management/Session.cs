@@ -233,16 +233,19 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Used to convert Unix timestamps into <see cref="DateTimeOffset"/>
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly DateTimeOffset _epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
 
         /// <summary>
         /// Message separators
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly char[] _msg_separators = new char[] { ':' };
 
         /// <summary>
         /// Field separators
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly char[] _field_separators = new char[] { ',' };
 
         /// <summary>
