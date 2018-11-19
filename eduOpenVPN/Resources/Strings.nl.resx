@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -118,43 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorBadBackslash" xml:space="preserve">
-    <value>Bad backslash (\) usage: remember that backslashes are treated as shell-escapes and if you need to pass backslash characters as part of a Windows filename, you should use double backslashes such as &quot;c:\\openvpn\\static.key&quot;.</value>
+    <value>Verkeerd backslash (\) gebruik: vergeet niet dat backslashes worden behandeld als shell-escapes en als je backslash karakters moet doorgeven als onderdeel van een Windows bestandsnaam, moet je dubbele backslash gebruiken zoals "c:\\openvpn\\static.key".</value>
   </data>
   <data name="ErrorInteractiveService" xml:space="preserve">
-    <value>{1} (Error {0})</value>
+    <value>{1} (Fout {0})</value>
     <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
-    <value>Connecting to the {0} interactive service failed. Please, make sure the service is started.</value>
+    <value>Verbinding met de {0} interactieve service mislukt. Zorg er a.u.b. voor dat de service gestart is.</value>
     <comment>{0} = Name of the pipe to connect to</comment>
   </data>
   <data name="ErrorManagementManagementResponse" xml:space="preserve">
-    <value>{0} Response: {1}</value>
+    <value>{0} Antwoord: {1}</value>
     <comment>{0} = A sentence explaining an error, {1} = Response source code</comment>
   </data>
+  <data name="ErrorMonitorTerminated" xml:space="preserve">
+    <value>De OpenVPN Management monitor draait niet.</value>
+  </data>
   <data name="ErrorNoClosingQuotation" xml:space="preserve">
-    <value>No closing quotation (&quot;).</value>
+    <value>Geen afsluitend aanhalingsteken (").</value>
   </data>
   <data name="ErrorNoClosingSingleQuotation" xml:space="preserve">
-    <value>No closing single quotation (&apos;).</value>
+    <value>Geen afsluitend enkel aanhalingsteken (').</value>
   </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
-    <value>{0} parameter value not found in {1} enum.</value>
+    <value>{0} parameter waarde niet gevonden in {1} enum.</value>
     <comment>{0} = Parameter value name, {1} = Enum data type</comment>
   </data>
-  <data name="ErrorPeerDisconnected" xml:space="preserve">
-    <value>The OpenVPN Management session remote peer disconnected.</value>
-  </data>
   <data name="ErrorResidualParseState" xml:space="preserve">
-    <value>Residual parse state ({0}).</value>
-  </data>
-  <data name="ErrorUnexpectedReply" xml:space="preserve">
-    <value>The OpenVPN Management reply was not expected.</value>
-  </data>
-  <data name="ErrorMonitorTerminated" xml:space="preserve">
-    <value>The OpenVPN Management monitor is not running.</value>
+    <value>Resterende parse status ({0}).</value>
   </data>
   <data name="ErrorSessionState" xml:space="preserve">
-    <value>The OpenVPN session is in a state of error.</value>
+    <value>De OpenVPN-sessie is in een fouttoestand.</value>
+  </data>
+  <data name="ErrorUnexpectedReply" xml:space="preserve">
+    <value>Het OpenVPN Management antwoord was niet verwacht.</value>
   </data>
 </root>
