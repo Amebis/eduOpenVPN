@@ -1,7 +1,7 @@
 ﻿/*
     eduOpenVPN - OpenVPN Management Library for eduVPN (and beyond)
 
-    Copyright: 2017-2018 The Commons Conservancy eduVPN Programme
+    Copyright: 2017-2019 The Commons Conservancy eduVPN Programme
     SPDX-License-Identifier: GPL-3.0+
 */
 
@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("eduOpenVPN Tests")]
 [assembly: AssemblyCompany("SURF")]
 [assembly: AssemblyProduct("eduOpenVPN")]
-[assembly: AssemblyCopyright("Copyright © 2017-2018 The Commons Conservancy eduVPN Programme")]
+[assembly: AssemblyCopyright("Copyright © 2017-2019 The Commons Conservancy eduVPN Programme")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
