@@ -7,13 +7,21 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup Condition="'$(ManifestCertificateThumbprint)' != '' AND '$(Configuration)'=='Release'">
+  <!--
+      Code signing
+  -->
+  <PropertyGroup Condition="'$(ManifestCertificateThumbprint)' != '' AND '$(Configuration)' == 'Release'">
     <BuildDependsOn>$(BuildDependsOn);Sign</BuildDependsOn>
+    <CleanDependsOn>CleanSign;$(CleanDependsOn)</CleanDependsOn>
   </PropertyGroup>
 
   <Target Name="Sign" Inputs="$(OutDir)$(TargetName)$(TargetExt)" Outputs="$(OutDir)$(TargetName).sign">
-    <Exec Command="signtool.exe sign /sha1 &quot;%ManifestCertificateThumbprint%&quot; /fd sha256 /as /tr &quot;%ManifestTimestampRFC3161Url%&quot; /td sha256 /q &quot;$(TargetPath)&quot;" />
+    <Exec Command="signtool.exe sign /sha1 &quot;$(ManifestCertificateThumbprint)&quot; /fd sha256 /as /tr &quot;$(ManifestTimestampRFC3161Url)&quot; /td sha256 /q &quot;$(TargetPath)&quot;" />
     <Touch Files="$(OutDir)$(TargetName).sign" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="CleanSign">
+    <Delete Files="$(OutDir)$(TargetName).sign"/>
   </Target>
 
   <!--
