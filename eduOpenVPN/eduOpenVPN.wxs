@@ -25,6 +25,11 @@
                 <File Id="eduOpenVPN.resources.dll.sl" Source="sl\eduOpenVPN.resources.dll"/>
             </Component>
         </DirectoryRef>
+        <DirectoryRef Id="RESDIRUK">
+            <Component Id="eduOpenVPN.resources.dll.uk" Guid="{26E43EB5-279B-4CB5-87F8-D3E54E9606CB}">
+                <File Id="eduOpenVPN.resources.dll.uk" Source="uk\eduOpenVPN.resources.dll"/>
+            </Component>
+        </DirectoryRef>
 
 
         <!--
@@ -34,6 +39,7 @@
             <ComponentRef Id="eduOpenVPN.dll"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.nl"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.sl"/>
+            <ComponentRef Id="eduOpenVPN.resources.dll.uk"/>
         </ComponentGroup>
     </Fragment>
 </Wix>

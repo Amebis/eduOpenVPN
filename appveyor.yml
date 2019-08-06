@@ -17,3 +17,4 @@ artifacts:
   - path: bin\$(configuration)\$(platform)\eduOpenVPN.pdb
   - path: bin\$(configuration)\$(platform)\nl\eduOpenVPN.resources.dll
   - path: bin\$(configuration)\$(platform)\sl\eduOpenVPN.resources.dll
+  - path: bin\$(configuration)\$(platform)\uk\eduOpenVPN.resources.dll
