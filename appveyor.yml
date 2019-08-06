@@ -1,5 +1,5 @@
 version: 1.0.11.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 before_build:
   - nuget restore -Verbosity quiet
 configuration:
