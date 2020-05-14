@@ -5,6 +5,7 @@
     SPDX-License-Identifier: GPL-3.0+
 */
 
+using eduEx.Async;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -442,9 +443,7 @@ namespace eduOpenVPN.Management
             {
                 // Read the password prompt.
                 var buffer = new char[15];
-                var read_task = reader.ReadBlockAsync(buffer, 0, buffer.Length);
-                try { read_task.Wait(ct); }
-                catch (AggregateException ex) { throw ex.InnerException; }
+                reader.ReadBlock(buffer, 0, buffer.Length, ct);
                 if (buffer.Length < 15 || new String(buffer) != "ENTER PASSWORD:")
                     throw new UnexpectedReplyException(new String(buffer));
             }
@@ -463,10 +462,7 @@ namespace eduOpenVPN.Management
                             ct.ThrowIfCancellationRequested();
 
                             // Read one line.
-                            var read_task = reader.ReadLineAsync();
-                            try { read_task.Wait(ct); }
-                            catch (AggregateException ex) { throw ex.InnerException; }
-                            var line = read_task.Result;
+                            var line = reader.ReadLine(ct);
 
                             ct.ThrowIfCancellationRequested();
 
@@ -1356,9 +1352,7 @@ namespace eduOpenVPN.Management
 
                 // Send the command.
                 var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
-                var write_task = _stream.WriteAsync(cmd_bin, 0, cmd_bin.Length, ct);
-                try { write_task.Wait(ct); }
-                catch (AggregateException ex) { throw ex.InnerException; }
+                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
             }
         }
 
@@ -1384,9 +1378,7 @@ namespace eduOpenVPN.Management
 
                 // Send the command.
                 var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
-                var write_task = _stream.WriteAsync(cmd_bin, 0, cmd_bin.Length, ct);
-                try { write_task.Wait(ct); }
-                catch (AggregateException ex) { throw ex.InnerException; }
+                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
             }
         }
 

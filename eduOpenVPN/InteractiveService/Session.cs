@@ -5,6 +5,7 @@
     SPDX-License-Identifier: GPL-3.0+
 */
 
+using eduEx.Async;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -83,9 +84,7 @@ namespace eduOpenVPN.InteractiveService
                 writer.Write(stdin.ToArray());
                 writer.Write((char)0);
 
-                try { _stream.WriteAsync(msg_stream.GetBuffer(), 0, (int)msg_stream.Length).Wait(ct); }
-                catch (OperationCanceledException) { throw; }
-                catch (AggregateException ex) { throw ex.InnerException; }
+                _stream.Write(msg_stream.GetBuffer(), 0, (int)msg_stream.Length, ct);
             }
 
             // Read and analyse status.
