@@ -58,8 +58,8 @@ namespace eduOpenVPN
 
             do
             {
-                char_in = offset < offset_end ? command_line[offset] : default(char);
-                char_out = default(char);
+                char_in = offset < offset_end ? command_line[offset] : default;
+                char_out = default;
 
                 if (!backslash && char_in == '\\' && state != ParseParamsState.ReadingSingleQuotedParam)
                     backslash = true;
@@ -111,7 +111,7 @@ namespace eduOpenVPN
                         parm = "";
                     }
 
-                    if (backslash && char_out != default(char))
+                    if (backslash && char_out != default)
                     {
                         if (!(char_out == '\\' || char_out == '\"' || IsZeroOrWhiteChar(char_out)))
                             throw new ArgumentException(Resources.Strings.ErrorBadBackslash, nameof(command_line));
@@ -120,7 +120,7 @@ namespace eduOpenVPN
                 }
 
                 // Store parameter character.
-                if (char_out != default(char))
+                if (char_out != default)
                     parm += char_out;
             }
             while (offset++ < offset_end);
@@ -155,7 +155,7 @@ namespace eduOpenVPN
         /// <returns><c>true</c> if <paramref name="c"/> is zero or white space; <c>false</c>otherwise</returns>
         private static bool IsZeroOrWhiteChar(char c)
         {
-            return c == default(char) || char.IsWhiteSpace(c);
+            return c == default || char.IsWhiteSpace(c);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>openvpn.exe process ID</returns>
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream tolerates multiple disposes.")]
-        public void Connect(string pipe_name, string working_folder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default(CancellationToken))
+        public void Connect(string pipe_name, string working_folder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
         {
             try
             {

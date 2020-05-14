@@ -64,7 +64,7 @@ namespace eduOpenVPN
                 }
             }
 
-            result = default(T);
+            result = default;
             return false;
         }
 
