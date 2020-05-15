@@ -1,0 +1,34 @@
+﻿/*
+    eduOpenVPN - OpenVPN Management Library for eduVPN (and beyond)
+
+    Copyright: 2017-2020 The Commons Conservancy eduVPN Programme
+    SPDX-License-Identifier: GPL-3.0+
+*/
+
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+
+namespace eduOpenVPN
+{
+    public static class Extensions
+    {
+        /// <summary>
+        /// Returns <see cref="ParameterValueAttribute"/> attribute value
+        /// </summary>
+        /// <param name="value">Enum</param>
+        /// <returns>String with attribute value or stringized <paramref name="value"/></returns>
+        [DebuggerStepThrough]
+        public static string GetParameterValue(this Enum value)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            string value_str = value.ToString();
+            FieldInfo fieldInfo = value.GetType().GetField(value_str);
+            var attribute = fieldInfo.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() as ParameterValueAttribute;
+            return attribute != null ? attribute.Value : value_str;
+        }
+    }
+}

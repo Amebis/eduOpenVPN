@@ -25,6 +25,7 @@
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="InteractiveService\StatusProcessID.cs" />
     <Compile Include="Management\AuthenticationEventArgs.cs" />
     <Compile Include="Management\AuthenticationTokenReportedEventArgs.cs" />
@@ -68,8 +69,6 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="SignalType.cs" />
-    <Compile Include="System\Extensions.cs" />
-    <Compile Include="System\IO\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">
