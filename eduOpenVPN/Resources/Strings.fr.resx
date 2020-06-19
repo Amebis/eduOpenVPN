@@ -136,7 +136,7 @@
     <value>Le moniteur de gestion d'OpenVPN n'est pas en cours d'exécution.</value>
   </data>
   <data name="ErrorNoClosingQuotation" xml:space="preserve">
-    <value>Aucune doubles apostrophes de fermeture (").</value>
+    <value>Aucune double apostrophe de fermeture (").</value>
   </data>
   <data name="ErrorNoClosingSingleQuotation" xml:space="preserve">
     <value>Aucune apostrophe simple de fermeture (").</value>
