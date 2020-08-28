@@ -138,7 +138,7 @@ namespace eduOpenVPN.Management
             {
                 var fields = data.Split(_field_separators, 1 + 1);
                 session.EchoReceived?.Invoke(session, new EchoReceivedEventArgs(
-                    int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
                     fields.Length >= 2 ? fields[1].Trim() : null));
             }
         }
@@ -168,7 +168,7 @@ namespace eduOpenVPN.Management
             {
                 var fields = data.Split(_field_separators, 2 + 1);
                 session.LogReported?.Invoke(session, new LogReportedEventArgs(
-                    int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
                     fields.Length >= 2 ?
                         (fields[1].IndexOf('I') >= 0 ? LogMessageFlags.Informational : 0) |
                         (fields[1].IndexOf('F') >= 0 ? LogMessageFlags.FatalError : 0) |
@@ -196,7 +196,7 @@ namespace eduOpenVPN.Management
                     catch { state = default; }
 
                     session.StateReported?.Invoke(session, new StateReportedEventArgs(
-                        int.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                        long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
                         state,
                         fields.Length >= 3 ? fields[2].Trim() : null,
                         fields.Length >= 4 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
