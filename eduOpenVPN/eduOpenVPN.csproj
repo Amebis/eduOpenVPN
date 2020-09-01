@@ -43,11 +43,12 @@
     <Compile Include="Management\RemoteAction.cs" />
     <Compile Include="Management\RemoteReportedEventArgs.cs" />
     <Compile Include="Management\RemoteSkipAction.cs" />
-    <Compile Include="Management\RSASignRequestedEventArgs.cs" />
+    <Compile Include="Management\SignRequestedEventArgs.cs" />
     <Compile Include="Management\SessionStateException.cs" />
     <Compile Include="Management\StateReportedEventArgs.cs" />
     <Compile Include="Management\TimestampedEventArgs.cs" />
     <Compile Include="Management\UsernamePasswordAuthenticationRequestedEventArgs.cs" />
+    <Compile Include="SignAlgorithmType.cs" />
     <Compile Include="ProtoType.cs" />
     <Compile Include="AuthRetryType.cs" />
     <Compile Include="Configuration.cs" />

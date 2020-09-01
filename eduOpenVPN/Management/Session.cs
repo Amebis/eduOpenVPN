@@ -8,7 +8,6 @@
 using eduEx.Async;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -372,7 +371,7 @@ namespace eduOpenVPN.Management
         /// Raised when RSA data signing is required
         /// </summary>
         /// <remarks>Sender is the OpenVPN management session <see cref="eduOpenVPN.Management.Session"/>.</remarks>
-        public event EventHandler<RSASignRequestedEventArgs> RSASignRequested;
+        public event EventHandler<SignRequestedEventArgs> SignRequested;
 
         /// <summary>
         /// Raised when OpenVPN's initial state is reported
@@ -623,11 +622,29 @@ namespace eduOpenVPN.Management
                                         }
                                         break;
 
+                                    case "PK_SIGN":
+                                        {
+                                            // Get signature.
+                                            var fields = msg[1].Split(_field_separators);
+                                            var e = new SignRequestedEventArgs(
+                                                Convert.FromBase64String(fields[0]),
+                                                fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<SignAlgorithmType>(fields[1].Trim(), out var padding) ? padding : SignAlgorithmType.RSASignaturePKCS1Padding);
+                                            SignRequested?.Invoke(this, e);
+
+                                            // Send reply message.
+                                            var sb = new StringBuilder();
+                                            sb.Append("pk-sig\n");
+                                            sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                            sb.Append("\nEND");
+                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                        }
+                                        break;
+
                                     case "RSA_SIGN":
                                         {
                                             // Get signature.
-                                            var e = new RSASignRequestedEventArgs(Convert.FromBase64String(msg[1]));
-                                            RSASignRequested?.Invoke(this, e);
+                                            var e = new SignRequestedEventArgs(Convert.FromBase64String(msg[1]), SignAlgorithmType.RSASignaturePKCS1Padding);
+                                            SignRequested?.Invoke(this, e);
 
                                             // Send reply message.
                                             var sb = new StringBuilder();
@@ -1232,6 +1249,16 @@ namespace eduOpenVPN.Management
         }
 
         /// <summary>
+        /// Change the Management Interface version to <paramref name="n"/>
+        /// </summary>
+        /// <param name="n">Management Interface version</param>
+        /// <param name="ct">The token to monitor for cancellation requests</param>
+        public void SetVersion(int n, CancellationToken ct = default)
+        {
+            SendCommand(String.Format("version {0:D}", n), ct);
+        }
+
+        /// <summary>
         /// Set the --auth-retry setting to control how OpenVPN responds to username/password authentication errors
         /// </summary>
         /// <param name="auth_retry">Authentication retry</param>
@@ -1332,6 +1359,25 @@ namespace eduOpenVPN.Management
                 return cmd_result.first.Response;
             else
                 throw new CommandException(cmd_result.first.Response);
+        }
+
+        /// <summary>
+        /// Sends a command to OpenVPN Management console
+        /// </summary>
+        /// <param name="cmd">Command to send</param>
+        /// <param name="ct">The token to monitor for cancellation requests</param>
+        /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
+        private void SendCommand(string cmd, CancellationToken ct = default)
+        {
+            if (_error != null)
+                throw new SessionStateException(Resources.Strings.ErrorSessionState);
+
+            lock (_command_lock)
+            {
+                // Send the command.
+                var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
+                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
+            }
         }
 
         /// <summary>

@@ -10,9 +10,9 @@ using System;
 namespace eduOpenVPN.Management
 {
     /// <summary>
-    /// <see cref="Session.RSASignRequested"/> event arguments
+    /// <see cref="Session.SignRequested"/> event arguments
     /// </summary>
-    public class RSASignRequestedEventArgs : EventArgs
+    public class SignRequestedEventArgs : EventArgs
     {
         #region Properties
 
@@ -22,7 +22,12 @@ namespace eduOpenVPN.Management
         public byte[] Data { get; }
 
         /// <summary>
-        /// PKCS#1 v1.5 signature of <see cref="Data"/> property
+        /// Signing and padding algorithm
+        /// </summary>
+        public SignAlgorithmType Algorithm { get; }
+
+        /// <summary>
+        /// Signature of <see cref="Data"/> property
         /// </summary>
         public byte[] Signature { get; set; }
 
@@ -34,9 +39,11 @@ namespace eduOpenVPN.Management
         /// Constructs an event arguments
         /// </summary>
         /// <param name="data">Data to be signed</param>
-        public RSASignRequestedEventArgs(byte[] data)
+        /// <param name="algorithm">Signing and padding algorithm</param>
+        public SignRequestedEventArgs(byte[] data, SignAlgorithmType algorithm)
         {
             Data = data;
+            Algorithm = algorithm;
         }
 
         #endregion
