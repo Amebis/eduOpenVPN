@@ -136,10 +136,10 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_field_separators, 1 + 1);
+                var fields = data.Split(_field_separators, 2);
                 session.EchoReceived?.Invoke(session, new EchoReceivedEventArgs(
                     long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
-                    fields.Length >= 2 ? fields[1].Trim() : null));
+                    fields.Length > 1 ? fields[1].Trim() : null));
             }
         }
 
@@ -153,8 +153,8 @@ namespace eduOpenVPN.Management
             {
                 var fields = data.Split(_msg_separators, 2 + 1);
                 session.HoldReported?.Invoke(session, new HoldReportedEventArgs(
-                    fields.Length >= 1 ? fields[0].Trim() : null,
-                    fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0));
+                    fields[0].Trim(),
+                    fields.Length > 1 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0));
             }
         }
 
@@ -169,14 +169,14 @@ namespace eduOpenVPN.Management
                 var fields = data.Split(_field_separators, 2 + 1);
                 session.LogReported?.Invoke(session, new LogReportedEventArgs(
                     long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
-                    fields.Length >= 2 ?
+                    fields.Length > 1 ?
                         (fields[1].IndexOf('I') >= 0 ? LogMessageFlags.Informational : 0) |
                         (fields[1].IndexOf('F') >= 0 ? LogMessageFlags.FatalError : 0) |
                         (fields[1].IndexOf('N') >= 0 ? LogMessageFlags.NonFatalError : 0) |
                         (fields[1].IndexOf('W') >= 0 ? LogMessageFlags.Warning : 0) |
                         (fields[1].IndexOf('D') >= 0 ? LogMessageFlags.Debug : 0)
                         : 0,
-                    fields.Length >= 3 ? fields[2].Trim() : null));
+                    fields.Length > 2 ? fields[2].Trim() : null));
             }
         }
 
@@ -189,21 +189,14 @@ namespace eduOpenVPN.Management
             public override void ProcessData(string data, Session session)
             {
                 var fields = data.Split(_field_separators, 9 + 1);
-                if (fields.Length >= 2)
-                {
-                    OpenVPNStateType state;
-                    try { state = ParameterValueAttribute.GetEnumByParameterValueAttribute<OpenVPNStateType>(fields[1].Trim()); }
-                    catch { state = default; }
-
-                    session.StateReported?.Invoke(session, new StateReportedEventArgs(
-                        long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
-                        state,
-                        fields.Length >= 3 ? fields[2].Trim() : null,
-                        fields.Length >= 4 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
-                        fields.Length >= 9 && IPAddress.TryParse(fields[8].Trim(), out var ipv6_address) ? ipv6_address : null,
-                        fields.Length >= 6 && IPAddress.TryParse(fields[4].Trim(), out var remote_address) && int.TryParse(fields[5].Trim(), out var remote_port) ? new IPEndPoint(remote_address, remote_port) : null,
-                        fields.Length >= 8 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null));
-                }
+                session.StateReported?.Invoke(session, new StateReportedEventArgs(
+                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<OpenVPNStateType>(fields[1].Trim(), out var state) ? state : default,
+                    fields.Length > 2 ? fields[2].Trim() : null,
+                    fields.Length > 3 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
+                    fields.Length > 8 && IPAddress.TryParse(fields[8].Trim(), out var ipv6_address) ? ipv6_address : null,
+                    fields.Length > 5 && IPAddress.TryParse(fields[4].Trim(), out var remote_address) && int.TryParse(fields[5].Trim(), out var remote_port) ? new IPEndPoint(remote_address, remote_port) : null,
+                    fields.Length > 7 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null));
             }
         }
 
@@ -221,8 +214,8 @@ namespace eduOpenVPN.Management
             public override void ProcessData(string data, Session session)
             {
                 var fields = data.Split(_msg_separators, 1 + 1);
-                if (fields.Length >= 1)
-                    Version[fields[0]] = fields.Length >= 2 ? fields[1].Trim() : null;
+                if (fields.Length > 0)
+                    Version[fields[0]] = fields.Length > 1 ? fields[1].Trim() : null;
             }
         }
 
@@ -484,8 +477,8 @@ namespace eduOpenVPN.Management
                                         {
                                             var fields = msg[1].Split(_field_separators, 2 + 1);
                                             ByteCountReported?.Invoke(this, new ByteCountReportedEventArgs(
-                                                fields.Length >= 1 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0
+                                                fields.Length > 0 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
+                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0
                                             ));
                                         }
                                         break;
@@ -494,9 +487,9 @@ namespace eduOpenVPN.Management
                                         {
                                             var fields = msg[1].Split(_field_separators, 3 + 1);
                                             ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
-                                                fields.Length >= 1 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
-                                                fields.Length >= 2 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length >= 3 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0
+                                                fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
+                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
+                                                fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0
                                             ));
                                         }
                                         break;
@@ -563,7 +556,7 @@ namespace eduOpenVPN.Management
                                             else
                                             {
                                                 var param = Configuration.ParseParams(msg[1]);
-                                                if (param.Count >= 3 && param[0] == "Need")
+                                                if (param.Count > 2 && param[0] == "Need")
                                                 {
                                                     switch (param[2])
                                                     {
@@ -620,9 +613,9 @@ namespace eduOpenVPN.Management
                                             // Get action.
                                             var fields = msg[1].Split(_field_separators, 3 + 1);
                                             var e = new RemoteReportedEventArgs(
-                                                fields.Length >= 1 ? fields[0].Trim() : null,
-                                                fields.Length >= 2 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
-                                                fields.Length >= 3 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
+                                                fields[0].Trim(),
+                                                fields.Length > 1 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
+                                                fields.Length > 2 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
                                             RemoteReported?.Invoke(this, e);
 
                                             // Send reply message.

@@ -19,19 +19,9 @@ namespace eduOpenVPN
         /// Escapes value string to be used as a parameter in OpenVPN configuration file (.ovpn)
         /// </summary>
         /// <param name="value">Parameter value</param>
-        /// <returns>Quoted and escaped <paramref name="value"/> when escaping required; <paramref name="value"/> otherwise</returns>
-        public static string EscapeParamValue(string value)
-        {
-            return EscapeParamValue(value, false);
-        }
-
-        /// <summary>
-        /// Escapes value string to be used as a parameter in OpenVPN configuration file (.ovpn)
-        /// </summary>
-        /// <param name="value">Parameter value</param>
         /// <param name="force">Force quote</param>
         /// <returns>Quoted and escaped <paramref name="value"/> when escaping required; <paramref name="value"/> otherwise</returns>
-        public static string EscapeParamValue(string value, bool force)
+        public static string EscapeParamValue(string value, bool force = false)
         {
             return value.Length > 0 ?
                 force || value.IndexOfAny(new char[] { '\\', ' ', '"', '\'' }) >= 0 ?
