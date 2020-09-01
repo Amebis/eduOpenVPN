@@ -807,13 +807,15 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns><c>true</c> if hold flag is set; <c>false</c> otherwise</returns>
         /// <exception cref="UnexpectedReplyException">Response is not "hold="</exception>
+        /// <exception cref="FormatException">Hold flag is not a number</exception>
+        /// <exception cref="OverflowException">Hold flag didn't fit inside 32-bit unsigned integer</exception>
         public bool GetHold(CancellationToken ct = default)
         {
             var cmd_result = new SingleCommand();
             SendCommand("hold", cmd_result, ct);
             var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("hold="))
-                return (uint)new UInt32Converter().ConvertFromString(result.Substring(5)) != 0;
+                return uint.Parse(result.Substring(5)) != 0;
             else
                 throw new UnexpectedReplyException(result);
         }
@@ -960,13 +962,15 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Mute setting</returns>
         /// <exception cref="UnexpectedReplyException">Response is not "mute="</exception>
+        /// <exception cref="FormatException">Mute setting is not a number</exception>
+        /// <exception cref="OverflowException">Mute setting didn't fit inside 32-bit integer</exception>
         public int GetMute(CancellationToken ct = default)
         {
             var cmd_result = new SingleCommand();
             SendCommand("mute", cmd_result, ct);
             var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("mute="))
-                return (int)new Int32Converter().ConvertFromString(result.Substring(5));
+                return int.Parse(result.Substring(5));
             else
                 throw new UnexpectedReplyException(result);
         }
@@ -1001,13 +1005,15 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>openvpn.exe process ID</returns>
         /// <exception cref="UnexpectedReplyException">Response is not "pid="</exception>
+        /// <exception cref="FormatException">Process ID is not a number</exception>
+        /// <exception cref="OverflowException">Process ID didn't fit inside 32-bit integer</exception>
         public int GetProcessID(CancellationToken ct = default)
         {
             var cmd_result = new SingleCommand();
             SendCommand("pid", cmd_result, ct);
             var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("pid="))
-                return (int)new Int32Converter().ConvertFromString(result.Substring(4));
+                return int.Parse(result.Substring(4));
             else
                 throw new UnexpectedReplyException(result);
         }
@@ -1175,13 +1181,15 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Verbosity level</returns>
         /// <exception cref="UnexpectedReplyException">Response is not "verb="</exception>
+        /// <exception cref="FormatException">Verbosity level is not a number</exception>
+        /// <exception cref="OverflowException">Verbosity level didn't fit inside 32-bit integer</exception>
         public int GetVerbosity(CancellationToken ct = default)
         {
             var cmd_result = new SingleCommand();
             SendCommand("verb", cmd_result, ct);
             var result = WaitFor(cmd_result, ct);
             if (result.StartsWith("verb="))
-                return (int)new Int32Converter().ConvertFromString(result.Substring(5));
+                return int.Parse(result.Substring(5));
             else
                 throw new UnexpectedReplyException(result);
         }
