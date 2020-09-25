@@ -36,26 +36,9 @@ namespace eduOpenVPN.Tests
             CollectionAssert.AreEqual(new List<string>() { "param" }, Configuration.ParseParams("param"));
             CollectionAssert.AreEqual(new List<string>() { "param1", "param 2", "param 3", "param 4", @"C:\test.txt" }, Configuration.ParseParams("  param1 param\\ 2 \"param 3\" 'param 4' C:\\\\test.txt   "));
 
-            try
-            {
-                Configuration.ParseParams(@"C:\certificate.pem");
-                Assert.Fail("Invalid escaping tolerated.");
-            }
-            catch (ArgumentException) { }
-
-            try
-            {
-                Configuration.ParseParams("\"open param");
-                Assert.Fail("No closing quotation tolerated.");
-            }
-            catch (ArgumentException) { }
-
-            try
-            {
-                Configuration.ParseParams("'open param");
-                Assert.Fail("No closing single quotation tolerated.");
-            }
-            catch (ArgumentException) { }
+            Assert.ThrowsException<ArgumentException>(() => Configuration.ParseParams(@"C:\certificate.pem"));
+            Assert.ThrowsException<ArgumentException>(() => Configuration.ParseParams("\"open param"));
+            Assert.ThrowsException<ArgumentException>(() => Configuration.ParseParams("'open param"));
         }
     }
 }
