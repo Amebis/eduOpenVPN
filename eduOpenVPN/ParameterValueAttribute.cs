@@ -6,7 +6,6 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -22,10 +21,7 @@ namespace eduOpenVPN
         /// <summary>
         /// Attribute value
         /// </summary>
-        public string Value { get => _Value; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _Value;
+        public string Value { get; private set; }
 
         #endregion
 
@@ -37,7 +33,7 @@ namespace eduOpenVPN
         /// <param name="value">Value of the attribute</param>
         public ParameterValueAttribute(string value)
         {
-            _Value = value;
+            Value = value;
         }
 
         #endregion

@@ -268,26 +268,17 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Network stream to OpenVPN Management console
         /// </summary>
-        public NetworkStream Stream { get => _Stream; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private NetworkStream _Stream;
+        public NetworkStream Stream { get; private set; }
 
         /// <summary>
         /// Session monitor
         /// </summary>
-        public Thread Monitor { get => _Monitor; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Thread _Monitor;
+        public Thread Monitor { get; private set; }
 
         /// <summary>
         /// Session monitor error
         /// </summary>
-        public Exception Error { get => _Error; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Exception _Error;
+        public Exception Error { get; private set; }
 
         /// <summary>
         /// Raised when BYTECOUNT real-time message is received
@@ -427,8 +418,8 @@ namespace eduOpenVPN.Management
         /// <exception cref="CommandException">Authentication using <paramref name="password"/> failed.</exception>
         public void Start(NetworkStream stream, string password, CancellationToken ct = default)
         {
-            _Stream = stream;
-            var reader = new StreamReader(_Stream, Encoding.UTF8, false);
+            Stream = stream;
+            var reader = new StreamReader(Stream, Encoding.UTF8, false);
             var serviceReady = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             if (password != null)
@@ -444,7 +435,7 @@ namespace eduOpenVPN.Management
             CommandsLock = new object();
 
             // Spawn the monitor.
-            _Monitor = new Thread(new ThreadStart(
+            Monitor = new Thread(new ThreadStart(
                 () =>
                 {
                     try
@@ -703,14 +694,14 @@ namespace eduOpenVPN.Management
                             }
                         }
                     }
-                    catch (Exception ex) { _Error = ex; }
+                    catch (Exception ex) { Error = ex; }
                     finally
                     {
                         // Signal the monitor finished.
                         MonitorFinished.Set();
                     }
                 }));
-            _Monitor.Start();
+            Monitor.Start();
 
             if (password != null)
             {
@@ -1294,7 +1285,7 @@ namespace eduOpenVPN.Management
             switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, MonitorFinished, waitHandle }))
             {
                 case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_Error);
+                case 1: throw new MonitorTerminatedException(Error);
             }
         }
 
@@ -1310,7 +1301,7 @@ namespace eduOpenVPN.Management
             switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, MonitorFinished }, timeout))
             {
                 case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_Error);
+                case 1: throw new MonitorTerminatedException(Error);
             }
         }
 
@@ -1369,14 +1360,14 @@ namespace eduOpenVPN.Management
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, CancellationToken ct = default)
         {
-            if (_Error != null)
+            if (Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
             lock (CommandsLock)
             {
                 // Send the command.
                 var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
-                _Stream.Write(binCmd, 0, binCmd.Length, ct);
+                Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1389,7 +1380,7 @@ namespace eduOpenVPN.Management
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, Command cmdResult, CancellationToken ct = default)
         {
-            if (_Error != null)
+            if (Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
             lock (CommandsLock)
@@ -1399,7 +1390,7 @@ namespace eduOpenVPN.Management
 
                 // Send the command.
                 var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
-                _Stream.Write(binCmd, 0, binCmd.Length, ct);
+                Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1412,7 +1403,7 @@ namespace eduOpenVPN.Management
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, CombinedCommands cmdResult, CancellationToken ct = default)
         {
-            if (_Error != null)
+            if (Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
             lock (CommandsLock)
@@ -1425,7 +1416,7 @@ namespace eduOpenVPN.Management
 
                 // Send the command.
                 var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
-                _Stream.Write(binCmd, 0, binCmd.Length, ct);
+                Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1456,8 +1447,8 @@ namespace eduOpenVPN.Management
                     if (MonitorFinished != null)
                         MonitorFinished.Dispose();
 
-                    if (_Stream != null)
-                        _Stream.Dispose();
+                    if (Stream != null)
+                        Stream.Dispose();
                 }
 
                 disposedValue = true;

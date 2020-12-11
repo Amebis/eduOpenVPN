@@ -6,7 +6,6 @@
 */
 
 using System;
-using System.Diagnostics;
 
 namespace eduOpenVPN.InteractiveService
 {
@@ -20,10 +19,7 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// OpenVPN Interactive Service function
         /// </summary>
-        public string Function { get => _Function; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _Function;
+        public string Function { get; private set; }
 
         #endregion
 
@@ -38,7 +34,7 @@ namespace eduOpenVPN.InteractiveService
         public StatusError(uint code, string function, string message) :
             base(code, message)
         {
-            _Function = function;
+            Function = function;
         }
 
         #endregion
@@ -48,7 +44,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format("{0}: {1} (0x{2:X})", _Function, Message, Code);
+            return String.Format("{0}: {1} (0x{2:X})", Function, Message, Code);
         }
 
         #endregion

@@ -21,10 +21,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Authentication token
         /// </summary>
-        public SecureString Token { get => _Token; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private SecureString _Token;
+        public SecureString Token { get; private set; }
 
         #endregion
 
@@ -36,7 +33,7 @@ namespace eduOpenVPN.Management
         /// <param name="token">Authentication token</param>
         public AuthenticationTokenReportedEventArgs(SecureString token)
         {
-            _Token = token;
+            Token = token;
         }
 
         #endregion
@@ -63,8 +60,8 @@ namespace eduOpenVPN.Management
             {
                 if (disposing)
                 {
-                    if (_Token != null)
-                        _Token.Dispose();
+                    if (Token != null)
+                        Token.Dispose();
                 }
 
                 disposedValue = true;

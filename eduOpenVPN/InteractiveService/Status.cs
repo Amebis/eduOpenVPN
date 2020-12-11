@@ -7,7 +7,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace eduOpenVPN.InteractiveService
 {
@@ -21,18 +20,12 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// OpenVPN Interactive Service status code
         /// </summary>
-        public uint Code { get => _Code; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private uint _Code;
+        public uint Code { get; private set; }
 
         /// <summary>
         /// OpenVPN Interactive Service message (optional)
         /// </summary>
-        public string Message { get => _Message; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _Message;
+        public string Message { get; private set; }
 
         #endregion
 
@@ -45,8 +38,8 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="message">Status description message</param>
         public Status(uint code, string message)
         {
-            _Code = code;
-            _Message = message;
+            Code = code;
+            Message = message;
         }
 
         #endregion
@@ -56,7 +49,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format(_Message != null ? "{0} (0x{1,X})" : "(0x{1,X})", _Message, _Code);
+            return String.Format(Message != null ? "{0} (0x{1,X})" : "(0x{1,X})", Message, Code);
         }
 
         /// <summary>

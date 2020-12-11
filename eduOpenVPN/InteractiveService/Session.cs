@@ -28,18 +28,12 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Named pipe stream to OpenVPN Interactive Service
         /// </summary>
-        public NamedPipeClientStream Stream { get => _Stream; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private NamedPipeClientStream _Stream;
+        public NamedPipeClientStream Stream { get; private set; }
 
         /// <summary>
         /// openvpn.exe process ID
         /// </summary>
-        public int ProcessID { get => _ProcessID; }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private int _ProcessID;
+        public int ProcessID { get; private set; }
 
         #endregion
 
@@ -61,9 +55,9 @@ namespace eduOpenVPN.InteractiveService
             try
             {
                 // Connect to OpenVPN Interactive Service via named pipe.
-                _Stream = new NamedPipeClientStream(".", pipeName);
-                _Stream.Connect(timeout);
-                _Stream.ReadMode = PipeTransmissionMode.Message;
+                Stream = new NamedPipeClientStream(".", pipeName);
+                Stream.Connect(timeout);
+                Stream.ReadMode = PipeTransmissionMode.Message;
             }
             catch (Exception ex) { throw new AggregateException(String.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipeName), ex); }
 
@@ -84,7 +78,7 @@ namespace eduOpenVPN.InteractiveService
                 writer.Write(stdin.ToArray());
                 writer.Write((char)0);
 
-                _Stream.Write(msgStream.GetBuffer(), 0, (int)msgStream.Length, ct);
+                Stream.Write(msgStream.GetBuffer(), 0, (int)msgStream.Length, ct);
             }
 
             // Read and analyse status.
@@ -95,9 +89,9 @@ namespace eduOpenVPN.InteractiveService
             if (statusTask.Result is StatusError statusErr && statusErr.Code != 0)
                 throw new InteractiveServiceException(statusErr.Code, statusErr.Function, statusErr.Message);
             else if (statusTask.Result is StatusProcessID statusPid)
-                _ProcessID = statusPid.ProcessID;
+                ProcessID = statusPid.ProcessID;
             else
-                _ProcessID = 0;
+                ProcessID = 0;
         }
 
         /// <summary>
@@ -106,10 +100,10 @@ namespace eduOpenVPN.InteractiveService
         /// <remarks>Instead of calling this method, ensure that the connection is properly disposed.</remarks>
         public void Disconnect()
         {
-            if (_Stream != null)
+            if (Stream != null)
             {
-                _Stream.Close();
-                _Stream = null;
+                Stream.Close();
+                Stream = null;
             }
         }
 
@@ -120,7 +114,7 @@ namespace eduOpenVPN.InteractiveService
         public async Task<Status> ReadStatusAsync()
         {
             var data = new byte[1048576]; // Limit to 1MiB
-            return Status.FromResponse(new string(Encoding.Unicode.GetChars(data, 0, await _Stream.ReadAsync(data, 0, data.Length))));
+            return Status.FromResponse(new string(Encoding.Unicode.GetChars(data, 0, await Stream.ReadAsync(data, 0, data.Length))));
         }
 
         #endregion
@@ -147,8 +141,8 @@ namespace eduOpenVPN.InteractiveService
             {
                 if (disposing)
                 {
-                    if (_Stream != null)
-                        _Stream.Dispose();
+                    if (Stream != null)
+                        Stream.Dispose();
                 }
 
                 disposedValue = true;
