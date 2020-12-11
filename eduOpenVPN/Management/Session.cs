@@ -477,7 +477,7 @@ namespace eduOpenVPN.Management
                                         {
                                             var fields = msg[1].Split(FieldSeparators, 3 + 1);
                                             ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
-                                                fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
+                                                fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var clientId) ? clientId : 0,
                                                 fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesIn) ? bytesIn : 0,
                                                 fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytesOut) ? bytesOut : 0
                                             ));
@@ -1008,14 +1008,14 @@ namespace eduOpenVPN.Management
         }
 
         /// <summary>
-        /// Shows the process ID of the current OpenVPN process
+        /// Shows the process identifier of the current OpenVPN process
         /// </summary>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        /// <returns>openvpn.exe process ID</returns>
+        /// <returns>openvpn.exe process identifier</returns>
         /// <exception cref="UnexpectedReplyException">Response is not "pid="</exception>
-        /// <exception cref="FormatException">Process ID is not a number</exception>
-        /// <exception cref="OverflowException">Process ID didn't fit inside 32-bit integer</exception>
-        public int GetProcessID(CancellationToken ct = default)
+        /// <exception cref="FormatException">Process identifier is not a number</exception>
+        /// <exception cref="OverflowException">Process identifier didn't fit inside 32-bit integer</exception>
+        public int GetProcessId(CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
             SendCommand("pid", cmdResult, ct);

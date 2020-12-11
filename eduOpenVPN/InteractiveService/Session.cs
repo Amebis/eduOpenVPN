@@ -31,9 +31,9 @@ namespace eduOpenVPN.InteractiveService
         public NamedPipeClientStream Stream { get; private set; }
 
         /// <summary>
-        /// openvpn.exe process ID
+        /// openvpn.exe process identifier
         /// </summary>
-        public int ProcessID { get; private set; }
+        public int ProcessId { get; private set; }
 
         #endregion
 
@@ -48,7 +48,7 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="stdin">Text to send to openvpn.exe on start via stdin</param>
         /// <param name="timeout">The number of milliseconds to wait for the server to respond before the connection times out.</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        /// <returns>openvpn.exe process ID</returns>
+        /// <returns>openvpn.exe process identifier</returns>
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream tolerates multiple disposes.")]
         public void Connect(string pipeName, string workingFolder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
         {
@@ -88,10 +88,10 @@ namespace eduOpenVPN.InteractiveService
             catch (AggregateException ex) { throw ex.InnerException; }
             if (statusTask.Result is StatusError statusErr && statusErr.Code != 0)
                 throw new InteractiveServiceException(statusErr.Code, statusErr.Function, statusErr.Message);
-            else if (statusTask.Result is StatusProcessID statusPid)
-                ProcessID = statusPid.ProcessID;
+            else if (statusTask.Result is StatusProcessId statusPid)
+                ProcessId = statusPid.ProcessId;
             else
-                ProcessID = 0;
+                ProcessId = 0;
         }
 
         /// <summary>

@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
-    <Compile Include="InteractiveService\StatusProcessID.cs" />
+    <Compile Include="InteractiveService\StatusProcessId.cs" />
     <Compile Include="Management\AuthenticationEventArgs.cs" />
     <Compile Include="Management\AuthenticationTokenReportedEventArgs.cs" />
     <Compile Include="Management\ByteCountClientReportedEventArgs.cs" />

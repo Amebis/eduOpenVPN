@@ -63,7 +63,7 @@ namespace eduOpenVPN.InteractiveService
             var conv = new UInt32Converter();
             var code = (uint)conv.ConvertFromString(msg[0]);
             if (code == 0 && msg[2] == "Process ID")
-                return new StatusProcessID((int)(uint)conv.ConvertFromString(msg[1]), msg[2]);
+                return new StatusProcessId((int)(uint)conv.ConvertFromString(msg[1]), msg[2]);
             else
                 return new StatusError(code, msg[1], msg[2] != "(null)" ? msg[2] : null);
         }

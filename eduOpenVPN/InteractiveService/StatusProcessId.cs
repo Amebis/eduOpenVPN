@@ -10,30 +10,30 @@ using System;
 namespace eduOpenVPN.InteractiveService
 {
     /// <summary>
-    /// OpenVPN Interactive Service openvpn.exe process ID message
+    /// OpenVPN Interactive Service openvpn.exe process identifier message
     /// </summary>
-    public class StatusProcessID : Status
+    public class StatusProcessId : Status
     {
         #region Properties
 
         /// <summary>
-        /// openvpn.exe process ID
+        /// openvpn.exe process identifier
         /// </summary>
-        public int ProcessID { get; private set; }
+        public int ProcessId { get; private set; }
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Constructs an OpenVPN Interactive Service openvpn.exe process ID message
+        /// Constructs an OpenVPN Interactive Service openvpn.exe process identifier message
         /// </summary>
-        /// <param name="pid">openvpn.exe process ID</param>
+        /// <param name="pid">openvpn.exe process identifier</param>
         /// <param name="message">Additional error description (optional)</param>
-        public StatusProcessID(int pid, string message) :
+        public StatusProcessId(int pid, string message) :
             base(0, message)
         {
-            ProcessID = pid;
+            ProcessId = pid;
         }
 
         #endregion
@@ -43,7 +43,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format("{0}: 0x{1:X}", Message, ProcessID);
+            return String.Format("{0}: 0x{1:X}", Message, ProcessId);
         }
 
         #endregion

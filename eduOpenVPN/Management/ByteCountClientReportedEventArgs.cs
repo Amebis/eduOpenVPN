@@ -15,9 +15,9 @@ namespace eduOpenVPN.Management
         #region Properties
 
         /// <summary>
-        /// Client ID
+        /// Client identifier
         /// </summary>
-        public uint CID { get; }
+        public uint ClientId { get; }
 
         #endregion
 
@@ -26,13 +26,13 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Constructs an event arguments
         /// </summary>
-        /// <param name="cid">Client ID</param>
+        /// <param name="clientId">Client identifier</param>
         /// <param name="bytesIn">Number of bytes that have been received from the server</param>
         /// <param name="bytesOut">Number of bytes that have been sent to the server</param>
-        public ByteCountClientReportedEventArgs(uint cid, ulong bytesIn, ulong bytesOut) :
+        public ByteCountClientReportedEventArgs(uint clientId, ulong bytesIn, ulong bytesOut) :
             base(bytesIn, bytesOut)
         {
-            CID = cid;
+            ClientId = clientId;
         }
 
         #endregion
