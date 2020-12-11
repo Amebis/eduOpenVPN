@@ -20,10 +20,10 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// openvpn.exe process ID
         /// </summary>
-        public int ProcessID { get => _process_id; }
+        public int ProcessID { get => _ProcessID; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private int _process_id;
+        private int _ProcessID;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace eduOpenVPN.InteractiveService
         public StatusProcessID(int pid, string message) :
             base(0, message)
         {
-            _process_id = pid;
+            _ProcessID = pid;
         }
 
         #endregion
@@ -47,7 +47,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format("{0}: 0x{1:X}", Message, _process_id);
+            return String.Format("{0}: 0x{1:X}", Message, _ProcessID);
         }
 
         #endregion

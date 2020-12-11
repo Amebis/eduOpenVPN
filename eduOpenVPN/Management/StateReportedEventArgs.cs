@@ -58,16 +58,16 @@ namespace eduOpenVPN.Management
         /// <param name="state">OpenVPN state</param>
         /// <param name="message">Descriptive string (optional)</param>
         /// <param name="tunnel">TUN/TAP local IPv4 address (optional)</param>
-        /// <param name="ipv6_tunnel">TUN/TAP local IPv6 address (optional)</param>
+        /// <param name="ipv6Tunnel">TUN/TAP local IPv6 address (optional)</param>
         /// <param name="remote">Remote server address and port (optional)</param>
         /// <param name="local">Local address and port (optional)</param>
-        public StateReportedEventArgs(DateTimeOffset timestamp, OpenVPNStateType state, string message, IPAddress tunnel, IPAddress ipv6_tunnel, IPEndPoint remote, IPEndPoint local) :
+        public StateReportedEventArgs(DateTimeOffset timestamp, OpenVPNStateType state, string message, IPAddress tunnel, IPAddress ipv6Tunnel, IPEndPoint remote, IPEndPoint local) :
             base(timestamp)
         {
             State = state;
             Message = message;
             Tunnel = tunnel;
-            IPv6Tunnel = ipv6_tunnel;
+            IPv6Tunnel = ipv6Tunnel;
             Remote = remote;
             Local = local;
         }

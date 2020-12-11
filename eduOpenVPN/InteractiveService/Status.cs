@@ -21,18 +21,18 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// OpenVPN Interactive Service status code
         /// </summary>
-        public uint Code { get => _code; }
+        public uint Code { get => _Code; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private uint _code;
+        private uint _Code;
 
         /// <summary>
         /// OpenVPN Interactive Service message (optional)
         /// </summary>
-        public string Message { get => _message; }
+        public string Message { get => _Message; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _message;
+        private string _Message;
 
         #endregion
 
@@ -45,8 +45,8 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="message">Status description message</param>
         public Status(uint code, string message)
         {
-            _code = code;
-            _message = message;
+            _Code = code;
+            _Message = message;
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format(_message != null ? "{0} (0x{1,X})" : "(0x{1,X})", _message, _code);
+            return String.Format(_Message != null ? "{0} (0x{1,X})" : "(0x{1,X})", _Message, _Code);
         }
 
         /// <summary>

@@ -27,18 +27,18 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Constructs an exception
         /// </summary>
-        /// <param name="inner_exception">Inner exception</param>
-        public MonitorTerminatedException(Exception inner_exception) :
-            this(Resources.Strings.ErrorMonitorTerminated, inner_exception)
+        /// <param name="innerException">Inner exception</param>
+        public MonitorTerminatedException(Exception innerException) :
+            this(Resources.Strings.ErrorMonitorTerminated, innerException)
         { }
 
         /// <summary>
         /// Constructs an exception
         /// </summary>
         /// <param name="message">Exception message</param>
-        /// <param name="inner_exception">Inner exception</param>
-        public MonitorTerminatedException(string message, Exception inner_exception) :
-            base(message, inner_exception)
+        /// <param name="innerException">Inner exception</param>
+        public MonitorTerminatedException(string message, Exception innerException) :
+            base(message, innerException)
         {
         }
 

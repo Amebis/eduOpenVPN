@@ -27,11 +27,11 @@ namespace eduOpenVPN.Management
         /// Constructs an event arguments
         /// </summary>
         /// <param name="message">Descriptive string</param>
-        /// <param name="wait_hint">Indicates how long OpenVPN would wait without UI(as influenced by connect-retry exponential backoff). The UI needs to wait for releasing the hold if it wants similar behavior.</param>
-        public HoldReportedEventArgs(string message, int wait_hint) :
+        /// <param name="waitHint">Indicates how long OpenVPN would wait without UI(as influenced by connect-retry exponential backoff). The UI needs to wait for releasing the hold if it wants similar behavior.</param>
+        public HoldReportedEventArgs(string message, int waitHint) :
             base(message)
         {
-            WaitHint = wait_hint;
+            WaitHint = waitHint;
         }
 
         #endregion

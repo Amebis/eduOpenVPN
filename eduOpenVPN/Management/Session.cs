@@ -135,9 +135,9 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_field_separators, 2);
+                var fields = data.Split(FieldSeparators, 2);
                 session.EchoReceived?.Invoke(session, new EchoReceivedEventArgs(
-                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    long.TryParse(fields[0].Trim(), out var unixTime) ? Epoch.AddSeconds(unixTime) : DateTimeOffset.UtcNow,
                     fields.Length > 1 ? fields[1].Trim() : null));
             }
         }
@@ -150,7 +150,7 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_msg_separators, 2 + 1);
+                var fields = data.Split(MsgSeparators, 2 + 1);
                 session.HoldReported?.Invoke(session, new HoldReportedEventArgs(
                     fields[0].Trim(),
                     fields.Length > 1 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0));
@@ -165,9 +165,9 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_field_separators, 2 + 1);
+                var fields = data.Split(FieldSeparators, 2 + 1);
                 session.LogReported?.Invoke(session, new LogReportedEventArgs(
-                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    long.TryParse(fields[0].Trim(), out var unixTime) ? Epoch.AddSeconds(unixTime) : DateTimeOffset.UtcNow,
                     fields.Length > 1 ?
                         (fields[1].IndexOf('I') >= 0 ? LogMessageFlags.Informational : 0) |
                         (fields[1].IndexOf('F') >= 0 ? LogMessageFlags.FatalError : 0) |
@@ -187,15 +187,15 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_field_separators, 9 + 1);
+                var fields = data.Split(FieldSeparators, 9 + 1);
                 session.StateReported?.Invoke(session, new StateReportedEventArgs(
-                    long.TryParse(fields[0].Trim(), out var unix_time) ? _epoch.AddSeconds(unix_time) : DateTimeOffset.UtcNow,
+                    long.TryParse(fields[0].Trim(), out var unixTime) ? Epoch.AddSeconds(unixTime) : DateTimeOffset.UtcNow,
                     fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<OpenVPNStateType>(fields[1].Trim(), out var state) ? state : default,
                     fields.Length > 2 ? fields[2].Trim() : null,
                     fields.Length > 3 && IPAddress.TryParse(fields[3].Trim(), out var address) ? address : null,
-                    fields.Length > 8 && IPAddress.TryParse(fields[8].Trim(), out var ipv6_address) ? ipv6_address : null,
-                    fields.Length > 5 && IPAddress.TryParse(fields[4].Trim(), out var remote_address) && int.TryParse(fields[5].Trim(), out var remote_port) ? new IPEndPoint(remote_address, remote_port) : null,
-                    fields.Length > 7 && IPAddress.TryParse(fields[6].Trim(), out var local_address) && int.TryParse(fields[7].Trim(), out var local_port) ? new IPEndPoint(local_address, local_port) : null));
+                    fields.Length > 8 && IPAddress.TryParse(fields[8].Trim(), out var ipv6Address) ? ipv6Address : null,
+                    fields.Length > 5 && IPAddress.TryParse(fields[4].Trim(), out var remoteAddress) && int.TryParse(fields[5].Trim(), out var remotePort) ? new IPEndPoint(remoteAddress, remotePort) : null,
+                    fields.Length > 7 && IPAddress.TryParse(fields[6].Trim(), out var localAddress) && int.TryParse(fields[7].Trim(), out var localPort) ? new IPEndPoint(localAddress, localPort) : null));
             }
         }
 
@@ -212,7 +212,7 @@ namespace eduOpenVPN.Management
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
-                var fields = data.Split(_msg_separators, 1 + 1);
+                var fields = data.Split(MsgSeparators, 1 + 1);
                 if (fields.Length > 0)
                     Version[fields[0]] = fields.Length > 1 ? fields[1].Trim() : null;
             }
@@ -226,40 +226,40 @@ namespace eduOpenVPN.Management
         /// Used to convert Unix timestamps into <see cref="DateTimeOffset"/>
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly DateTimeOffset _epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
+        private static readonly DateTimeOffset Epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
 
         /// <summary>
         /// Message separators
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly char[] _msg_separators = new char[] { ':' };
+        private static readonly char[] MsgSeparators = new char[] { ':' };
 
         /// <summary>
         /// Field separators
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly char[] _field_separators = new char[] { ',' };
+        private static readonly char[] FieldSeparators = new char[] { ',' };
 
         /// <summary>
         /// Queue of pending commands
         /// </summary>
-        private Queue<Command> _commands;
+        private Queue<Command> Commands;
 
         /// <summary>
         /// Lock to serialize command submission
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private object _command_lock;
+        private object CommandsLock;
 
         /// <summary>
         /// Waitable event to signal the monitor finished
         /// </summary>
-        private EventWaitHandle _monitor_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
+        private EventWaitHandle MonitorFinished = new EventWaitHandle(false, EventResetMode.ManualReset);
 
         /// <summary>
         /// Cached credentials
         /// </summary>
-        private NetworkCredential _credentials;
+        private NetworkCredential Credentials;
 
         #endregion
 
@@ -268,26 +268,26 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Network stream to OpenVPN Management console
         /// </summary>
-        public NetworkStream Stream { get => _stream; }
+        public NetworkStream Stream { get => _Stream; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private NetworkStream _stream;
+        private NetworkStream _Stream;
 
         /// <summary>
         /// Session monitor
         /// </summary>
-        public Thread Monitor { get => _monitor; }
+        public Thread Monitor { get => _Monitor; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Thread _monitor;
+        private Thread _Monitor;
 
         /// <summary>
         /// Session monitor error
         /// </summary>
-        public Exception Error { get => _error; }
+        public Exception Error { get => _Error; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Exception _error;
+        private Exception _Error;
 
         /// <summary>
         /// Raised when BYTECOUNT real-time message is received
@@ -393,22 +393,22 @@ namespace eduOpenVPN.Management
                 if (e.Command == "forget-passwords")
                 {
                     // Reset cached credentials.
-                    _credentials = null;
+                    Credentials = null;
                 }
             };
 
             AuthenticationFailed += (object sender, AuthenticationEventArgs e) =>
             {
                 // Reset cached credentials to force user re-prompting.
-                _credentials = null;
+                Credentials = null;
             };
 
             AuthenticationTokenReported += (object sender, AuthenticationTokenReportedEventArgs e) =>
             {
-                if (_credentials != null)
+                if (Credentials != null)
                 {
                     // Save authentication token. OpenVPN accepts it as the password on reauthentications.
-                    _credentials.SecurePassword = e.Token;
+                    Credentials.SecurePassword = e.Token;
                 }
             };
         }
@@ -427,9 +427,9 @@ namespace eduOpenVPN.Management
         /// <exception cref="CommandException">Authentication using <paramref name="password"/> failed.</exception>
         public void Start(NetworkStream stream, string password, CancellationToken ct = default)
         {
-            _stream = stream;
-            var reader = new StreamReader(_stream, Encoding.UTF8, false);
-            var service_ready = new EventWaitHandle(false, EventResetMode.ManualReset);
+            _Stream = stream;
+            var reader = new StreamReader(_Stream, Encoding.UTF8, false);
+            var serviceReady = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             if (password != null)
             {
@@ -440,11 +440,11 @@ namespace eduOpenVPN.Management
                     throw new UnexpectedReplyException(new String(buffer));
             }
 
-            _commands = new Queue<Command>();
-            _command_lock = new object();
+            Commands = new Queue<Command>();
+            CommandsLock = new object();
 
             // Spawn the monitor.
-            _monitor = new Thread(new ThreadStart(
+            _Monitor = new Thread(new ThreadStart(
                 () =>
                 {
                     try
@@ -469,26 +469,26 @@ namespace eduOpenVPN.Management
                             if (line.Length > 0 && line[0] == '>')
                             {
                                 // Real-time notification message.
-                                var msg = line.Substring(1).Split(_msg_separators, 2);
+                                var msg = line.Substring(1).Split(MsgSeparators, 2);
                                 switch (msg[0].Trim())
                                 {
                                     case "BYTECOUNT":
                                         {
-                                            var fields = msg[1].Split(_field_separators, 2 + 1);
+                                            var fields = msg[1].Split(FieldSeparators, 2 + 1);
                                             ByteCountReported?.Invoke(this, new ByteCountReportedEventArgs(
-                                                fields.Length > 0 && ulong.TryParse(fields[0].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytes_out) ? bytes_out : 0
+                                                fields.Length > 0 && ulong.TryParse(fields[0].Trim(), out var bytesIn) ? bytesIn : 0,
+                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesOut) ? bytesOut : 0
                                             ));
                                         }
                                         break;
 
                                     case "BYTECOUNT_CLI":
                                         {
-                                            var fields = msg[1].Split(_field_separators, 3 + 1);
+                                            var fields = msg[1].Split(FieldSeparators, 3 + 1);
                                             ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
                                                 fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var cid) ? cid : 0,
-                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytes_in) ? bytes_in : 0,
-                                                fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytes_out) ? bytes_out : 0
+                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesIn) ? bytesIn : 0,
+                                                fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytesOut) ? bytesOut : 0
                                             ));
                                         }
                                         break;
@@ -515,7 +515,7 @@ namespace eduOpenVPN.Management
 
                                     case "INFO":
                                         // Interactive service is ready only after it reports ">INFO".
-                                        service_ready.Set();
+                                        serviceReady.Set();
                                         InfoReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
                                         break;
 
@@ -573,7 +573,7 @@ namespace eduOpenVPN.Management
 
                                                         case "username/password":
                                                             {
-                                                                if (_credentials == null)
+                                                                if (Credentials == null)
                                                                 {
                                                                     // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
 
@@ -583,13 +583,13 @@ namespace eduOpenVPN.Management
                                                                         throw new OperationCanceledException();
 
                                                                     // Prepare new credentials.
-                                                                    _credentials = new NetworkCredential(e.Username, "") { SecurePassword = e.Password };
+                                                                    Credentials = new NetworkCredential(e.Username, "") { SecurePassword = e.Password };
                                                                 }
 
                                                                 // Send reply messages.
-                                                                var realm_esc = Configuration.EscapeParamValue(param[1]);
-                                                                SendCommand("username " + realm_esc + " " + Configuration.EscapeParamValue(_credentials.UserName), new SingleCommand(), ct);
-                                                                SendCommand("password " + realm_esc + " " + Configuration.EscapeParamValue(_credentials.Password), new SingleCommand(), ct);
+                                                                var realmEsc = Configuration.EscapeParamValue(param[1]);
+                                                                SendCommand("username " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.UserName), new SingleCommand(), ct);
+                                                                SendCommand("password " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.Password), new SingleCommand(), ct);
                                                             }
                                                             break;
                                                     }
@@ -610,7 +610,7 @@ namespace eduOpenVPN.Management
                                     case "REMOTE":
                                         {
                                             // Get action.
-                                            var fields = msg[1].Split(_field_separators, 3 + 1);
+                                            var fields = msg[1].Split(FieldSeparators, 3 + 1);
                                             var e = new RemoteReportedEventArgs(
                                                 fields[0].Trim(),
                                                 fields.Length > 1 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
@@ -625,7 +625,7 @@ namespace eduOpenVPN.Management
                                     case "PK_SIGN":
                                         {
                                             // Get signature.
-                                            var fields = msg[1].Split(_field_separators);
+                                            var fields = msg[1].Split(FieldSeparators);
                                             var e = new SignRequestedEventArgs(
                                                 Convert.FromBase64String(fields[0]),
                                                 fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<SignAlgorithmType>(fields[1].Trim(), out var padding) ? padding : SignAlgorithmType.RSASignaturePKCS1Padding);
@@ -663,65 +663,65 @@ namespace eduOpenVPN.Management
                             else
                             {
                                 Command cmd;
-                                lock (_commands) cmd = _commands.Count > 0 ? _commands.Peek() : null;
-                                if (cmd is MultilineCommand cmd_multiline)
+                                lock (Commands) cmd = Commands.Count > 0 ? Commands.Peek() : null;
+                                if (cmd is MultilineCommand multilineCmd)
                                 {
                                     if (line == "END")
                                     {
                                         // Multi-line response end.
-                                        lock (_commands) _commands.Dequeue();
-                                        cmd_multiline.Finished.Set();
+                                        lock (Commands) Commands.Dequeue();
+                                        multilineCmd.Finished.Set();
                                     }
                                     else
                                     {
                                         // One line of multi-line response.
-                                        cmd_multiline.ProcessData(line, this);
+                                        multilineCmd.ProcessData(line, this);
                                     }
                                 }
-                                else if (cmd is SingleCommand cmd_single)
+                                else if (cmd is SingleCommand singleCmd)
                                 {
-                                    var msg = line.Split(_msg_separators, 2);
+                                    var msg = line.Split(MsgSeparators, 2);
                                     switch (msg[0].Trim())
                                     {
                                         case "SUCCESS":
                                             // Success response.
-                                            lock (_commands) _commands.Dequeue();
-                                            cmd_single.Success = true;
-                                            cmd_single.Response = msg[1].Trim();
-                                            cmd_single.Finished.Set();
+                                            lock (Commands) Commands.Dequeue();
+                                            singleCmd.Success = true;
+                                            singleCmd.Response = msg[1].Trim();
+                                            singleCmd.Finished.Set();
                                             break;
 
                                         case "ERROR":
                                             // Error response.
-                                            lock (_commands) _commands.Dequeue();
-                                            cmd_single.Success = false;
-                                            cmd_single.Response = msg[1].Trim();
-                                            cmd_single.Finished.Set();
+                                            lock (Commands) Commands.Dequeue();
+                                            singleCmd.Success = false;
+                                            singleCmd.Response = msg[1].Trim();
+                                            singleCmd.Finished.Set();
                                             break;
                                     }
                                 }
                             }
                         }
                     }
-                    catch (Exception ex) { _error = ex; }
+                    catch (Exception ex) { _Error = ex; }
                     finally
                     {
                         // Signal the monitor finished.
-                        _monitor_finished.Set();
+                        MonitorFinished.Set();
                     }
                 }));
-            _monitor.Start();
+            _Monitor.Start();
 
             if (password != null)
             {
                 // Send the password.
-                var cmd_result = new SingleCommand();
-                SendCommand(password, cmd_result, ct);
-                WaitFor(cmd_result, ct);
+                var cmdResult = new SingleCommand();
+                SendCommand(password, cmdResult, ct);
+                WaitFor(cmdResult, ct);
             }
 
             // Wait for the interactive service to become ready.
-            WaitFor(service_ready, ct);
+            WaitFor(serviceReady, ct);
 
             // Wait for additional 100ms. Like OpenVPN GUI does.
             WaitFor(100, ct);
@@ -746,9 +746,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueSetByteCount(int n, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(String.Format("bytecount {0:D}", n), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(String.Format("bytecount {0:D}", n), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -770,9 +770,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueEnableEcho(bool enable, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(enable ? "echo on" : "echo off", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(enable ? "echo on" : "echo off", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -791,9 +791,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayEcho(CancellationToken ct = default)
         {
-            var cmd_result = new EchoCommand();
-            SendCommand("echo all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new EchoCommand();
+            SendCommand("echo all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -813,9 +813,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result objects</returns>
         public CombinedCommands QueueReplayAndEnableEcho(CancellationToken ct = default)
         {
-            var cmd_result = new CombinedCommands { first = new SingleCommand(), second = new EchoCommand() };
-            SendCommand("echo on all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new EchoCommand() };
+            SendCommand("echo on all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -828,9 +828,9 @@ namespace eduOpenVPN.Management
         /// <exception cref="OverflowException">Hold flag didn't fit inside 32-bit unsigned integer</exception>
         public bool GetHold(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("hold", cmd_result, ct);
-            var result = WaitFor(cmd_result, ct);
+            var cmdResult = new SingleCommand();
+            SendCommand("hold", cmdResult, ct);
+            var result = WaitFor(cmdResult, ct);
             if (result.StartsWith("hold="))
                 return uint.Parse(result.Substring(5)) != 0;
             else
@@ -856,9 +856,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueEnableHold(bool enable, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(enable ? "hold on" : "hold off", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(enable ? "hold on" : "hold off", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -878,9 +878,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueReleaseHold(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("hold release", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand("hold release", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -902,9 +902,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueEnableLog(bool enable, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(enable ? "log on" : "log off", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(enable ? "log on" : "log off", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -925,9 +925,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayLog(int n, CancellationToken ct = default)
         {
-            var cmd_result = new LogCommand();
-            SendCommand(String.Format("log {0:D}", n), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new LogCommand();
+            SendCommand(String.Format("log {0:D}", n), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -946,9 +946,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayLog(CancellationToken ct = default)
         {
-            var cmd_result = new LogCommand();
-            SendCommand("log all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new LogCommand();
+            SendCommand("log all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -968,9 +968,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public CombinedCommands QueueReplayAndEnableLog(CancellationToken ct = default)
         {
-            var cmd_result = new CombinedCommands { first = new SingleCommand(), second = new LogCommand() };
-            SendCommand("log on all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new LogCommand() };
+            SendCommand("log on all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -983,9 +983,9 @@ namespace eduOpenVPN.Management
         /// <exception cref="OverflowException">Mute setting didn't fit inside 32-bit integer</exception>
         public int GetMute(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("mute", cmd_result, ct);
-            var result = WaitFor(cmd_result, ct);
+            var cmdResult = new SingleCommand();
+            SendCommand("mute", cmdResult, ct);
+            var result = WaitFor(cmdResult, ct);
             if (result.StartsWith("mute="))
                 return int.Parse(result.Substring(5));
             else
@@ -1011,9 +1011,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueSetMute(int n, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(String.Format("mute {0:D}", n), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(String.Format("mute {0:D}", n), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1026,9 +1026,9 @@ namespace eduOpenVPN.Management
         /// <exception cref="OverflowException">Process ID didn't fit inside 32-bit integer</exception>
         public int GetProcessID(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("pid", cmd_result, ct);
-            var result = WaitFor(cmd_result, ct);
+            var cmdResult = new SingleCommand();
+            SendCommand("pid", cmdResult, ct);
+            var result = WaitFor(cmdResult, ct);
             if (result.StartsWith("pid="))
                 return int.Parse(result.Substring(4));
             else
@@ -1052,9 +1052,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueForgetPasswords(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("forget-passwords", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand("forget-passwords", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1076,9 +1076,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueSendSignal(SignalType signal, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(String.Format("signal {0}", Enum.GetName(typeof(SignalType), signal)), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(String.Format("signal {0}", Enum.GetName(typeof(SignalType), signal)), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1097,9 +1097,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayCurrentState(CancellationToken ct = default)
         {
-            var cmd_result = new StateCommand();
-            SendCommand("state", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new StateCommand();
+            SendCommand("state", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1121,9 +1121,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueEnableState(bool enable, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(enable ? "state on" : "state off", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(enable ? "state on" : "state off", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1142,9 +1142,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayState(CancellationToken ct = default)
         {
-            var cmd_result = new StateCommand();
-            SendCommand("state all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new StateCommand();
+            SendCommand("state all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1165,9 +1165,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public MultilineCommand QueueReplayState(int n, CancellationToken ct = default)
         {
-            var cmd_result = new StateCommand();
-            SendCommand(String.Format("state {0:D}", n), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new StateCommand();
+            SendCommand(String.Format("state {0:D}", n), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1187,9 +1187,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public CombinedCommands QueueReplayAndEnableState(CancellationToken ct = default)
         {
-            var cmd_result = new CombinedCommands { first = new SingleCommand(), second = new StateCommand() };
-            SendCommand("state on all", cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new StateCommand() };
+            SendCommand("state on all", cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1202,9 +1202,9 @@ namespace eduOpenVPN.Management
         /// <exception cref="OverflowException">Verbosity level didn't fit inside 32-bit integer</exception>
         public int GetVerbosity(CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand("verb", cmd_result, ct);
-            var result = WaitFor(cmd_result, ct);
+            var cmdResult = new SingleCommand();
+            SendCommand("verb", cmdResult, ct);
+            var result = WaitFor(cmdResult, ct);
             if (result.StartsWith("verb="))
                 return int.Parse(result.Substring(5));
             else
@@ -1230,9 +1230,9 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public SingleCommand QueueSetVerbosity(int n, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(String.Format("verb {0:D}", n), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(String.Format("verb {0:D}", n), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
@@ -1261,40 +1261,40 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Set the --auth-retry setting to control how OpenVPN responds to username/password authentication errors
         /// </summary>
-        /// <param name="auth_retry">Authentication retry</param>
+        /// <param name="authRetry">Authentication retry</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Command response</returns>
-        public string SetAuthenticationRetry(AuthRetryType auth_retry, CancellationToken ct = default)
+        public string SetAuthenticationRetry(AuthRetryType authRetry, CancellationToken ct = default)
         {
-            return WaitFor(QueueSetAuthenticationRetry(auth_retry, ct), ct);
+            return WaitFor(QueueSetAuthenticationRetry(authRetry, ct), ct);
         }
 
         /// <summary>
         /// Set the --auth-retry setting to control how OpenVPN responds to username/password authentication errors (queue and continue)
         /// </summary>
-        /// <param name="auth_retry">Authentication retry</param>
+        /// <param name="authRetry">Authentication retry</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Waitable command result object</returns>
-        public SingleCommand QueueSetAuthenticationRetry(AuthRetryType auth_retry, CancellationToken ct = default)
+        public SingleCommand QueueSetAuthenticationRetry(AuthRetryType authRetry, CancellationToken ct = default)
         {
-            var cmd_result = new SingleCommand();
-            SendCommand(String.Format("auth-retry {0}", auth_retry.GetParameterValue()), cmd_result, ct);
-            return cmd_result;
+            var cmdResult = new SingleCommand();
+            SendCommand(String.Format("auth-retry {0}", authRetry.GetParameterValue()), cmdResult, ct);
+            return cmdResult;
         }
 
         /// <summary>
         /// Waits for the event
         /// </summary>
-        /// <param name="wait_handle">Event to wait for</param>
+        /// <param name="waitHandle">Event to wait for</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <exception cref="OperationCanceledException">The <paramref name="ct"/> was set.</exception>
         /// <exception cref="MonitorTerminatedException">Monitor terminated prematurely.</exception>
-        private void WaitFor(WaitHandle wait_handle, CancellationToken ct = default)
+        private void WaitFor(WaitHandle waitHandle, CancellationToken ct = default)
         {
-            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished, wait_handle }))
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, MonitorFinished, waitHandle }))
             {
                 case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_error);
+                case 1: throw new MonitorTerminatedException(_Error);
             }
         }
 
@@ -1307,58 +1307,58 @@ namespace eduOpenVPN.Management
         /// <exception cref="MonitorTerminatedException">Monitor terminated prematurely.</exception>
         private void WaitFor(int timeout, CancellationToken ct = default)
         {
-            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, _monitor_finished }, timeout))
+            switch (WaitHandle.WaitAny(new WaitHandle[] { ct.WaitHandle, MonitorFinished }, timeout))
             {
                 case 0: throw new OperationCanceledException();
-                case 1: throw new MonitorTerminatedException(_error);
+                case 1: throw new MonitorTerminatedException(_Error);
             }
         }
 
         /// <summary>
         /// Waits for the command to finish and return its result
         /// </summary>
-        /// <param name="cmd_result">Pending command result</param>
+        /// <param name="cmdResult">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Command response</returns>
         /// <exception cref="CommandException">Command failed</exception>
-        private string WaitFor(SingleCommand cmd_result, CancellationToken ct = default)
+        private string WaitFor(SingleCommand cmdResult, CancellationToken ct = default)
         {
             // Await for the command to finish.
-            WaitFor(cmd_result.Finished);
+            WaitFor(cmdResult.Finished);
 
-            if (cmd_result.Success)
-                return cmd_result.Response;
+            if (cmdResult.Success)
+                return cmdResult.Response;
             else
-                throw new CommandException(cmd_result.Response);
+                throw new CommandException(cmdResult.Response);
         }
 
         /// <summary>
         /// Waits for the command to finish
         /// </summary>
-        /// <param name="cmd_result">Pending command result</param>
+        /// <param name="cmdResult">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        private void WaitFor(MultilineCommand cmd_result, CancellationToken ct = default)
+        private void WaitFor(MultilineCommand cmdResult, CancellationToken ct = default)
         {
             // Await for the command to finish.
-            WaitFor(cmd_result.Finished);
+            WaitFor(cmdResult.Finished);
         }
 
         /// <summary>
-        /// Waits for <c>cmd_result.second</c> command to finish and return <c>cmd_result.first</c> command result
+        /// Waits for <c>cmdResult.second</c> command to finish and return <c>cmdResult.first</c> command result
         /// </summary>
-        /// <param name="cmd_result">Pending command results</param>
+        /// <param name="cmdResult">Pending command results</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>Command response</returns>
         /// <exception cref="CommandException">Command failed</exception>
-        private string WaitFor(CombinedCommands cmd_result, CancellationToken ct = default)
+        private string WaitFor(CombinedCommands cmdResult, CancellationToken ct = default)
         {
             // Await for the second command to finish.
-            WaitFor(cmd_result.second.Finished);
+            WaitFor(cmdResult.second.Finished);
 
-            if (cmd_result.first.Success)
-                return cmd_result.first.Response;
+            if (cmdResult.first.Success)
+                return cmdResult.first.Response;
             else
-                throw new CommandException(cmd_result.first.Response);
+                throw new CommandException(cmdResult.first.Response);
         }
 
         /// <summary>
@@ -1369,14 +1369,14 @@ namespace eduOpenVPN.Management
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
         private void SendCommand(string cmd, CancellationToken ct = default)
         {
-            if (_error != null)
+            if (_Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
-            lock (_command_lock)
+            lock (CommandsLock)
             {
                 // Send the command.
-                var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
-                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
+                var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
+                _Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1384,22 +1384,22 @@ namespace eduOpenVPN.Management
         /// Sends a command to OpenVPN Management console
         /// </summary>
         /// <param name="cmd">Command to send</param>
-        /// <param name="cmd_result">Pending command result</param>
+        /// <param name="cmdResult">Pending command result</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
-        private void SendCommand(string cmd, Command cmd_result, CancellationToken ct = default)
+        private void SendCommand(string cmd, Command cmdResult, CancellationToken ct = default)
         {
-            if (_error != null)
+            if (_Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
-            lock (_command_lock)
+            lock (CommandsLock)
             {
-                lock (_commands)
-                    _commands.Enqueue(cmd_result);
+                lock (Commands)
+                    Commands.Enqueue(cmdResult);
 
                 // Send the command.
-                var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
-                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
+                var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
+                _Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1407,25 +1407,25 @@ namespace eduOpenVPN.Management
         /// Sends a command to OpenVPN Management console
         /// </summary>
         /// <param name="cmd">Command to send</param>
-        /// <param name="cmd_result">Pending command results</param>
+        /// <param name="cmdResult">Pending command results</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <exception cref="SessionStateException">Session is in the state of error and is not accepting new commands.</exception>
-        private void SendCommand(string cmd, CombinedCommands cmd_result, CancellationToken ct = default)
+        private void SendCommand(string cmd, CombinedCommands cmdResult, CancellationToken ct = default)
         {
-            if (_error != null)
+            if (_Error != null)
                 throw new SessionStateException(Resources.Strings.ErrorSessionState);
 
-            lock (_command_lock)
+            lock (CommandsLock)
             {
-                lock (_commands)
+                lock (Commands)
                 {
-                    _commands.Enqueue(cmd_result.first);
-                    _commands.Enqueue(cmd_result.second);
+                    Commands.Enqueue(cmdResult.first);
+                    Commands.Enqueue(cmdResult.second);
                 }
 
                 // Send the command.
-                var cmd_bin = Encoding.UTF8.GetBytes(cmd + "\n");
-                _stream.Write(cmd_bin, 0, cmd_bin.Length, ct);
+                var binCmd = Encoding.UTF8.GetBytes(cmd + "\n");
+                _Stream.Write(binCmd, 0, binCmd.Length, ct);
             }
         }
 
@@ -1453,11 +1453,11 @@ namespace eduOpenVPN.Management
             {
                 if (disposing)
                 {
-                    if (_monitor_finished != null)
-                        _monitor_finished.Dispose();
+                    if (MonitorFinished != null)
+                        MonitorFinished.Dispose();
 
-                    if (_stream != null)
-                        _stream.Dispose();
+                    if (_Stream != null)
+                        _Stream.Dispose();
                 }
 
                 disposedValue = true;

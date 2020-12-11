@@ -28,18 +28,18 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Named pipe stream to OpenVPN Interactive Service
         /// </summary>
-        public NamedPipeClientStream Stream { get => _stream; }
+        public NamedPipeClientStream Stream { get => _Stream; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private NamedPipeClientStream _stream;
+        private NamedPipeClientStream _Stream;
 
         /// <summary>
         /// openvpn.exe process ID
         /// </summary>
-        public int ProcessID { get => _process_id; }
+        public int ProcessID { get => _ProcessID; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private int _process_id;
+        private int _ProcessID;
 
         #endregion
 
@@ -48,32 +48,32 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Connects to OpenVPN Interactive Service and sends a command to start openvpn.exe
         /// </summary>
-        /// <param name="pipe_name">Pipe name to connect to (e.g. "openvpn\\service")</param>
-        /// <param name="working_folder">openvpn.exe process working folder to start in</param>
+        /// <param name="pipeName">Pipe name to connect to (e.g. "openvpn\\service")</param>
+        /// <param name="workingFolder">openvpn.exe process working folder to start in</param>
         /// <param name="arguments">openvpn.exe command line parameters</param>
         /// <param name="stdin">Text to send to openvpn.exe on start via stdin</param>
         /// <param name="timeout">The number of milliseconds to wait for the server to respond before the connection times out.</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>openvpn.exe process ID</returns>
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream tolerates multiple disposes.")]
-        public void Connect(string pipe_name, string working_folder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
+        public void Connect(string pipeName, string workingFolder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
         {
             try
             {
                 // Connect to OpenVPN Interactive Service via named pipe.
-                _stream = new NamedPipeClientStream(".", pipe_name);
-                _stream.Connect(timeout);
-                _stream.ReadMode = PipeTransmissionMode.Message;
+                _Stream = new NamedPipeClientStream(".", pipeName);
+                _Stream.Connect(timeout);
+                _Stream.ReadMode = PipeTransmissionMode.Message;
             }
-            catch (Exception ex) { throw new AggregateException(String.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipe_name), ex); }
+            catch (Exception ex) { throw new AggregateException(String.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipeName), ex); }
 
             // Ask OpenVPN Interactive Service to start openvpn.exe for us.
-            var encoding_utf16 = new UnicodeEncoding(false, false);
-            using (var msg_stream = new MemoryStream())
-            using (var writer = new BinaryWriter(msg_stream, encoding_utf16))
+            var encodingUtf16 = new UnicodeEncoding(false, false);
+            using (var msgStream = new MemoryStream())
+            using (var writer = new BinaryWriter(msgStream, encodingUtf16))
             {
                 // Working folder (zero terminated)
-                writer.Write(working_folder.ToArray());
+                writer.Write(workingFolder.ToArray());
                 writer.Write((char)0);
 
                 // openvpn.exe command line parameters (zero terminated)
@@ -84,20 +84,20 @@ namespace eduOpenVPN.InteractiveService
                 writer.Write(stdin.ToArray());
                 writer.Write((char)0);
 
-                _stream.Write(msg_stream.GetBuffer(), 0, (int)msg_stream.Length, ct);
+                _Stream.Write(msgStream.GetBuffer(), 0, (int)msgStream.Length, ct);
             }
 
             // Read and analyse status.
-            var status_task = ReadStatusAsync();
-            try { status_task.Wait(ct); }
+            var statusTask = ReadStatusAsync();
+            try { statusTask.Wait(ct); }
             catch (OperationCanceledException) { throw; }
             catch (AggregateException ex) { throw ex.InnerException; }
-            if (status_task.Result is StatusError status_err && status_err.Code != 0)
-                throw new InteractiveServiceException(status_err.Code, status_err.Function, status_err.Message);
-            else if (status_task.Result is StatusProcessID status_pid)
-                _process_id = status_pid.ProcessID;
+            if (statusTask.Result is StatusError statusErr && statusErr.Code != 0)
+                throw new InteractiveServiceException(statusErr.Code, statusErr.Function, statusErr.Message);
+            else if (statusTask.Result is StatusProcessID statusPid)
+                _ProcessID = statusPid.ProcessID;
             else
-                _process_id = 0;
+                _ProcessID = 0;
         }
 
         /// <summary>
@@ -106,10 +106,10 @@ namespace eduOpenVPN.InteractiveService
         /// <remarks>Instead of calling this method, ensure that the connection is properly disposed.</remarks>
         public void Disconnect()
         {
-            if (_stream != null)
+            if (_Stream != null)
             {
-                _stream.Close();
-                _stream = null;
+                _Stream.Close();
+                _Stream = null;
             }
         }
 
@@ -120,7 +120,7 @@ namespace eduOpenVPN.InteractiveService
         public async Task<Status> ReadStatusAsync()
         {
             var data = new byte[1048576]; // Limit to 1MiB
-            return Status.FromResponse(new string(Encoding.Unicode.GetChars(data, 0, await _stream.ReadAsync(data, 0, data.Length))));
+            return Status.FromResponse(new string(Encoding.Unicode.GetChars(data, 0, await _Stream.ReadAsync(data, 0, data.Length))));
         }
 
         #endregion
@@ -147,8 +147,8 @@ namespace eduOpenVPN.InteractiveService
             {
                 if (disposing)
                 {
-                    if (_stream != null)
-                        _stream.Dispose();
+                    if (_Stream != null)
+                        _Stream.Dispose();
                 }
 
                 disposedValue = true;

@@ -25,10 +25,10 @@ namespace eduOpenVPN
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            string value_str = value.ToString();
-            FieldInfo fieldInfo = value.GetType().GetField(value_str);
+            string valueStr = value.ToString();
+            FieldInfo fieldInfo = value.GetType().GetField(valueStr);
             var attribute = fieldInfo.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() as ParameterValueAttribute;
-            return attribute != null ? attribute.Value : value_str;
+            return attribute != null ? attribute.Value : valueStr;
         }
     }
 }

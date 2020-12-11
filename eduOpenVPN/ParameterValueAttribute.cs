@@ -22,10 +22,10 @@ namespace eduOpenVPN
         /// <summary>
         /// Attribute value
         /// </summary>
-        public string Value { get => _value; }
+        public string Value { get => _Value; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _value;
+        private string _Value;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace eduOpenVPN
         /// <param name="value">Value of the attribute</param>
         public ParameterValueAttribute(string value)
         {
-            _value = value;
+            _Value = value;
         }
 
         #endregion

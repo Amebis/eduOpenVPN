@@ -33,65 +33,65 @@ namespace eduOpenVPN
         /// <summary>
         /// Parses OpenVPN command line
         /// </summary>
-        /// <param name="command_line">Command line to parse</param>
+        /// <param name="commandLine">Command line to parse</param>
         /// <returns>List of string parameters</returns>
         /// <exception cref="ArgumentException">Command line parsing failed</exception>
         /// <remarks>This method is OpenVPN v2.5 <c>parse_line()</c> function ported to C#.</remarks>
-        public static List<string> ParseParams(string command_line)
+        public static List<string> ParseParams(string commandLine)
         {
             List<string> ret = new List<string>();
-            int offset = 0, offset_end = command_line.Length;
+            int offset = 0, endOffset = commandLine.Length;
             ParseParamsState state = ParseParamsState.Initial;
             bool backslash = false;
-            char char_in, char_out;
+            char inChar, outChar;
             string parm = "";
 
             do
             {
-                char_in = offset < offset_end ? command_line[offset] : default;
-                char_out = default;
+                inChar = offset < endOffset ? commandLine[offset] : default;
+                outChar = default;
 
-                if (!backslash && char_in == '\\' && state != ParseParamsState.ReadingSingleQuotedParam)
+                if (!backslash && inChar == '\\' && state != ParseParamsState.ReadingSingleQuotedParam)
                     backslash = true;
                 else
                 {
                     if (state == ParseParamsState.Initial)
                     {
-                        if (!IsZeroOrWhiteChar(char_in))
+                        if (!IsZeroOrWhiteChar(inChar))
                         {
-                            if (char_in == ';' || char_in == '#') // comment
+                            if (inChar == ';' || inChar == '#') // comment
                                 break;
-                            if (!backslash && char_in == '\"')
+                            if (!backslash && inChar == '\"')
                                 state = ParseParamsState.ReadingQuotedParam;
-                            else if (!backslash && char_in == '\'')
+                            else if (!backslash && inChar == '\'')
                                 state = ParseParamsState.ReadingSingleQuotedParam;
                             else
                             {
-                                char_out = char_in;
+                                outChar = inChar;
                                 state = ParseParamsState.ReadingUnquotedParam;
                             }
                         }
                     }
                     else if (state == ParseParamsState.ReadingUnquotedParam)
                     {
-                        if (!backslash && IsZeroOrWhiteChar(char_in))
+                        if (!backslash && IsZeroOrWhiteChar(inChar))
                             state = ParseParamsState.Done;
                         else
-                            char_out = char_in;
+                            outChar = inChar;
                     }
                     else if (state == ParseParamsState.ReadingQuotedParam)
                     {
-                        if (!backslash && char_in == '\"')
+                        if (!backslash && inChar == '\"')
                             state = ParseParamsState.Done;
                         else
-                            char_out = char_in;
+                            outChar = inChar;
                     }
                     else if (state == ParseParamsState.ReadingSingleQuotedParam)
                     {
-                        if (char_in == '\'')
+                        if (inChar == '\'')
                             state = ParseParamsState.Done;
                         else
-                            char_out = char_in;
+                            outChar = inChar;
                     }
 
                     if (state == ParseParamsState.Done)
@@ -101,26 +101,26 @@ namespace eduOpenVPN
                         parm = "";
                     }
 
-                    if (backslash && char_out != default)
+                    if (backslash && outChar != default)
                     {
-                        if (!(char_out == '\\' || char_out == '\"' || IsZeroOrWhiteChar(char_out)))
-                            throw new ArgumentException(Resources.Strings.ErrorBadBackslash, nameof(command_line));
+                        if (!(outChar == '\\' || outChar == '\"' || IsZeroOrWhiteChar(outChar)))
+                            throw new ArgumentException(Resources.Strings.ErrorBadBackslash, nameof(commandLine));
                     }
                     backslash = false;
                 }
 
                 // Store parameter character.
-                if (char_out != default)
-                    parm += char_out;
+                if (outChar != default)
+                    parm += outChar;
             }
-            while (offset++ < offset_end);
+            while (offset++ < endOffset);
 
             switch (state)
             {
                 case ParseParamsState.Initial: break;
-                case ParseParamsState.ReadingQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingQuotation, nameof(command_line));
-                case ParseParamsState.ReadingSingleQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingSingleQuotation, nameof(command_line));
-                default: throw new ArgumentException(String.Format(Resources.Strings.ErrorResidualParseState, state), nameof(command_line));
+                case ParseParamsState.ReadingQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingQuotation, nameof(commandLine));
+                case ParseParamsState.ReadingSingleQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingSingleQuotation, nameof(commandLine));
+                default: throw new ArgumentException(String.Format(Resources.Strings.ErrorResidualParseState, state), nameof(commandLine));
             }
 
             return ret;

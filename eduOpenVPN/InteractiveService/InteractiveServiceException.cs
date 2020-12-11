@@ -51,15 +51,15 @@ namespace eduOpenVPN.InteractiveService
         /// <summary>
         /// Creates an exception
         /// </summary>
-        /// <param name="error_num">Error number</param>
+        /// <param name="errorNum">Error number</param>
         /// <param name="function">The function that failed</param>
-        /// <param name="error_description">Human-readable text providing additional information</param>
-        public InteractiveServiceException(uint error_num, string function, string error_description) :
+        /// <param name="errorDescription">Human-readable text providing additional information</param>
+        public InteractiveServiceException(uint errorNum, string function, string errorDescription) :
             base()
         {
-            ErrorNumber = error_num;
+            ErrorNumber = errorNum;
             Function = function;
-            Description = error_description;
+            Description = errorDescription;
         }
 
         #endregion

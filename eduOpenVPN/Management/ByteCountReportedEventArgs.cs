@@ -33,12 +33,12 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Constructs an event arguments
         /// </summary>
-        /// <param name="bytes_in">Number of bytes that have been received from the server</param>
-        /// <param name="bytes_out">Number of bytes that have been sent to the server</param>
-        public ByteCountReportedEventArgs(ulong bytes_in, ulong bytes_out)
+        /// <param name="bytesIn">Number of bytes that have been received from the server</param>
+        /// <param name="bytesOut">Number of bytes that have been sent to the server</param>
+        public ByteCountReportedEventArgs(ulong bytesIn, ulong bytesOut)
         {
-            BytesIn = bytes_in;
-            BytesOut = bytes_out;
+            BytesIn = bytesIn;
+            BytesOut = bytesOut;
         }
 
         #endregion
