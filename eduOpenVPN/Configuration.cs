@@ -120,7 +120,7 @@ namespace eduOpenVPN
                 case ParseParamsState.Initial: break;
                 case ParseParamsState.ReadingQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingQuotation, nameof(commandLine));
                 case ParseParamsState.ReadingSingleQuotedParam: throw new ArgumentException(Resources.Strings.ErrorNoClosingSingleQuotation, nameof(commandLine));
-                default: throw new ArgumentException(String.Format(Resources.Strings.ErrorResidualParseState, state), nameof(commandLine));
+                default: throw new ArgumentException(string.Format(Resources.Strings.ErrorResidualParseState, state), nameof(commandLine));
             }
 
             return ret;

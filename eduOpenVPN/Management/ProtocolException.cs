@@ -22,7 +22,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Gets the error message and the response, or only the error message if no response is set.
         /// </summary>
-        public override string Message => Response != null ? String.Format(Resources.Strings.ErrorManagementManagementResponse, base.Message, Response) : base.Message;
+        public override string Message => Response != null ? string.Format(Resources.Strings.ErrorManagementManagementResponse, base.Message, Response) : base.Message;
 
         /// <summary>
         /// OpenVPN Management response that caused the problem

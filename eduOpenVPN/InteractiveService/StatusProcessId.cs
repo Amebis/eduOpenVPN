@@ -5,8 +5,6 @@
     SPDX-License-Identifier: GPL-3.0+
 */
 
-using System;
-
 namespace eduOpenVPN.InteractiveService
 {
     /// <summary>
@@ -43,7 +41,7 @@ namespace eduOpenVPN.InteractiveService
         /// <inheritdoc/>
         public override string ToString()
         {
-            return String.Format("{0}: 0x{1:X}", Message, ProcessId);
+            return string.Format("{0}: 0x{1:X}", Message, ProcessId);
         }
 
         #endregion

@@ -24,8 +24,8 @@ namespace eduOpenVPN.InteractiveService
         {
             get
             {
-                string msg = String.Format(Resources.Strings.ErrorInteractiveService, String.Format("0x{0:X}", ErrorNumber), Function);
-                return Description != null ? String.Format("{0}\n{1}", msg, Description) : msg;
+                string msg = string.Format(Resources.Strings.ErrorInteractiveService, string.Format("0x{0:X}", ErrorNumber), Function);
+                return Description != null ? string.Format("{0}\n{1}", msg, Description) : msg;
             }
         }
 

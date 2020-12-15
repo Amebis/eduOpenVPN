@@ -59,7 +59,7 @@ namespace eduOpenVPN.InteractiveService
                 Stream.Connect(timeout);
                 Stream.ReadMode = PipeTransmissionMode.Message;
             }
-            catch (Exception ex) { throw new AggregateException(String.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipeName), ex); }
+            catch (Exception ex) { throw new AggregateException(string.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipeName), ex); }
 
             // Ask OpenVPN Interactive Service to start openvpn.exe for us.
             var encodingUtf16 = new UnicodeEncoding(false, false);
@@ -71,7 +71,7 @@ namespace eduOpenVPN.InteractiveService
                 writer.Write((char)0);
 
                 // openvpn.exe command line parameters (zero terminated)
-                writer.Write(String.Join(" ", arguments.Select(arg => arg.IndexOfAny(new char[] { ' ', '"' }) >= 0 ? "\"" + arg.Replace("\"", "\\\"") + "\"" : arg)).ToArray());
+                writer.Write(string.Join(" ", arguments.Select(arg => arg.IndexOfAny(new char[] { ' ', '"' }) >= 0 ? "\"" + arg.Replace("\"", "\\\"") + "\"" : arg)).ToArray());
                 writer.Write((char)0);
 
                 // stdin (zero terminated)

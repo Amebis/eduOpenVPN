@@ -440,7 +440,7 @@ namespace eduOpenVPN.Management
                 {
                     try
                     {
-                        for (;;)
+                        for (; ; )
                         {
                             ct.ThrowIfCancellationRequested();
 
@@ -738,7 +738,7 @@ namespace eduOpenVPN.Management
         public SingleCommand QueueSetByteCount(int n, CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
-            SendCommand(String.Format("bytecount {0:D}", n), cmdResult, ct);
+            SendCommand(string.Format("bytecount {0:D}", n), cmdResult, ct);
             return cmdResult;
         }
 
@@ -917,7 +917,7 @@ namespace eduOpenVPN.Management
         public MultilineCommand QueueReplayLog(int n, CancellationToken ct = default)
         {
             var cmdResult = new LogCommand();
-            SendCommand(String.Format("log {0:D}", n), cmdResult, ct);
+            SendCommand(string.Format("log {0:D}", n), cmdResult, ct);
             return cmdResult;
         }
 
@@ -1003,7 +1003,7 @@ namespace eduOpenVPN.Management
         public SingleCommand QueueSetMute(int n, CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
-            SendCommand(String.Format("mute {0:D}", n), cmdResult, ct);
+            SendCommand(string.Format("mute {0:D}", n), cmdResult, ct);
             return cmdResult;
         }
 
@@ -1068,7 +1068,7 @@ namespace eduOpenVPN.Management
         public SingleCommand QueueSendSignal(SignalType signal, CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
-            SendCommand(String.Format("signal {0}", Enum.GetName(typeof(SignalType), signal)), cmdResult, ct);
+            SendCommand(string.Format("signal {0}", Enum.GetName(typeof(SignalType), signal)), cmdResult, ct);
             return cmdResult;
         }
 
@@ -1157,7 +1157,7 @@ namespace eduOpenVPN.Management
         public MultilineCommand QueueReplayState(int n, CancellationToken ct = default)
         {
             var cmdResult = new StateCommand();
-            SendCommand(String.Format("state {0:D}", n), cmdResult, ct);
+            SendCommand(string.Format("state {0:D}", n), cmdResult, ct);
             return cmdResult;
         }
 
@@ -1222,7 +1222,7 @@ namespace eduOpenVPN.Management
         public SingleCommand QueueSetVerbosity(int n, CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
-            SendCommand(String.Format("verb {0:D}", n), cmdResult, ct);
+            SendCommand(string.Format("verb {0:D}", n), cmdResult, ct);
             return cmdResult;
         }
 
@@ -1246,7 +1246,7 @@ namespace eduOpenVPN.Management
         /// <param name="ct">The token to monitor for cancellation requests</param>
         public void SetVersion(int n, CancellationToken ct = default)
         {
-            SendCommand(String.Format("version {0:D}", n), ct);
+            SendCommand(string.Format("version {0:D}", n), ct);
         }
 
         /// <summary>
@@ -1269,7 +1269,7 @@ namespace eduOpenVPN.Management
         public SingleCommand QueueSetAuthenticationRetry(AuthRetryType authRetry, CancellationToken ct = default)
         {
             var cmdResult = new SingleCommand();
-            SendCommand(String.Format("auth-retry {0}", authRetry.GetParameterValue()), cmdResult, ct);
+            SendCommand(string.Format("auth-retry {0}", authRetry.GetParameterValue()), cmdResult, ct);
             return cmdResult;
         }
 
