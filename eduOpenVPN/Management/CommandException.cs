@@ -20,7 +20,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Constructs an exception
         /// </summary>
-        /// <param name="message">Exception message</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
         public CommandException(string message) :
             base(message)
         {
