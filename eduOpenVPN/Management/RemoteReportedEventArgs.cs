@@ -14,27 +14,27 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class RemoteReportedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Hostname or IP address
         /// </summary>
-        public string Host { get; }
+        public readonly string Host;
 
         /// <summary>
         /// IP Port
         /// </summary>
-        public int Port { get; }
+        public readonly int Port;
 
         /// <summary>
         /// Protocol
         /// </summary>
-        public ProtoType Protocol { get; }
+        public readonly ProtoType Protocol;
 
         /// <summary>
         /// Required action for the given remote
         /// </summary>
-        public RemoteAction Action { get; set; }
+        public RemoteAction Action;
 
         #endregion
 

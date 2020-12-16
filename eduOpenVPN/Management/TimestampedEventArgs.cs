@@ -14,12 +14,12 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class TimestampedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Timestamp of the event
         /// </summary>
-        public DateTimeOffset TimeStamp { get; }
+        public readonly DateTimeOffset TimeStamp;
 
         #endregion
 

@@ -14,12 +14,12 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class MessageReportedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Descriptive string
         /// </summary>
-        public string Message { get; }
+        public readonly string Message;
 
         #endregion
 

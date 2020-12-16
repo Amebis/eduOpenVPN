@@ -14,17 +14,17 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class ByteCountReportedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Number of bytes that have been received from the server
         /// </summary>
-        public ulong BytesIn { get; }
+        public readonly ulong BytesIn;
 
         /// <summary>
         /// Number of bytes that have been sent to the server
         /// </summary>
-        public ulong BytesOut { get; }
+        public readonly ulong BytesOut;
 
         #endregion
 

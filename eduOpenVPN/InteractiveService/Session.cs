@@ -8,7 +8,6 @@
 using eduEx.Async;
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -49,7 +48,6 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="timeout">The number of milliseconds to wait for the server to respond before the connection times out.</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
         /// <returns>openvpn.exe process identifier</returns>
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "MemoryStream tolerates multiple disposes.")]
         public void Connect(string pipeName, string workingFolder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
         {
             try

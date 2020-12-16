@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace eduOpenVPN.Management
 {
@@ -25,6 +26,19 @@ namespace eduOpenVPN.Management
             base(message)
         {
         }
+
+        #endregion
+
+        #region ISerializable Support
+
+        /// <summary>
+        /// Deserialize object.
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> populated with data.</param>
+        /// <param name="context">The source of this deserialization.</param>
+        protected SessionStateException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
 
         #endregion
     }

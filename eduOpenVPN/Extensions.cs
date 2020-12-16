@@ -27,8 +27,7 @@ namespace eduOpenVPN
 
             string valueStr = value.ToString();
             FieldInfo fieldInfo = value.GetType().GetField(valueStr);
-            var attribute = fieldInfo.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() as ParameterValueAttribute;
-            return attribute != null ? attribute.Value : valueStr;
+            return fieldInfo.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() is ParameterValueAttribute attribute ? attribute.Value : valueStr;
         }
     }
 }

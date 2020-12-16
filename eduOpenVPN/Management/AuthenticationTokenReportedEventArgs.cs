@@ -16,12 +16,12 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class AuthenticationTokenReportedEventArgs : EventArgs, IDisposable
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Authentication token
         /// </summary>
-        public SecureString Token { get; private set; }
+        public readonly SecureString Token;
 
         #endregion
 

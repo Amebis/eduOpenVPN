@@ -14,12 +14,12 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class AuthenticationEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Realm title
         /// </summary>
-        public string Realm { get; }
+        public readonly string Realm;
 
         #endregion
 

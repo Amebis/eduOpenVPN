@@ -20,19 +20,24 @@ namespace eduOpenVPN.Management
     /// <summary>
     /// OpenVPN Management console session
     /// </summary>
-    public class Session : IDisposable
+    public partial class Session : IDisposable
     {
         #region Data Types
 
         /// <summary>
         /// Command base class
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class Command : IDisposable
         {
+            #region Fields
+
             /// <summary>
             /// Event to wait for command completition.
             /// </summary>
             public EventWaitHandle Finished = new EventWaitHandle(false, EventResetMode.ManualReset);
+
+            #endregion
 
             #region IDisposable Support
             /// <summary>
@@ -82,8 +87,11 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Single command
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class SingleCommand : Command
         {
+            #region Fields
+
             /// <summary>
             /// Did command finished successfully?
             /// </summary>
@@ -93,13 +101,18 @@ namespace eduOpenVPN.Management
             /// Command response (or error message)
             /// </summary>
             public string Response;
+
+            #endregion
         }
 
         /// <summary>
         /// Multiline command base class
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class MultilineCommand : Command
         {
+            #region Methods
+
             /// <summary>
             /// Process one line of data returned from command
             /// </summary>
@@ -109,22 +122,29 @@ namespace eduOpenVPN.Management
             {
                 throw new NotImplementedException();
             }
+
+            #endregion
         }
 
         /// <summary>
         /// Commands combined of one single and one multiline command
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class CombinedCommands
         {
+            #region Fields
+
             /// <summary>
             /// First command
             /// </summary>
-            public SingleCommand first;
+            public SingleCommand First;
 
             /// <summary>
             /// Second command
             /// </summary>
-            public MultilineCommand second;
+            public MultilineCommand Second;
+
+            #endregion
         }
 
         /// <summary>
@@ -132,6 +152,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class EchoCommand : MultilineCommand
         {
+            #region Methods
+
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
@@ -140,6 +162,8 @@ namespace eduOpenVPN.Management
                     long.TryParse(fields[0].Trim(), out var unixTime) ? Epoch.AddSeconds(unixTime) : DateTimeOffset.UtcNow,
                     fields.Length > 1 ? fields[1].Trim() : null));
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -147,6 +171,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class HoldCommand : MultilineCommand
         {
+            #region Methods
+
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
@@ -155,6 +181,8 @@ namespace eduOpenVPN.Management
                     fields[0].Trim(),
                     fields.Length > 1 && int.TryParse(fields[1].Trim(), out var hint) ? hint : 0));
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -162,6 +190,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class LogCommand : MultilineCommand
         {
+            #region Methods
+
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
@@ -177,6 +207,8 @@ namespace eduOpenVPN.Management
                         : 0,
                     fields.Length > 2 ? fields[2].Trim() : null));
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -184,6 +216,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class StateCommand : MultilineCommand
         {
+            #region Methods
+
             /// <inheritdoc/>
             public override void ProcessData(string data, Session session)
             {
@@ -197,6 +231,8 @@ namespace eduOpenVPN.Management
                     fields.Length > 5 && IPAddress.TryParse(fields[4].Trim(), out var remoteAddress) && int.TryParse(fields[5].Trim(), out var remotePort) ? new IPEndPoint(remoteAddress, remotePort) : null,
                     fields.Length > 7 && IPAddress.TryParse(fields[6].Trim(), out var localAddress) && int.TryParse(fields[7].Trim(), out var localPort) ? new IPEndPoint(localAddress, localPort) : null));
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -204,6 +240,8 @@ namespace eduOpenVPN.Management
         /// </summary>
         private class VersionCommand : MultilineCommand
         {
+            #region Methods
+
             /// <summary>
             /// OpenVPN version
             /// </summary>
@@ -216,6 +254,8 @@ namespace eduOpenVPN.Management
                 if (fields.Length > 0)
                     Version[fields[0]] = fields.Length > 1 ? fields[1].Trim() : null;
             }
+
+            #endregion
         }
 
         #endregion
@@ -254,7 +294,7 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Waitable event to signal the monitor finished
         /// </summary>
-        private EventWaitHandle MonitorFinished = new EventWaitHandle(false, EventResetMode.ManualReset);
+        private readonly EventWaitHandle MonitorFinished = new EventWaitHandle(false, EventResetMode.ManualReset);
 
         /// <summary>
         /// Cached credentials
@@ -804,7 +844,7 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result objects</returns>
         public CombinedCommands QueueReplayAndEnableEcho(CancellationToken ct = default)
         {
-            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new EchoCommand() };
+            var cmdResult = new CombinedCommands { First = new SingleCommand(), Second = new EchoCommand() };
             SendCommand("echo on all", cmdResult, ct);
             return cmdResult;
         }
@@ -959,7 +999,7 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public CombinedCommands QueueReplayAndEnableLog(CancellationToken ct = default)
         {
-            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new LogCommand() };
+            var cmdResult = new CombinedCommands { First = new SingleCommand(), Second = new LogCommand() };
             SendCommand("log on all", cmdResult, ct);
             return cmdResult;
         }
@@ -1178,7 +1218,7 @@ namespace eduOpenVPN.Management
         /// <returns>Waitable command result object</returns>
         public CombinedCommands QueueReplayAndEnableState(CancellationToken ct = default)
         {
-            var cmdResult = new CombinedCommands { first = new SingleCommand(), second = new StateCommand() };
+            var cmdResult = new CombinedCommands { First = new SingleCommand(), Second = new StateCommand() };
             SendCommand("state on all", cmdResult, ct);
             return cmdResult;
         }
@@ -1315,7 +1355,7 @@ namespace eduOpenVPN.Management
         private string WaitFor(SingleCommand cmdResult, CancellationToken ct = default)
         {
             // Await for the command to finish.
-            WaitFor(cmdResult.Finished);
+            WaitFor(cmdResult.Finished, ct);
 
             if (cmdResult.Success)
                 return cmdResult.Response;
@@ -1331,7 +1371,7 @@ namespace eduOpenVPN.Management
         private void WaitFor(MultilineCommand cmdResult, CancellationToken ct = default)
         {
             // Await for the command to finish.
-            WaitFor(cmdResult.Finished);
+            WaitFor(cmdResult.Finished, ct);
         }
 
         /// <summary>
@@ -1344,12 +1384,12 @@ namespace eduOpenVPN.Management
         private string WaitFor(CombinedCommands cmdResult, CancellationToken ct = default)
         {
             // Await for the second command to finish.
-            WaitFor(cmdResult.second.Finished);
+            WaitFor(cmdResult.Second.Finished, ct);
 
-            if (cmdResult.first.Success)
-                return cmdResult.first.Response;
+            if (cmdResult.First.Success)
+                return cmdResult.First.Response;
             else
-                throw new CommandException(cmdResult.first.Response);
+                throw new CommandException(cmdResult.First.Response);
         }
 
         /// <summary>
@@ -1410,8 +1450,8 @@ namespace eduOpenVPN.Management
             {
                 lock (Commands)
                 {
-                    Commands.Enqueue(cmdResult.first);
-                    Commands.Enqueue(cmdResult.second);
+                    Commands.Enqueue(cmdResult.First);
+                    Commands.Enqueue(cmdResult.Second);
                 }
 
                 // Send the command.

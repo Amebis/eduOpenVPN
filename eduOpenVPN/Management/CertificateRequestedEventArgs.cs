@@ -15,17 +15,17 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class CertificateRequestedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// A hint about which certificate is required
         /// </summary>
-        public string Hint { get; }
+        public readonly string Hint;
 
         /// <summary>
         /// Certificate
         /// </summary>
-        public X509Certificate2 Certificate { get; set; }
+        public X509Certificate2 Certificate;
 
         #endregion
 

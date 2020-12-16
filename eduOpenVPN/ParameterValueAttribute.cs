@@ -14,7 +14,7 @@ namespace eduOpenVPN
     /// <summary>
     /// OpenVPN parameter string value (to apply to enum constants)
     /// </summary>
-    public class ParameterValueAttribute : Attribute
+    public sealed class ParameterValueAttribute : Attribute
     {
         #region Properties
 

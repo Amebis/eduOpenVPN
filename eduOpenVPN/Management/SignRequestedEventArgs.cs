@@ -14,22 +14,22 @@ namespace eduOpenVPN.Management
     /// </summary>
     public class SignRequestedEventArgs : EventArgs
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// Data to be signed
         /// </summary>
-        public byte[] Data { get; }
+        public readonly byte[] Data;
 
         /// <summary>
         /// Signing and padding algorithm
         /// </summary>
-        public SignAlgorithmType Algorithm { get; }
+        public readonly SignAlgorithmType Algorithm;
 
         /// <summary>
         /// Signature of <see cref="Data"/> property
         /// </summary>
-        public byte[] Signature { get; set; }
+        public byte[] Signature;
 
         #endregion
 
