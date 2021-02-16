@@ -5,7 +5,7 @@ DataFormat: SPDXRef-1
 PackageSupplier: Organization: The Commons Conservancy eduVPN Programme
 PackageHomePage: https://github.com/Amebis/eduOpenVPN
 PackageLicenseDeclared: GPL-3.0+
-PackageCopyrightText: 2017-2020 The Commons Conservancy eduVPN Programme
+PackageCopyrightText: 2017-2021 The Commons Conservancy eduVPN Programme
 PackageSummary: <text>OpenVPN Management Library for eduVPN (and beyond)</text>
 PackageComment: <text>The package includes the following libraries; see
     Relationship information.</text>
