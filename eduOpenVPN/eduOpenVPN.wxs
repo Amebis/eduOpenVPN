@@ -40,6 +40,11 @@
                 <File Id="eduOpenVPN.resources.dll.nl" Source="nl\eduOpenVPN.resources.dll"/>
             </Component>
         </DirectoryRef>
+        <DirectoryRef Id="RESDIRPTPT">
+            <Component Id="eduOpenVPN.resources.dll.pt_PT" Guid="{15BE98D2-F9A1-430E-B91A-061E6C116F34}">
+                <File Id="eduOpenVPN.resources.dll.pt_PT" Source="pt-PT\eduOpenVPN.resources.dll"/>
+            </Component>
+        </DirectoryRef>
         <DirectoryRef Id="RESDIRSL">
             <Component Id="eduOpenVPN.resources.dll.sl" Guid="{DC81E7C2-B26E-4C25-9526-062C94D8494E}">
                 <File Id="eduOpenVPN.resources.dll.sl" Source="sl\eduOpenVPN.resources.dll"/>
@@ -69,6 +74,7 @@
             <ComponentRef Id="eduOpenVPN.resources.dll.fr"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.nb"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.nl"/>
+            <ComponentRef Id="eduOpenVPN.resources.dll.pt_PT"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.sl"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.tr"/>
             <ComponentRef Id="eduOpenVPN.resources.dll.uk"/>
