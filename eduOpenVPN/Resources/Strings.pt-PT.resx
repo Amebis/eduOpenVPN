@@ -118,40 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorBadBackslash" xml:space="preserve">
-    <value>Bad backslash (\) usage: remember that backslashes are treated as shell-escapes and if you need to pass backslash characters as part of a Windows filename, you should use double backslashes such as "c:\\openvpn\\static.key".</value>
+    <value>Mau uso do caracter (\): lembre-se que as barras invertidas são tratadas como saídas da sessão remota e se tiver necessidade de passar esses caracteres como parte de um nome de ficheiro Windows, deverá usar duplamente a barra invertida, da seguinte forma "c:\\openvpn\\static.key".</value>
   </data>
   <data name="ErrorInteractiveService" xml:space="preserve">
-    <value>{1} (Error {0})</value>
+    <value>{1} (Erro {0})</value>
     <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
-    <value>Connecting to the {0} interactive service failed. Please, make sure the service is started.</value>
+    <value>A ligação ao serviço interactivo {0} falhou. Por favor, certifique-se que o serviço foi iniciado.</value>
     <comment>{0} = Name of the pipe to connect to</comment>
   </data>
   <data name="ErrorManagementManagementResponse" xml:space="preserve">
-    <value>{0} Response: {1}</value>
+    <value>{0} Resposta: {1}</value>
     <comment>{0} = A sentence explaining an error, {1} = Response source code</comment>
   </data>
   <data name="ErrorMonitorTerminated" xml:space="preserve">
-    <value>The OpenVPN Management monitor is not running.</value>
+    <value>O monitor da consola de gestão do OpenVPN não está a correr.</value>
   </data>
   <data name="ErrorNoClosingQuotation" xml:space="preserve">
-    <value>No closing quotation (").</value>
+    <value>Sem fecho de plica (").</value>
   </data>
   <data name="ErrorNoClosingSingleQuotation" xml:space="preserve">
-    <value>No closing single quotation (').</value>
+    <value>Sem fecho de plica única (').</value>
   </data>
   <data name="ErrorParameterValueNotFound" xml:space="preserve">
-    <value>{0} parameter value not found in {1} enum.</value>
+    <value>{0} valor do parâmetro não encontrado em {1} enum.</value>
     <comment>{0} = Parameter value name, {1} = Enum data type</comment>
   </data>
   <data name="ErrorResidualParseState" xml:space="preserve">
-    <value>Residual parse state ({0}).</value>
+    <value>Estado de processamento residual ({0}).</value>
   </data>
   <data name="ErrorSessionState" xml:space="preserve">
-    <value>The OpenVPN session is in a state of error.</value>
+    <value>A sessão OpenVPN está num estado de erro.</value>
   </data>
   <data name="ErrorUnexpectedReply" xml:space="preserve">
-    <value>The OpenVPN Management reply was not expected.</value>
+    <value>A resposta da gestão do OpenVPN não foi a esperada.</value>
   </data>
 </root>
