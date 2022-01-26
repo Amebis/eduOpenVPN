@@ -485,7 +485,9 @@ namespace eduOpenVPN.Management
                             ct.ThrowIfCancellationRequested();
 
                             // Read one line.
-                            var line = reader.ReadLine(ct);
+                            string line;
+                            try { line = reader.ReadLine(ct); }
+                            catch (IOException ex) { throw new MonitorConnectionException(ex); }
 
                             ct.ThrowIfCancellationRequested();
 

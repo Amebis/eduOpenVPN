@@ -40,6 +40,7 @@
     <Compile Include="Management\HoldReportedEventArgs.cs" />
     <Compile Include="Management\LogReportedEventArgs.cs" />
     <Compile Include="Management\MessageReportedEventArgs.cs" />
+    <Compile Include="Management\MonitorConnectionException.cs" />
     <Compile Include="Management\MonitorTerminatedException.cs" />
     <Compile Include="Management\PasswordAuthenticationRequestedEventArgs.cs" />
     <Compile Include="Management\RemoteModAction.cs" />
