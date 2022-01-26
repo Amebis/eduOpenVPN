@@ -480,6 +480,7 @@ namespace eduOpenVPN.Management
                 {
                     try
                     {
+                        Trace.TraceInformation("OpenVPN monitor started");
                         for (; ; )
                         {
                             ct.ThrowIfCancellationRequested();
@@ -539,6 +540,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "FATAL":
+                                        Trace.TraceError("OpenVPN error: {0}", msg[1]);
                                         FatalErrorReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
                                         break;
 
@@ -548,11 +550,13 @@ namespace eduOpenVPN.Management
 
                                     case "INFO":
                                         // Interactive service is ready only after it reports ">INFO".
+                                        Trace.TraceInformation("OpenVPN ready");
                                         serviceReady.Set();
                                         InfoReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
                                         break;
 
                                     case "LOG":
+                                        Trace.TraceInformation("OpenVPN: {0}", msg[1]);
                                         new LogCommand().ProcessData(msg[1], this);
                                         break;
 
@@ -561,6 +565,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "NEED-CERTIFICATE":
+                                        Trace.TraceInformation("OpenVPN needs certificate");
                                         {
                                             // Get certificate.
                                             var e = new CertificateRequestedEventArgs(msg[1]);
@@ -580,6 +585,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "PASSWORD":
+                                        Trace.TraceInformation("OpenVPN needs password");
                                         {
                                             if (msg[1].StartsWith("Verification Failed: "))
                                                 AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(msg[1].Substring(21).Trim(new char[] { '\'' })));
@@ -641,6 +647,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "REMOTE":
+                                        Trace.TraceInformation("OpenVPN needs remote");
                                         {
                                             // Get action.
                                             var fields = msg[1].Split(FieldSeparators, 3 + 1);
@@ -656,6 +663,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "PK_SIGN":
+                                        Trace.TraceInformation("OpenVPN needs PK signature");
                                         {
                                             // Get signature.
                                             var fields = msg[1].Split(FieldSeparators);
@@ -674,6 +682,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "RSA_SIGN":
+                                        Trace.TraceInformation("OpenVPN needs RSA signature");
                                         {
                                             // Get signature.
                                             var e = new SignRequestedEventArgs(Convert.FromBase64String(msg[1]), SignAlgorithmType.RSASignaturePKCS1Padding);
@@ -689,6 +698,7 @@ namespace eduOpenVPN.Management
                                         break;
 
                                     case "STATE":
+                                        Trace.TraceInformation("OpenVPN state: {0}", msg[1]);
                                         new StateCommand().ProcessData(msg[1], this);
                                         break;
                                 }
@@ -736,10 +746,21 @@ namespace eduOpenVPN.Management
                             }
                         }
                     }
-                    catch (Exception ex) { Error = ex; }
+                    catch (OperationCanceledException ex) { Error = ex; }
+                    catch (MonitorConnectionException ex)
+                    {
+                        Trace.TraceWarning("OpenVPN monitor disconnected");
+                        Error = ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError("OpenVPN monitor error: {0}", ex);
+                        Error = ex;
+                    }
                     finally
                     {
                         // Signal the monitor finished.
+                        Trace.TraceInformation("OpenVPN monitor finished");
                         MonitorFinished.Set();
                     }
                 }));

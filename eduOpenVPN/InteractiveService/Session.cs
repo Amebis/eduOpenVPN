@@ -53,6 +53,7 @@ namespace eduOpenVPN.InteractiveService
             try
             {
                 // Connect to OpenVPN Interactive Service via named pipe.
+                Trace.TraceInformation("Connecting to OpenVPN interactive service");
                 Stream = new NamedPipeClientStream(".", pipeName);
                 Stream.Connect(timeout);
                 Stream.ReadMode = PipeTransmissionMode.Message;
@@ -60,6 +61,7 @@ namespace eduOpenVPN.InteractiveService
             catch (Exception ex) { throw new AggregateException(string.Format(Resources.Strings.ErrorInteractiveServiceConnect, pipeName), ex); }
 
             // Ask OpenVPN Interactive Service to start openvpn.exe for us.
+            Trace.TraceInformation("Triggering openvpn.exe launch");
             var encodingUtf16 = new UnicodeEncoding(false, false);
             using (var msgStream = new MemoryStream())
             using (var writer = new BinaryWriter(msgStream, encodingUtf16))
@@ -100,6 +102,7 @@ namespace eduOpenVPN.InteractiveService
         {
             if (Stream != null)
             {
+                Trace.TraceInformation("Disconnecting from OpenVPN interactive service");
                 Stream.Close();
                 Stream = null;
             }
