@@ -97,15 +97,6 @@ namespace eduOpenVPN.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The OpenVPN Management connection failed..
-        /// </summary>
-        internal static string ErrorMonitorConnection {
-            get {
-                return ResourceManager.GetString("ErrorMonitorConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The OpenVPN Management monitor is not running..
         /// </summary>
         internal static string ErrorMonitorTerminated {
