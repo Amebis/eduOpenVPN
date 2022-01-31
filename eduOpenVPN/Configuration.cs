@@ -39,12 +39,12 @@ namespace eduOpenVPN
         /// <remarks>This method is OpenVPN v2.5 <c>parse_line()</c> function ported to C#.</remarks>
         public static List<string> ParseParams(string commandLine)
         {
-            List<string> ret = new List<string>();
+            var ret = new List<string>();
             int offset = 0, endOffset = commandLine.Length;
-            ParseParamsState state = ParseParamsState.Initial;
-            bool backslash = false;
+            var state = ParseParamsState.Initial;
+            var backslash = false;
             char inChar, outChar;
-            string parm = "";
+            var parm = "";
 
             do
             {

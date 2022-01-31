@@ -8,7 +8,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 
 namespace eduOpenVPN
 {
@@ -25,8 +24,8 @@ namespace eduOpenVPN
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            string valueStr = value.ToString();
-            FieldInfo fieldInfo = value.GetType().GetField(valueStr);
+            var valueStr = value.ToString();
+            var fieldInfo = value.GetType().GetField(valueStr);
             return fieldInfo.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() is ParameterValueAttribute attribute ? attribute.Value : valueStr;
         }
     }

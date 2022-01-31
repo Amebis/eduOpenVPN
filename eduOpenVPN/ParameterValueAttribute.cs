@@ -7,7 +7,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace eduOpenVPN
 {
@@ -49,10 +48,10 @@ namespace eduOpenVPN
         /// <returns><c>true</c> if enum found; <c>false</c> otherwise</returns>
         public static bool TryGetEnumByParameterValueAttribute<T>(string value, out T result)
         {
-            Type enumType = typeof(T);
+            var enumType = typeof(T);
             foreach (T val in Enum.GetValues(enumType))
             {
-                FieldInfo fi = enumType.GetField(val.ToString());
+                var fi = enumType.GetField(val.ToString());
                 if (fi.GetCustomAttributes(typeof(ParameterValueAttribute), false).SingleOrDefault() is ParameterValueAttribute attr && attr.Value == value)
                 {
                     result = val;

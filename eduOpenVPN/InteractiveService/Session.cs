@@ -86,12 +86,9 @@ namespace eduOpenVPN.InteractiveService
             try { statusTask.Wait(ct); }
             catch (OperationCanceledException) { throw; }
             catch (AggregateException ex) { throw ex.InnerException; }
-            if (statusTask.Result is StatusError statusErr && statusErr.Code != 0)
-                throw new InteractiveServiceException(statusErr.Code, statusErr.Function, statusErr.Message);
-            else if (statusTask.Result is StatusProcessId statusPid)
-                ProcessId = statusPid.ProcessId;
-            else
-                ProcessId = 0;
+            ProcessId =
+                statusTask.Result is StatusError statusErr && statusErr.Code != 0 ? throw new InteractiveServiceException(statusErr.Code, statusErr.Function, statusErr.Message) :
+                statusTask.Result is StatusProcessId statusPid ? statusPid.ProcessId : 0;
         }
 
         /// <summary>
