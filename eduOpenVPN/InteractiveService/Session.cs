@@ -47,7 +47,6 @@ namespace eduOpenVPN.InteractiveService
         /// <param name="stdin">Text to send to openvpn.exe on start via stdin</param>
         /// <param name="timeout">The number of milliseconds to wait for the server to respond before the connection times out.</param>
         /// <param name="ct">The token to monitor for cancellation requests</param>
-        /// <returns>openvpn.exe process identifier</returns>
         public void Connect(string pipeName, string workingFolder, string[] arguments, string stdin, int timeout = 3000, CancellationToken ct = default)
         {
             try
