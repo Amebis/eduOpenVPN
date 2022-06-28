@@ -125,7 +125,7 @@
     <comment>{0} = Error number, {1} = The name of the function</comment>
   </data>
   <data name="ErrorInteractiveServiceConnect" xml:space="preserve">
-    <value>Die Verbindung zum interaktiven Dienst{0} ist fehlgeschlagen. Vergewissern Sie sich bitte, dass der Dienst gestartet ist.</value>
+    <value>Die Verbindung zum interaktiven Dienst {0} ist fehlgeschlagen. Vergewissern Sie sich bitte, dass der Dienst gestartet ist.</value>
     <comment>{0} = Name of the pipe to connect to</comment>
   </data>
   <data name="ErrorManagementManagementResponse" xml:space="preserve">
