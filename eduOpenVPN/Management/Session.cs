@@ -486,11 +486,19 @@ namespace eduOpenVPN.Management
                             ct.ThrowIfCancellationRequested();
 
                             // Read one line.
-                            var line = reader.ReadLine(ct);
-                            if (line == null)
-                                return;
+                            string line;
+                            try { line = reader.ReadLine(ct); }
+                            catch (IOException ex) { throw new MonitorConnectionException(ex); }
 
                             ct.ThrowIfCancellationRequested();
+
+                            if (line == null)
+                            {
+                                // The OpenVPN Management Interface closed the connection after reporting ">FATAL".
+                                // Keep the thread for client to display error and to allow user to examine OpenVPN log.
+                                ct.WaitHandle.WaitOne();
+                                throw new OperationCanceledException();
+                            }
 
                             if (line.Length > 0 && line[0] == '>')
                             {
@@ -739,6 +747,11 @@ namespace eduOpenVPN.Management
                         }
                     }
                     catch (OperationCanceledException ex) { Error = ex; }
+                    catch (MonitorConnectionException ex)
+                    {
+                        Trace.TraceWarning("OpenVPN monitor disconnected");
+                        Error = ex;
+                    }
                     catch (Exception ex)
                     {
                         Trace.TraceError("OpenVPN monitor error: {0}", ex);
