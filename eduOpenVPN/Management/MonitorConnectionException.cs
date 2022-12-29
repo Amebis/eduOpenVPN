@@ -1,7 +1,7 @@
 ﻿/*
     eduOpenVPN - OpenVPN Management Library for eduVPN (and beyond)
 
-    Copyright: 2017-2022 The Commons Conservancy eduVPN Programme
+    Copyright: 2017-2023 The Commons Conservancy
     SPDX-License-Identifier: GPL-3.0+
 */
 
