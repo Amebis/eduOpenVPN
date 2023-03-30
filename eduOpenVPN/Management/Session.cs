@@ -27,7 +27,6 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Command base class
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class Command : IDisposable
         {
             #region Fields
@@ -87,7 +86,6 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Single command
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class SingleCommand : Command
         {
             #region Fields
@@ -108,7 +106,6 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Multiline command base class
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class MultilineCommand : Command
         {
             #region Methods
@@ -129,7 +126,6 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Commands combined of one single and one multiline command
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "1. Why does C# allow child classes then? 2. Descendants too tightly integrated into Session class. 3. Lots of extra files to maintain then.")]
         public class CombinedCommands
         {
             #region Fields
