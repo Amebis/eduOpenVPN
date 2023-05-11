@@ -19,12 +19,12 @@ namespace eduOpenVPN.Management
         /// <summary>
         /// Number of bytes that have been received from the server
         /// </summary>
-        public readonly ulong BytesIn;
+        public readonly ulong RxBytes;
 
         /// <summary>
         /// Number of bytes that have been sent to the server
         /// </summary>
-        public readonly ulong BytesOut;
+        public readonly ulong TxBytes;
 
         #endregion
 
@@ -37,8 +37,8 @@ namespace eduOpenVPN.Management
         /// <param name="bytesOut">Number of bytes that have been sent to the server</param>
         public ByteCountReportedEventArgs(ulong bytesIn, ulong bytesOut)
         {
-            BytesIn = bytesIn;
-            BytesOut = bytesOut;
+            RxBytes = bytesIn;
+            TxBytes = bytesOut;
         }
 
         #endregion
