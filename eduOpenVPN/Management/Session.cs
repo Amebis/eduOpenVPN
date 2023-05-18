@@ -471,295 +471,294 @@ namespace eduOpenVPN.Management
             CommandsLock = new object();
 
             // Spawn the monitor.
-            Monitor = new Thread(new ThreadStart(
-                () =>
+            Monitor = new Thread(() =>
+            {
+                try
                 {
-                    try
+                    Trace.TraceInformation("OpenVPN monitor started");
+                    for (; ; )
                     {
-                        Trace.TraceInformation("OpenVPN monitor started");
-                        for (; ; )
+                        ct.ThrowIfCancellationRequested();
+
+                        // Read one line.
+                        string line;
+                        try { line = reader.ReadLine(ct); }
+                        catch (IOException ex) { throw new MonitorConnectionException(ex); }
+
+                        ct.ThrowIfCancellationRequested();
+
+                        if (line == null)
                         {
-                            ct.ThrowIfCancellationRequested();
+                            // The OpenVPN Management Interface closed the connection after reporting ">FATAL".
+                            // Keep the thread for client to display error and to allow user to examine OpenVPN log.
+                            ct.WaitHandle.WaitOne();
+                            throw new OperationCanceledException();
+                        }
 
-                            // Read one line.
-                            string line;
-                            try { line = reader.ReadLine(ct); }
-                            catch (IOException ex) { throw new MonitorConnectionException(ex); }
-
-                            ct.ThrowIfCancellationRequested();
-
-                            if (line == null)
+                        if (line.Length > 0 && line[0] == '>')
+                        {
+                            // Real-time notification message.
+                            var msg = line.Substring(1).Split(MsgSeparators, 2);
+                            switch (msg[0].Trim())
                             {
-                                // The OpenVPN Management Interface closed the connection after reporting ">FATAL".
-                                // Keep the thread for client to display error and to allow user to examine OpenVPN log.
-                                ct.WaitHandle.WaitOne();
-                                throw new OperationCanceledException();
-                            }
+                                case "BYTECOUNT":
+                                    {
+                                        var fields = msg[1].Split(FieldSeparators, 2 + 1);
+                                        ByteCountReported?.Invoke(this, new ByteCountReportedEventArgs(
+                                            fields.Length > 0 && ulong.TryParse(fields[0].Trim(), out var bytesIn) ? bytesIn : 0,
+                                            fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesOut) ? bytesOut : 0
+                                        ));
+                                    }
+                                    break;
 
-                            if (line.Length > 0 && line[0] == '>')
-                            {
-                                // Real-time notification message.
-                                var msg = line.Substring(1).Split(MsgSeparators, 2);
-                                switch (msg[0].Trim())
-                                {
-                                    case "BYTECOUNT":
+                                case "BYTECOUNT_CLI":
+                                    {
+                                        var fields = msg[1].Split(FieldSeparators, 3 + 1);
+                                        ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
+                                            fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var clientId) ? clientId : 0,
+                                            fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesIn) ? bytesIn : 0,
+                                            fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytesOut) ? bytesOut : 0
+                                        ));
+                                    }
+                                    break;
+
+                                case "CLIENT":
+                                    // TODO: Implement.
+                                    break;
+
+                                case "CRV1":
+                                    // TODO: Implement.
+                                    break;
+
+                                case "ECHO":
+                                    new EchoCommand().ProcessData(msg[1], this);
+                                    break;
+
+                                case "FATAL":
+                                    Trace.TraceError("OpenVPN error: {0}", msg[1]);
+                                    FatalErrorReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
+                                    break;
+
+                                case "HOLD":
+                                    new HoldCommand().ProcessData(msg[1], this);
+                                    break;
+
+                                case "INFO":
+                                    // Interactive service is ready only after it reports ">INFO".
+                                    Trace.TraceInformation("OpenVPN ready");
+                                    serviceReady.Set();
+                                    InfoReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
+                                    break;
+
+                                case "LOG":
+                                    Trace.TraceInformation("OpenVPN: {0}", msg[1]);
+                                    new LogCommand().ProcessData(msg[1], this);
+                                    break;
+
+                                case "NEED-OK":
+                                    // TODO: Implement.
+                                    break;
+
+                                case "NEED-CERTIFICATE":
+                                    Trace.TraceInformation("OpenVPN needs certificate");
+                                    {
+                                        // Get certificate.
+                                        var e = new CertificateRequestedEventArgs(msg[1]);
+                                        CertificateRequested?.Invoke(this, e);
+
+                                        // Reply with certificate command.
+                                        var sb = new StringBuilder();
+                                        sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
+                                        sb.Append(Convert.ToBase64String(e.Certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                        sb.Append("\n-----END CERTIFICATE-----\nEND");
+                                        SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                    }
+                                    break;
+
+                                case "NEED-STR":
+                                    // TODO: Implement.
+                                    break;
+
+                                case "PASSWORD":
+                                    Trace.TraceInformation("OpenVPN needs password");
+                                    {
+                                        if (msg[1].StartsWith("Verification Failed: "))
+                                            AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(msg[1].Substring(21).Trim(new char[] { '\'' })));
+                                        else if (msg[1].StartsWith("Auth-Token:"))
+                                            AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(new NetworkCredential("", msg[1].Substring(11)).SecurePassword));
+                                        else
                                         {
-                                            var fields = msg[1].Split(FieldSeparators, 2 + 1);
-                                            ByteCountReported?.Invoke(this, new ByteCountReportedEventArgs(
-                                                fields.Length > 0 && ulong.TryParse(fields[0].Trim(), out var bytesIn) ? bytesIn : 0,
-                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesOut) ? bytesOut : 0
-                                            ));
-                                        }
-                                        break;
-
-                                    case "BYTECOUNT_CLI":
-                                        {
-                                            var fields = msg[1].Split(FieldSeparators, 3 + 1);
-                                            ByteCountClientReported?.Invoke(this, new ByteCountClientReportedEventArgs(
-                                                fields.Length > 0 && uint.TryParse(fields[0].Trim(), out var clientId) ? clientId : 0,
-                                                fields.Length > 1 && ulong.TryParse(fields[1].Trim(), out var bytesIn) ? bytesIn : 0,
-                                                fields.Length > 2 && ulong.TryParse(fields[2].Trim(), out var bytesOut) ? bytesOut : 0
-                                            ));
-                                        }
-                                        break;
-
-                                    case "CLIENT":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "CRV1":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "ECHO":
-                                        new EchoCommand().ProcessData(msg[1], this);
-                                        break;
-
-                                    case "FATAL":
-                                        Trace.TraceError("OpenVPN error: {0}", msg[1]);
-                                        FatalErrorReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
-                                        break;
-
-                                    case "HOLD":
-                                        new HoldCommand().ProcessData(msg[1], this);
-                                        break;
-
-                                    case "INFO":
-                                        // Interactive service is ready only after it reports ">INFO".
-                                        Trace.TraceInformation("OpenVPN ready");
-                                        serviceReady.Set();
-                                        InfoReported?.Invoke(this, new MessageReportedEventArgs(msg[1]));
-                                        break;
-
-                                    case "LOG":
-                                        Trace.TraceInformation("OpenVPN: {0}", msg[1]);
-                                        new LogCommand().ProcessData(msg[1], this);
-                                        break;
-
-                                    case "NEED-OK":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "NEED-CERTIFICATE":
-                                        Trace.TraceInformation("OpenVPN needs certificate");
-                                        {
-                                            // Get certificate.
-                                            var e = new CertificateRequestedEventArgs(msg[1]);
-                                            CertificateRequested?.Invoke(this, e);
-
-                                            // Reply with certificate command.
-                                            var sb = new StringBuilder();
-                                            sb.Append("certificate\n-----BEGIN CERTIFICATE-----\n");
-                                            sb.Append(Convert.ToBase64String(e.Certificate.GetRawCertData(), Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
-                                            sb.Append("\n-----END CERTIFICATE-----\nEND");
-                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
-
-                                    case "NEED-STR":
-                                        // TODO: Implement.
-                                        break;
-
-                                    case "PASSWORD":
-                                        Trace.TraceInformation("OpenVPN needs password");
-                                        {
-                                            if (msg[1].StartsWith("Verification Failed: "))
-                                                AuthenticationFailed?.Invoke(this, new AuthenticationEventArgs(msg[1].Substring(21).Trim(new char[] { '\'' })));
-                                            else if (msg[1].StartsWith("Auth-Token:"))
-                                                AuthenticationTokenReported?.Invoke(this, new AuthenticationTokenReportedEventArgs(new NetworkCredential("", msg[1].Substring(11)).SecurePassword));
-                                            else
+                                            var param = Configuration.ParseParams(msg[1]);
+                                            if (param.Count > 2 && param[0] == "Need")
                                             {
-                                                var param = Configuration.ParseParams(msg[1]);
-                                                if (param.Count > 2 && param[0] == "Need")
+                                                switch (param[2])
                                                 {
-                                                    switch (param[2])
-                                                    {
-                                                        case "password":
+                                                    case "password":
+                                                        {
+                                                            var e = new PasswordAuthenticationRequestedEventArgs(param[1]);
+                                                            PasswordAuthenticationRequested?.Invoke(this, e);
+                                                            if (e.Password == null)
+                                                                throw new OperationCanceledException();
+
+                                                            // Send reply message.
+                                                            SendCommand("password " + Configuration.EscapeParamValue(param[1]) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
+                                                        }
+                                                        break;
+
+                                                    case "username/password":
+                                                        {
+                                                            if (Credentials == null)
                                                             {
-                                                                var e = new PasswordAuthenticationRequestedEventArgs(param[1]);
-                                                                PasswordAuthenticationRequested?.Invoke(this, e);
-                                                                if (e.Password == null)
+                                                                // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
+
+                                                                var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
+                                                                UsernamePasswordAuthenticationRequested?.Invoke(this, e);
+                                                                if (e.Username == null || e.Password == null)
                                                                     throw new OperationCanceledException();
 
-                                                                // Send reply message.
-                                                                SendCommand("password " + Configuration.EscapeParamValue(param[1]) + " " + Configuration.EscapeParamValue(new NetworkCredential("", e.Password).Password), new SingleCommand(), ct);
+                                                                // Prepare new credentials.
+                                                                Credentials = new NetworkCredential(e.Username, "") { SecurePassword = e.Password };
                                                             }
-                                                            break;
 
-                                                        case "username/password":
-                                                            {
-                                                                if (Credentials == null)
-                                                                {
-                                                                    // TODO: Support Static challenge/response protocol (PASSWORD:Need 'Auth' username/password SC:<ECHO>,<TEXT>)
-
-                                                                    var e = new UsernamePasswordAuthenticationRequestedEventArgs(param[1]);
-                                                                    UsernamePasswordAuthenticationRequested?.Invoke(this, e);
-                                                                    if (e.Username == null || e.Password == null)
-                                                                        throw new OperationCanceledException();
-
-                                                                    // Prepare new credentials.
-                                                                    Credentials = new NetworkCredential(e.Username, "") { SecurePassword = e.Password };
-                                                                }
-
-                                                                // Send reply messages.
-                                                                var realmEsc = Configuration.EscapeParamValue(param[1]);
-                                                                SendCommand("username " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.UserName), new SingleCommand(), ct);
-                                                                SendCommand("password " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.Password), new SingleCommand(), ct);
-                                                            }
-                                                            break;
-                                                    }
+                                                            // Send reply messages.
+                                                            var realmEsc = Configuration.EscapeParamValue(param[1]);
+                                                            SendCommand("username " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.UserName), new SingleCommand(), ct);
+                                                            SendCommand("password " + realmEsc + " " + Configuration.EscapeParamValue(Credentials.Password), new SingleCommand(), ct);
+                                                        }
+                                                        break;
                                                 }
                                             }
                                         }
-                                        break;
+                                    }
+                                    break;
 
-                                    case "PKCS11ID-COUNT":
-                                        // TODO: Implement.
-                                        break;
+                                case "PKCS11ID-COUNT":
+                                    // TODO: Implement.
+                                    break;
 
-                                    case "PROXY":
-                                        // TODO: Implement.
-                                        SendCommand("proxy NONE", new SingleCommand(), ct);
-                                        break;
+                                case "PROXY":
+                                    // TODO: Implement.
+                                    SendCommand("proxy NONE", new SingleCommand(), ct);
+                                    break;
 
-                                    case "REMOTE":
-                                        Trace.TraceInformation("OpenVPN needs remote");
-                                        {
-                                            // Get action.
-                                            var fields = msg[1].Split(FieldSeparators, 3 + 1);
-                                            var e = new RemoteReportedEventArgs(
-                                                fields[0].Trim(),
-                                                fields.Length > 1 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
-                                                fields.Length > 2 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
-                                            RemoteReported?.Invoke(this, e);
+                                case "REMOTE":
+                                    Trace.TraceInformation("OpenVPN needs remote");
+                                    {
+                                        // Get action.
+                                        var fields = msg[1].Split(FieldSeparators, 3 + 1);
+                                        var e = new RemoteReportedEventArgs(
+                                            fields[0].Trim(),
+                                            fields.Length > 1 && int.TryParse(fields[1].Trim(), out var port) ? port : 0,
+                                            fields.Length > 2 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<ProtoType>(fields[2].Trim(), out var proto) ? proto : ProtoType.UDP);
+                                        RemoteReported?.Invoke(this, e);
 
-                                            // Send reply message.
-                                            SendCommand("remote " + e.Action.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
+                                        // Send reply message.
+                                        SendCommand("remote " + e.Action.ToString(), new SingleCommand(), ct);
+                                    }
+                                    break;
 
-                                    case "PK_SIGN":
-                                        Trace.TraceInformation("OpenVPN needs PK signature");
-                                        {
-                                            // Get signature.
-                                            var fields = msg[1].Split(FieldSeparators);
-                                            var e = new SignRequestedEventArgs(
-                                                Convert.FromBase64String(fields[0]),
-                                                fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<SignAlgorithmType>(fields[1].Trim(), out var padding) ? padding : SignAlgorithmType.RSASignaturePKCS1Padding);
-                                            SignRequested?.Invoke(this, e);
+                                case "PK_SIGN":
+                                    Trace.TraceInformation("OpenVPN needs PK signature");
+                                    {
+                                        // Get signature.
+                                        var fields = msg[1].Split(FieldSeparators);
+                                        var e = new SignRequestedEventArgs(
+                                            Convert.FromBase64String(fields[0]),
+                                            fields.Length > 1 && ParameterValueAttribute.TryGetEnumByParameterValueAttribute<SignAlgorithmType>(fields[1].Trim(), out var padding) ? padding : SignAlgorithmType.RSASignaturePKCS1Padding);
+                                        SignRequested?.Invoke(this, e);
 
-                                            // Send reply message.
-                                            var sb = new StringBuilder();
-                                            sb.Append("pk-sig\n");
-                                            sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
-                                            sb.Append("\nEND");
-                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
+                                        // Send reply message.
+                                        var sb = new StringBuilder();
+                                        sb.Append("pk-sig\n");
+                                        sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                        sb.Append("\nEND");
+                                        SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                    }
+                                    break;
 
-                                    case "RSA_SIGN":
-                                        Trace.TraceInformation("OpenVPN needs RSA signature");
-                                        {
-                                            // Get signature.
-                                            var e = new SignRequestedEventArgs(Convert.FromBase64String(msg[1]), SignAlgorithmType.RSASignaturePKCS1Padding);
-                                            SignRequested?.Invoke(this, e);
+                                case "RSA_SIGN":
+                                    Trace.TraceInformation("OpenVPN needs RSA signature");
+                                    {
+                                        // Get signature.
+                                        var e = new SignRequestedEventArgs(Convert.FromBase64String(msg[1]), SignAlgorithmType.RSASignaturePKCS1Padding);
+                                        SignRequested?.Invoke(this, e);
 
-                                            // Send reply message.
-                                            var sb = new StringBuilder();
-                                            sb.Append("rsa-sig\n");
-                                            sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
-                                            sb.Append("\nEND");
-                                            SendCommand(sb.ToString(), new SingleCommand(), ct);
-                                        }
-                                        break;
+                                        // Send reply message.
+                                        var sb = new StringBuilder();
+                                        sb.Append("rsa-sig\n");
+                                        sb.Append(Convert.ToBase64String(e.Signature, Base64FormattingOptions.InsertLineBreaks).Replace("\r", ""));
+                                        sb.Append("\nEND");
+                                        SendCommand(sb.ToString(), new SingleCommand(), ct);
+                                    }
+                                    break;
 
-                                    case "STATE":
-                                        Trace.TraceInformation("OpenVPN state: {0}", msg[1]);
-                                        new StateCommand().ProcessData(msg[1], this);
-                                        break;
+                                case "STATE":
+                                    Trace.TraceInformation("OpenVPN state: {0}", msg[1]);
+                                    new StateCommand().ProcessData(msg[1], this);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            Command cmd;
+                            lock (Commands) cmd = Commands.Count > 0 ? Commands.Peek() : null;
+                            if (cmd is MultilineCommand multilineCmd)
+                            {
+                                if (line == "END")
+                                {
+                                    // Multi-line response end.
+                                    lock (Commands) Commands.Dequeue();
+                                    multilineCmd.Finished.Set();
+                                }
+                                else
+                                {
+                                    // One line of multi-line response.
+                                    multilineCmd.ProcessData(line, this);
                                 }
                             }
-                            else
+                            else if (cmd is SingleCommand singleCmd)
                             {
-                                Command cmd;
-                                lock (Commands) cmd = Commands.Count > 0 ? Commands.Peek() : null;
-                                if (cmd is MultilineCommand multilineCmd)
+                                var msg = line.Split(MsgSeparators, 2);
+                                switch (msg[0].Trim())
                                 {
-                                    if (line == "END")
-                                    {
-                                        // Multi-line response end.
+                                    case "SUCCESS":
+                                        // Success response.
                                         lock (Commands) Commands.Dequeue();
-                                        multilineCmd.Finished.Set();
-                                    }
-                                    else
-                                    {
-                                        // One line of multi-line response.
-                                        multilineCmd.ProcessData(line, this);
-                                    }
-                                }
-                                else if (cmd is SingleCommand singleCmd)
-                                {
-                                    var msg = line.Split(MsgSeparators, 2);
-                                    switch (msg[0].Trim())
-                                    {
-                                        case "SUCCESS":
-                                            // Success response.
-                                            lock (Commands) Commands.Dequeue();
-                                            singleCmd.Success = true;
-                                            singleCmd.Response = msg[1].Trim();
-                                            singleCmd.Finished.Set();
-                                            break;
+                                        singleCmd.Success = true;
+                                        singleCmd.Response = msg[1].Trim();
+                                        singleCmd.Finished.Set();
+                                        break;
 
-                                        case "ERROR":
-                                            // Error response.
-                                            lock (Commands) Commands.Dequeue();
-                                            singleCmd.Success = false;
-                                            singleCmd.Response = msg[1].Trim();
-                                            singleCmd.Finished.Set();
-                                            break;
-                                    }
+                                    case "ERROR":
+                                        // Error response.
+                                        lock (Commands) Commands.Dequeue();
+                                        singleCmd.Success = false;
+                                        singleCmd.Response = msg[1].Trim();
+                                        singleCmd.Finished.Set();
+                                        break;
                                 }
                             }
                         }
                     }
-                    catch (OperationCanceledException ex) { Error = ex; }
-                    catch (MonitorConnectionException ex)
-                    {
-                        Trace.TraceWarning("OpenVPN monitor disconnected");
-                        Error = ex;
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.TraceError("OpenVPN monitor error: {0}", ex);
-                        Error = ex;
-                    }
-                    finally
-                    {
-                        // Signal the monitor finished.
-                        Trace.TraceInformation("OpenVPN monitor finished");
-                        MonitorFinished.Set();
-                    }
-                }));
+                }
+                catch (OperationCanceledException ex) { Error = ex; }
+                catch (MonitorConnectionException ex)
+                {
+                    Trace.TraceWarning("OpenVPN monitor disconnected");
+                    Error = ex;
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError("OpenVPN monitor error: {0}", ex);
+                    Error = ex;
+                }
+                finally
+                {
+                    // Signal the monitor finished.
+                    Trace.TraceInformation("OpenVPN monitor finished");
+                    MonitorFinished.Set();
+                }
+            });
             Monitor.Start();
 
             if (password != null)
