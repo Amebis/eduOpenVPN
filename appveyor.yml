@@ -1,4 +1,4 @@
-version: 1.13.{build}
+version: 1.14.{build}
 image: Visual Studio 2022
 before_build:
   - git clone -q --branch=master https://github.com/Amebis/eduEx.git ..\eduEx
