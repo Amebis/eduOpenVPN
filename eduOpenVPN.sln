@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30104.148
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eduOpenVPN", "eduOpenVPN\eduOpenVPN.csproj", "{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}"
 EndProject
@@ -18,45 +18,59 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|ARM64.Build.0 = Debug|ARM64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x64.ActiveCfg = Debug|x64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x64.Build.0 = Debug|x64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x86.ActiveCfg = Debug|x86
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Debug|x86.Build.0 = Debug|x86
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|ARM64.ActiveCfg = Release|ARM64
+		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|ARM64.Build.0 = Release|ARM64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x64.ActiveCfg = Release|x64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x64.Build.0 = Release|x64
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x86.ActiveCfg = Release|x86
 		{DDF40A25-1180-40B1-9BF1-8D3D66D734AD}.Release|x86.Build.0 = Release|x86
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|ARM64.Build.0 = Debug|ARM64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|x64.ActiveCfg = Debug|x64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|x64.Build.0 = Debug|x64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|x86.ActiveCfg = Debug|x86
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Debug|x86.Build.0 = Debug|x86
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|ARM64.ActiveCfg = Release|ARM64
+		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|ARM64.Build.0 = Release|ARM64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|x64.ActiveCfg = Release|x64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|x64.Build.0 = Release|x64
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|x86.ActiveCfg = Release|x86
 		{EC9E752D-3228-47B1-AB68-9FCF0FAA3B8A}.Release|x86.Build.0 = Release|x86
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|ARM64.Build.0 = Debug|ARM64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|x64.ActiveCfg = Debug|x64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|x64.Build.0 = Debug|x64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|x86.ActiveCfg = Debug|x86
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Debug|x86.Build.0 = Debug|x86
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|ARM64.ActiveCfg = Release|ARM64
+		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|ARM64.Build.0 = Release|ARM64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|x64.ActiveCfg = Release|x64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|x64.Build.0 = Release|x64
 		{0E2C74AC-C81C-4CC6-B88D-81192623A66D}.Release|x86.ActiveCfg = Release|x86

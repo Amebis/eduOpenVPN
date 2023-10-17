@@ -10,6 +10,7 @@ platform:
   - Any CPU
   - x86
   - x64
+  - ARM64
 build:
   project: eduOpenVPN.sln
   parallel: true
